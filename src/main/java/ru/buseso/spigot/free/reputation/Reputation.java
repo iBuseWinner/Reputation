@@ -22,6 +22,13 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.buseso.spigot.free.reputation.Data.RepConfig;
+import ru.buseso.spigot.free.reputation.Data.RepMySQL;
+import ru.buseso.spigot.free.reputation.Listeners.RepListMySQL;
+import ru.buseso.spigot.free.reputation.Listeners.RepListYaml;
+import ru.buseso.spigot.free.reputation.Listeners.RepListenerMySQL;
+import ru.buseso.spigot.free.reputation.Listeners.RepListenerYaml;
+import ru.buseso.spigot.free.reputation.Utils.*;
 import ru.buseso.spigot.free.reputation.updates.UpdateException;
 import ru.buseso.spigot.free.reputation.updates.UpdateResult;
 import ru.buseso.spigot.free.reputation.updates.Updater;
@@ -33,14 +40,14 @@ import java.util.List;
 
 public final class Reputation extends JavaPlugin {
 
-    static RepConfig config;
-    static RepMySQL mysql;
-    static RepMySQL.Requests requests;
-    static RepTimer timer;
-    static RepYamlTimer ytimer;
-    static List<RepPlayer> rps;
-    static Reputation ins;
-    static FileConfiguration players;
+    public static RepConfig config;
+    private static RepMySQL mysql;
+    public static RepMySQL.Requests requests;
+    private static RepTimer timer;
+    private static RepYamlTimer ytimer;
+    public static List<RepPlayer> rps;
+    public static Reputation ins;
+    public static FileConfiguration players;
 
     @Override
     public void onEnable() {

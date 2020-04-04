@@ -4,6 +4,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ru.buseso.spigot.free.reputation.Utils.RepPlayer;
+import ru.buseso.spigot.free.reputation.Utils.RepSender;
 
 public class RepCmd implements CommandExecutor {
     @Override
@@ -63,9 +65,13 @@ public class RepCmd implements CommandExecutor {
                         if(pp == null) {
                             RepSender.send(s, Reputation.config.playerErrorsTargetNotFound().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("&","§"));
                         } else {
-                            pp.setReps(pp.getReps()+1);
-                            RepSender.send(s, Reputation.config.playerSuccRepPlus().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("%player%",name).replaceAll("&","§"));
-                            p.setRepp(pp.getUuid());
+                            if(!p.getUuid().equals(pp.getUuid())) {
+                                pp.setReps(pp.getReps() + 1);
+                                RepSender.send(s, Reputation.config.playerSuccRepPlus().replaceAll("%prefix%", Reputation.config.prefix()).replaceAll("%player%", name).replaceAll("&", "§"));
+                                p.setRepp(pp.getUuid());
+                            } else {
+                                RepSender.send(s, Reputation.config.playerErrorsOwnNick());
+                            }
                         }
                     } else {
                         RepSender.send(s, Reputation.config.playerErrorsAlreadyRepPlus().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("&","§"));
@@ -84,9 +90,13 @@ public class RepCmd implements CommandExecutor {
                         if(pp == null) {
                             RepSender.send(s, Reputation.config.playerErrorsTargetNotFound().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("&","§"));
                         } else {
-                            pp.setReps(pp.getReps()-1);
-                            RepSender.send(s, Reputation.config.playerSuccRepMinus().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("%player%",name).replaceAll("&","§"));
-                            p.setRepm(pp.getUuid());
+                            if(!p.getUuid().equals(pp.getUuid())) {
+                                pp.setReps(pp.getReps()-1);
+                                RepSender.send(s, Reputation.config.playerSuccRepMinus().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("%player%",name).replaceAll("&","§"));
+                                p.setRepm(pp.getUuid());
+                            } else {
+                                RepSender.send(s, Reputation.config.playerErrorsOwnNick());
+                            }
                         }
                     } else {
                         RepSender.send(s, Reputation.config.playerErrorsAlreadyRepMinus().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("&","§"));

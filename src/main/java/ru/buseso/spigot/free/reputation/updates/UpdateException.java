@@ -1,7 +1,6 @@
 package ru.buseso.spigot.free.reputation.updates;
 
-import ru.buseso.spigot.free.reputation.RepSender;
-import ru.buseso.spigot.free.reputation.Reputation;
+import ru.buseso.spigot.free.reputation.Utils.RepSender;
 
 public class UpdateException extends Exception {
 
