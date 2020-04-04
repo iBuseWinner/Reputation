@@ -1,0 +1,118 @@
+# ███████╗██████╗ ██╗ ██████╗  ██████╗ ████████╗███╗   ███╗ ██████╗   ██████╗ ██╗   ██╗
+# ██╔════╝██╔══██╗██║██╔════╝ ██╔═══██╗╚══██╔══╝████╗ ████║██╔════╝   ██╔══██╗██║   ██║
+# ███████╗██████╔╝██║██║  ███╗██║   ██║   ██║   ██╔████╔██║██║        ██████╔╝██║   ██║
+# ╚════██║██╔═══╝ ██║██║   ██║██║   ██║   ██║   ██║╚██╔╝██║██║        ██╔══██╗██║   ██║
+# ███████║██║     ██║╚██████╔╝╚██████╔╝   ██║   ██║ ╚═╝ ██║╚██████╗██╗██║  ██║╚██████╔╝
+# ╚══════╝╚═╝     ╚═╝ ╚═════╝  ╚═════╝    ╚═╝   ╚═╝     ╚═╝ ╚═════╝╚═╝╚═╝  ╚═╝ ╚═════╝
+
+#  With love by BuseSo
+#  С любовью от BuseSo
+#
+#  SpigotMc.Ru plugin link: https://spigotmc.ru/resources/124/
+#  SpigotMc.Org plugin link: soon...
+
+#Main settings in the plugin.
+#Главные настройки плагина.
+settings:
+  #Here you need to choose where the data about the players will be stored.
+  #Здесь Вам необходимо указать, где будут храниться данные об игроках.
+  data:
+    #Avalible types: yaml, MySQL. Default: yaml
+    #Доступные типы: yaml, MySQL. По стандарту: yaml
+    type: yaml
+
+    #Don't touch if type is yaml!!
+    #Не трогать, если тип yaml!!
+    sql:
+      host: 'localhost'
+      port: 3306
+      database: 'database'
+      user: 'root'
+      password: ''
+      table: 'reputation'
+
+  #How many people will be in the top. (/rep top). Default: 5
+  #Сколько человек будет в топе. По стандарту: 5
+  #Will be soon... | Будет скоро...
+  top-limit: 5
+  #Can a player’s reputation go negative? Default: true
+  #Может ли репутация игрока уйти в минус? По стандарту: true
+  #Will be soon... | Будет скоро...
+  can-negative: true
+  #Check if there are plugin updates or not. Default: true
+  #Проверять, есть ли обновления плагина или нет. По стандарту: true
+  check-updates: true
+  #Show a full description of the error when it occurs. Default: true
+  #Показывать полное описание ошибки, когда она возникает. По стандарту: true
+  debug-mode: true
+  #Auto-save player's data
+  #Авто-сохранение информации об игроках
+  #
+  #Avalible modes: | Доступные режимы:
+  #-1 - disabled | выключено
+  #0 - when player quit the server | когда игрок выходит с сервера
+  #1 and more - every X minutes + when player quit the server | 1 и больше - каждые Х минут + когда игрок выходит с сервера
+  #Default: 0 (RECOMMENDED)
+  auto-save: 0
+
+messages:
+  #Prefix before all messages (%prefix%)
+  #Префикс перед всеми сообщениями (%prefix%)
+  prefix: "&6Репутация &8>>&7"
+  no-perm: '%prefix% &cУ Вас недостаточно прав для использования данной команды! Отсутствует право: &4%perm%'
+  admin:
+    #/rep admin help
+    help:
+      - '%prefix% &aСписок возможных Админ-Команд:'
+      - '&d/rep admin add <ник> <количество> &a- добавить игроку очков репутации'
+      - '&d/rep admin take <ник> <количество> &a- забрать у игрока очки репутации'
+      - '&d/rep admin set <ник> <количество> &a- установить игроку очки репутации'
+      - '&d/rep admin reset <ник> &a- сбросить игроку очки репутации'
+      - '&d/rep admin reload &a- перезагрузить конфиг'
+
+    success:
+      add: '%prefix% &aВы успешно добавили игроку &e%player% %reputation%&a очков репутации!'
+      take: '%prefix% &aВы успешно забрали у игрока &e%player% %reputation%&a очков репутации!'
+      set: '%prefix% &aВы успешно установили игроку &e%player% %reputation%&a очков репутации!'
+      reset: '%prefix% &aВы успешно сбросили игроку &e%player% очки репутации!'
+      reload: '%prefix% &aВы успешно перезагрузили конфиг!'
+
+    errors: '%prefix% &cОшибка при использовании команды! Проверьте правильность ввода и повторите попытку!'
+
+  player:
+    help:
+      - '%prefix% &aСписок возможных команд:'
+      - '&d/rep get &a- посмотреть, сколько у себя очков репутации'
+      - '&d/rep <ник> &a- посмотреть, сколько очков репутации у другого игрока'
+      - '&d/rep + <ник> &a- отдать очко репутации игроку'
+      - '&d/rep - <ник> &a- забрать очко репутации у игрока'
+      - '&d/rep undo <+/-> &a- отменить действие'
+
+    success:
+      rep+: '%prefix% &aВы отдали очко репутации игроку &e%player%&a!'
+      rep-: '%prefix% &aВы забрали очко репутации у игрока &e%player%&a!'
+      undo: '%prefix% &aВы отменили своё действие!'
+      get-self-reps: '%prefix% &aУ Вас &e%reputation%&a очков репутации!'
+      get-other-reps: '%prefix% &aУ игрока &e%player% %reputation%&a очков репутации!'
+
+    errors:
+      already-rep+: '%prefix% &cВы уже отдали очко репутации другому игроку!'
+      already-rep-: '%prefix% &cВы уже забрали очко репутации у другого игрока!'
+      nothing-undo: '%prefix% &cНечего отменять!'
+      write-nick: '%prefix% &cУкажите игрока, которому хотите отдать/забрать очко репутации!'
+      own-nick: '%prefix% &cВы не можете отдать/забрать очко репутации самому себе!'
+      own-ip: '%prefix% &cВы не можете отдать/забрать очко репутации другому своему аккаунту!'
+      target-not-found: '%prefix% &cИгрок не найден!'
+
+  sql:
+    success:
+      connect: '%prefix% &aУспешно подключено к %type%!'
+      disconnect: '%prefix% &aУспешно отключено от %type%!'
+    errors:
+      connect: '%prefix% &cПроизошла ошибка при подключении к %type%!'
+      disconnect: '%prefix% &cПроизошла ошибка при отключении от %type%!'
+      statement: '%prefix% &cПроизошла ошибка при выполнении запроса к %type%!'
+
+#Don't touch it!!
+#Не трогать!!
+version: '2.0'

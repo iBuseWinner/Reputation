@@ -1,0 +1,11 @@
+name: Reputation
+version: 2.0
+main: ru.buseso.spigot.free.reputation.Reputation
+api-version: 1.13
+description: Mega Reputation plugin
+website: https://spigotmc.ru/resources/124/
+softdepend: [PlaceholderAPI]
+
+commands:
+  reputation:
+    aliases: [rep]
