@@ -6,6 +6,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.buseso.spigot.free.reputation.Utils.RepPlayer;
 import ru.buseso.spigot.free.reputation.Utils.RepSender;
+import ru.buseso.spigot.free.reputation.Utils.RepTop;
+
+import java.util.List;
 
 public class RepCmd implements CommandExecutor {
     @Override
@@ -39,12 +42,29 @@ public class RepCmd implements CommandExecutor {
                 } else {
                     RepSender.send(s,Reputation.config.noPerm().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("&","§"));
                 }
+            } else if(a[0].equalsIgnoreCase("top")) {
+                List<RepTop> rt;
+                if(Reputation.config.dataType().equalsIgnoreCase("mysql")) rt = Reputation.requests.getTopPlayers();
+                else rt = Reputation.getTopPlayers();
+
+                int count = 0;
+                for(RepTop repTop : rt) {
+                    if(count < Reputation.config.topLimit()) {
+                        count++;
+                        RepSender.send(s, Reputation.config.playerSuccTopPlayers()
+                                .replaceAll("%place%", "" + count)
+                                .replaceAll("%player%", repTop.name)
+                                .replaceAll("%reputation%", "" + repTop.reps));
+                    }
+                }
             } else {
                 String name = a[0];
 
                 String reps = Reputation.getRepsByNick(name);
                 if(reps.equalsIgnoreCase("notfound")) {
                     RepSender.send(s, Reputation.config.playerErrorsTargetNotFound().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("&","§"));
+                } else {
+                    RepSender.send(s, Reputation.config.playerOtherReps().replaceAll("%prefix%",Reputation.config.prefix()).replaceAll("&","§").replaceAll("%player%",name).replaceAll("%reputation%",reps));
                 }
             }
         } else if(a.length == 2 && (a[0].equalsIgnoreCase("+") || a[0].equalsIgnoreCase("add")

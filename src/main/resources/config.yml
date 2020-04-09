@@ -33,7 +33,6 @@ settings:
 
   #How many people will be in the top. (/rep top). Default: 5
   #Сколько человек будет в топе. По стандарту: 5
-  #Will be soon... | Будет скоро...
   top-limit: 5
   #Can a player’s reputation go negative? Default: true
   #Может ли репутация игрока уйти в минус? По стандарту: true
@@ -94,6 +93,7 @@ messages:
       undo: '%prefix% &aВы отменили своё действие!'
       get-self-reps: '%prefix% &aУ Вас &e%reputation%&a очков репутации!'
       get-other-reps: '%prefix% &aУ игрока &e%player% %reputation%&a очков репутации!'
+      top-players: '&aТоп &8>> &7%place%. &e%player% &f- &e%reputation% &fочков'
 
     errors:
       already-rep+: '%prefix% &cВы уже отдали очко репутации другому игроку!'
@@ -112,7 +112,3 @@ messages:
       connect: '%prefix% &cПроизошла ошибка при подключении к %type%!'
       disconnect: '%prefix% &cПроизошла ошибка при отключении от %type%!'
       statement: '%prefix% &cПроизошла ошибка при выполнении запроса к %type%!'
-
-#Don't touch it!!
-#Не трогать!!
-version: '2.0'

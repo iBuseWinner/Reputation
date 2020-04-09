@@ -35,8 +35,8 @@ import ru.buseso.spigot.free.reputation.updates.Updater;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class Reputation extends JavaPlugin {
 
@@ -231,5 +231,30 @@ public final class Reputation extends JavaPlugin {
         } else {
             return getOnlineRepPlayerByNick(nick);
         }
+    }
+
+    public static List<RepTop> getTopPlayers() {
+        List<RepTop> list = new ArrayList<>();
+        HashMap<String, Integer> allPlayers = new HashMap<>();
+
+        Set<String> keys = players.getConfigurationSection("players").getKeys(false);
+        for(String s : keys) {
+            int reps = players.getInt("players."+s+".reps");
+            allPlayers.put(s,reps);
+        }
+
+        Map<String, Integer> sorted = allPlayers.entrySet().stream()
+                .sorted(Map.Entry.<String,Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+        for(int i = 0; i < config.topLimit(); i++) {
+            if(i < sorted.size()) {
+                for(String s : sorted.keySet()) {
+                    RepTop rt = new RepTop(s, sorted.get(s));
+                    list.add(rt);
+                }
+            }else break;
+        }
+        return list;
     }
 }

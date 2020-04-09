@@ -4,8 +4,11 @@ import org.bukkit.entity.Player;
 import ru.buseso.spigot.free.reputation.Reputation;
 import ru.buseso.spigot.free.reputation.Utils.RepPlayer;
 import ru.buseso.spigot.free.reputation.Utils.RepSender;
+import ru.buseso.spigot.free.reputation.Utils.RepTop;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RepMySQL {
     private static String sqlHost;
@@ -139,18 +142,45 @@ public class RepMySQL {
 
         public RepPlayer getPlayer(Player p) {
             ResultSet rs = sendQuery("SELECT * FROM `"+sqlTable+"` WHERE `nick`='"+p.getName()+"';");
-            return new RepPlayer(rs);
+            RepPlayer rp = new RepPlayer(rs);
+            try {
+                rs.close();
+            } catch (SQLException ignored) {}
+            return rp;
         }
 
         public RepPlayer getPlayer(String nick) {
             ResultSet rs = sendQuery("SELECT * FROM `"+sqlTable+"` WHERE `nick`='"+nick+"';");
-            return new RepPlayer(rs);
+            RepPlayer rp = new RepPlayer(rs);
+            try {
+                rs.close();
+            } catch (SQLException ignored) {}
+            return rp;
         }
 
         public void setPlayer(RepPlayer pp) {
             sendExecute("UPDATE `"+sqlTable+"` SET `reps`='"+pp.getReps()+"'," +
                     " `repp`='"+pp.getRepp()+"', `repm`='"+pp.getRepm()+"'" +
                     " WHERE `nick`='"+pp.getUuid()+"';");
+        }
+
+        public List<RepTop> getTopPlayers() {
+            ResultSet rs = sendQuery("SELECT * FROM `"+sqlTable+"` ORDER BY `reps` DESC LIMIT "+Reputation.config.topLimit()+";");
+            List<RepTop> list = new ArrayList<>();
+
+            try {
+                for (int i = 0; i < Reputation.config.topLimit(); i++) {
+                    if (rs.next()) {
+                        String name = rs.getString("nick");
+                        int reps = rs.getInt("reps");
+                        RepTop rt = new RepTop(name, reps);
+                        list.add(rt);
+                    } else break;
+                }
+
+                return list;
+            } catch (SQLException ignored) { }
+            return null;
         }
     }
 

@@ -37,6 +37,7 @@ public class RepConfig {
         this.playerSuccUndo = cfg.getString("messages.player.success.undo").replaceAll("%prefix%",prefix).replaceAll("&","§");
         this.playerSelfReps = cfg.getString("messages.player.success.get-self-reps").replaceAll("%prefix%",prefix).replaceAll("&","§");
         this.playerOtherReps = cfg.getString("messages.player.success.get-other-reps").replaceAll("%prefix%",prefix).replaceAll("&","§");
+        this.playerSuccTopPlayers = cfg.getString("messages.player.success.top-players").replaceAll("%prefix%",prefix).replaceAll("&","§");
 
         this.playerErrorsAlreadyRepPlus = cfg.getString("messages.player.errors.already-rep+").replaceAll("%prefix%",prefix).replaceAll("&","§");
         this.playerErrorsAlreadyRepMinus = cfg.getString("messages.player.errors.already-rep-").replaceAll("%prefix%",prefix).replaceAll("&","§");
@@ -52,8 +53,7 @@ public class RepConfig {
         this.sqlErrDisconnect = cfg.getString("messages.sql.errors.disconnect").replaceAll("%prefix%",prefix).replaceAll("&","§");
         this.sqlErrStatement = cfg.getString("messages.sql.errors.statement").replaceAll("%prefix%",prefix).replaceAll("&","§");
 
-		String ver = cfg.getString("version").replace(".","");
-        this.version = Integer.parseInt(ver);
+        this.version = 21;
     }
 
     private String dataType = "yaml";
@@ -87,6 +87,7 @@ public class RepConfig {
     private String playerSuccUndo = "%prefix% &aВы отменили своё действие!";
     private String playerSelfReps = "%prefix% &aУ Вас &e%reputation%&a очков репутации!";
     private String playerOtherReps = "%prefix% &aУ игрока &e%player% %reputation%&a очков репутации!";
+    private String playerSuccTopPlayers = "&aТоп &8>> &7%place%. &e%player% &f- &e%reputation% &fочков";
 
     private String playerErrorsAlreadyRepPlus = "%prefix% &cВы уже отдали очко репутации другому игроку!";
     private String playerErrorsAlreadyRepMinus = "%prefix% &cВы уже забрали очко репутации у другого игрока!";
@@ -102,7 +103,7 @@ public class RepConfig {
     private String sqlErrDisconnect = "%prefix% &cПроизошла ошибка при отключении от %type%!";
     private String sqlErrStatement = "%prefix% &cПроизошла ошибка при выполнении запроса к %type%!";
 
-    private int version = 20;
+    private int version = 21;
 
     //Methods
     public String dataType() { return this.dataType; }
@@ -132,6 +133,7 @@ public class RepConfig {
     public String playerSuccUndo() { return this.playerSuccUndo; }
     public String playerSelfReps() { return this.playerSelfReps; }
     public String playerOtherReps() { return this.playerOtherReps; }
+    public String playerSuccTopPlayers() { return this.playerSuccTopPlayers; }
     public String playerErrorsAlreadyRepPlus() { return this.playerErrorsAlreadyRepPlus; }
     public String playerErrorsAlreadyRepMinus() { return this.playerErrorsAlreadyRepMinus; }
     public String playerErrorsNothingUndo() { return this.playerErrorsNothingUndo; }
