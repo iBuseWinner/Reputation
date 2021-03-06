@@ -48,6 +48,7 @@ public final class Reputation extends JavaPlugin {
     public static List<RepPlayer> rps;
     public static Reputation ins;
     public static FileConfiguration players;
+    public static RepCooldown repCD;
 
     @Override
     public void onEnable() {
@@ -116,6 +117,9 @@ public final class Reputation extends JavaPlugin {
             }
         }catch (NullPointerException ignored) { }
 
+        repCD = new RepCooldown();
+        repCD.runTaskTimerAsynchronously(this, 0, 20);
+
         Bukkit.getPluginCommand("reputation").setExecutor(new RepCmd());
 
         RepSender.log("&aPlugin successfully enabled!");
@@ -125,12 +129,24 @@ public final class Reputation extends JavaPlugin {
     public void onDisable() {
         if(config.dataType().equalsIgnoreCase("mysql")) {
             if(config.autoSave() > 0) {
-                timer.cancel();
+                try {
+                    timer.cancel();
+                } catch (NullPointerException e) {
+                    if(config.debugMode()) {
+                        e.printStackTrace();
+                    }
+                }
             }
             mysql.disconnect();
         } else {
             if(config.autoSave() > 0) {
-                ytimer.cancel();
+                try {
+                    ytimer.cancel();
+                } catch (NullPointerException e) {
+                    if(config.debugMode()) {
+                        e.printStackTrace();
+                    }
+                }
             }
             try {
                 for(RepPlayer pp : rps) {
@@ -145,6 +161,9 @@ public final class Reputation extends JavaPlugin {
                 }
             }
         }
+        repCD.cancel();
+
+        RepSender.log("&cPlugin successfully disabled!");
     }
 
     public static int getVersion() { return config.version(); }
@@ -237,7 +256,14 @@ public final class Reputation extends JavaPlugin {
         List<RepTop> list = new ArrayList<>();
         HashMap<String, Integer> allPlayers = new HashMap<>();
 
-        Set<String> keys = players.getConfigurationSection("players").getKeys(false);
+        Set<String> keys = null;
+        try {
+            keys = players.getConfigurationSection("players").getKeys(false);
+        } catch (NullPointerException e) {
+            if(config.debugMode()) {
+                e.printStackTrace();
+            }
+        }
         for(String s : keys) {
             int reps = players.getInt("players."+s+".reps");
             allPlayers.put(s,reps);

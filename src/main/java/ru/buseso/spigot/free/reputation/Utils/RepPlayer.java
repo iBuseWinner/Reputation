@@ -5,34 +5,36 @@ import ru.buseso.spigot.free.reputation.Reputation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 public class RepPlayer {
     private String nick;
     private int reps;
-    private String repp;
-    private String repm;
+    private List<String> repp;
+    private List<String> repm;
 
     public RepPlayer(ResultSet rs) {
         try {
             this.nick = rs.getString("nick");
             this.reps = rs.getInt("reps");
-            this.repp = rs.getString("repp");
-            this.repm = rs.getString("repm");
+            this.repp = Arrays.asList(rs.getString("repp").split(","));
+            this.repm = Arrays.asList(rs.getString("repm").split(", "));
         }catch (SQLException ignored) { }
     }
 
     public RepPlayer(Player p) {
         this.nick = p.getName();
         this.reps = Reputation.players.getInt("players."+nick+".reps");
-        this.repp = Reputation.players.getString("players."+nick+".repp");
-        this.repm = Reputation.players.getString("players."+nick+".repm");
+        this.repp = Reputation.players.getStringList("players."+nick+".repp");
+        this.repm = Reputation.players.getStringList("players."+nick+".repm");
     }
 
     public RepPlayer(String nick) {
         this.nick = nick;
         this.reps = Reputation.players.getInt("players."+nick+".reps");
-        this.repp = Reputation.players.getString("players."+nick+".repp");
-        this.repm = Reputation.players.getString("players."+nick+".repm");
+        this.repp = Reputation.players.getStringList("players."+nick+".repp");
+        this.repm = Reputation.players.getStringList("players."+nick+".repm");
     }
 
     public String getUuid() {
@@ -43,19 +45,19 @@ public class RepPlayer {
         return reps;
     }
 
-    public String getRepm() {
+    public List<String> getRepm() {
         return repm;
     }
 
-    public String getRepp() {
+    public List<String> getRepp() {
         return repp;
     }
 
-    public void setRepm(String repm) {
+    public void setRepm(List<String> repm) {
         this.repm = repm;
     }
 
-    public void setRepp(String repp) {
+    public void setRepp(List<String> repp) {
         this.repp = repp;
     }
 

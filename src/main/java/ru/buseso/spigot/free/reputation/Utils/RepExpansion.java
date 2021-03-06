@@ -34,11 +34,11 @@ public class RepExpansion extends PlaceholderExpansion {
         }
 
         if(identifier.equals("repp")) {
-            return Reputation.getRepPlayerByNick(p.getName()).getRepp();
+            return Reputation.getRepPlayerByNick(p.getName()).getRepp().toString();
         }
 
         if(identifier.equals("repm")) {
-            return Reputation.getRepPlayerByNick(p.getName()).getRepm();
+            return Reputation.getRepPlayerByNick(p.getName()).getRepm().toString();
         }
 
         if(identifier.startsWith("top_")) {

@@ -53,6 +53,24 @@ settings:
   #1 and more - every X minutes + when player quit the server | 1 и больше - каждые Х минут + когда игрок выходит с сервера
   #Default: 0 (RECOMMENDED)
   auto-save: 0
+  #Cooldowns for command /reputation (and aliases)
+  #Задержки для команды /reputation (и алиасов)
+  cooldowns:
+    #Need to enable cooldowns?
+    #Надо ли включить задержки?
+    enabled: true
+    #Only for /rep + and /rep - or other sub-commands too?
+    #Только для /rep + и /rep - или для остальных под-команд тоже?
+    only-add-and-remove: true
+    #Cooldown in seconds
+    #Задержка в секундах
+    time-in-sec: 60
+
+  #Allows players add/remove unlimited reputations or only one time?
+  #We don't recommend to enable this feature to prevent dupes
+  #Разрешить игрокам добавлять/убирать бесконечно раз репутацию или только один раз?
+  #Мы не рекомендуем включать эту фичу, чтобы пресечь дюпы
+  can-unlimited-reps: false
 
 messages:
   #Prefix before all messages (%prefix%)
@@ -103,6 +121,7 @@ messages:
       own-nick: '%prefix% &cВы не можете отдать/забрать очко репутации самому себе!'
       own-ip: '%prefix% &cВы не можете отдать/забрать очко репутации другому своему аккаунту!'
       target-not-found: '%prefix% &cИгрок не найден!'
+      wait-cd: '%prefix% &cПодожди &6%time%&c сек, прежде чем использовать эту команду ещё раз!'
 
   sql:
     success:

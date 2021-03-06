@@ -21,6 +21,12 @@ public class RepConfig {
         this.debugMode = cfg.getBoolean("settings.debug-mode");
         this.autoSave = cfg.getInt("settings.auto-save");
 
+        this.cooldownsEnabled = cfg.getBoolean("setting.cooldowns.enabled");
+        this.cooldownsOnlyAddRemove = cfg.getBoolean("settings.cooldowns.only-add-and-remove");
+        this.cooldownsTimeInSec = cfg.getLong("settings.cooldowns.time-in-sec");
+
+        this.canUnlimitedReps = cfg.getBoolean("settings.can-unlimited-reps");
+
         this.prefix = cfg.getString("messages.prefix").replaceAll("&","§");
         this.noPerm = cfg.getString("messages.no-perm").replaceAll("%prefix%",prefix).replaceAll("&","§");
         this.adminHelp = cfg.getStringList("messages.admin.help");
@@ -46,6 +52,7 @@ public class RepConfig {
         this.playerErrorsOwnNick = cfg.getString("messages.player.errors.own-nick").replaceAll("%prefix%",prefix).replaceAll("&","§");
         this.playerErrorsOwnIp = cfg.getString("messages.player.errors.own-ip").replaceAll("%prefix%",prefix).replaceAll("&","§");
         this.playerErrorsTargetNotFound = cfg.getString("messages.player.errors.target-not-found").replaceAll("%prefix%",prefix).replaceAll("&","§");
+        this.playerErrorsWaitCd = cfg.getString("messages.player.errors.wait-cd").replaceAll("%prefix%",prefix).replaceAll("&","§");
 
         this.sqlSuccConnect = cfg.getString("messages.sql.success.connect").replaceAll("%prefix%",prefix).replaceAll("&","§");
         this.sqlSuccDisconnect = cfg.getString("messages.sql.success.disconnect").replaceAll("%prefix%",prefix).replaceAll("&","§");
@@ -69,6 +76,12 @@ public class RepConfig {
     private boolean checkUpdates = true;
     private boolean debugMode = true;
     private int autoSave = 0;
+
+    private boolean cooldownsEnabled = true;
+    private boolean cooldownsOnlyAddRemove = true;
+    private long cooldownsTimeInSec = 60L;
+
+    private boolean canUnlimitedReps = false;
 
     private String prefix = "&6Репутация &8>>&7";
     private String noPerm = "%prefix% &cУ Вас недостаточно прав для использования данной команды! Отсутствует право: &4%perm%";
@@ -96,6 +109,7 @@ public class RepConfig {
     private String playerErrorsOwnNick = "%prefix% &cВы не можете отдать/забрать очко репутации самому себе!";
     private String playerErrorsOwnIp = "%prefix% &cВы не можете отдать/забрать очко репутации другому своему аккаунту!";
     private String playerErrorsTargetNotFound = "%prefix% &cИгрок не найден!";
+    private String playerErrorsWaitCd = "%prefix% &cПодожди &6%time%&c сек, прежде чем использовать эту команду ещё раз!";
 
     private String sqlSuccConnect = "%prefix% &aУспешно подключено к %type%!";
     private String sqlSuccDisconnect = "%prefix% &aУспешно отключено от %type%!";
@@ -103,7 +117,7 @@ public class RepConfig {
     private String sqlErrDisconnect = "%prefix% &cПроизошла ошибка при отключении от %type%!";
     private String sqlErrStatement = "%prefix% &cПроизошла ошибка при выполнении запроса к %type%!";
 
-    private int version = 21;
+    private int version = 211;
 
     //Methods
     public String dataType() { return this.dataType; }
@@ -118,6 +132,10 @@ public class RepConfig {
     public boolean checkUpdates() { return this.checkUpdates; }
     public boolean debugMode() { return this.debugMode; }
     public int autoSave() { return this.autoSave; }
+    public boolean cooldownsEnabled() { return this.cooldownsEnabled; }
+    public boolean cooldownsOnlyAddRemove() { return this.cooldownsOnlyAddRemove; }
+    public long cooldownsTimeInSec() { return this.cooldownsTimeInSec; }
+    public boolean canUnlimitedReps() { return this.canUnlimitedReps; }
     public String prefix() { return this.prefix; }
     public String noPerm() { return this.noPerm; }
     public List<String> adminHelp() { return this.adminHelp; }
@@ -141,6 +159,7 @@ public class RepConfig {
     public String playerErrorsOwnNick() { return this.playerErrorsOwnNick; }
     public String playerErrorsOwnIp() { return this.playerErrorsOwnIp; }
     public String playerErrorsTargetNotFound() { return this.playerErrorsTargetNotFound; }
+    public String playerErrorsWaitCd() { return this.playerErrorsWaitCd; }
     public String sqlSuccConnect() { return this.sqlSuccConnect; }
     public String sqlSuccDisconnect() { return this.sqlSuccDisconnect; }
     public String sqlErrConnect() { return this.sqlErrConnect; }
