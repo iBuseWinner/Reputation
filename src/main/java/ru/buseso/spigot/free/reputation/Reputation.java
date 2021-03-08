@@ -14,7 +14,7 @@ package ru.buseso.spigot.free.reputation;
     With love by BuseSo
     С любовью от BuseSo
 
-    2020
+    2020-2021
  */
 
 import org.bukkit.Bukkit;
@@ -273,14 +273,26 @@ public final class Reputation extends JavaPlugin {
                 .sorted(Map.Entry.<String,Integer>comparingByValue().reversed())
                 .collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
-        for(int i = 0; i < config.topLimit(); i++) {
-            if(i < sorted.size()) {
-                for(String s : sorted.keySet()) {
-                    RepTop rt = new RepTop(s, sorted.get(s));
-                    list.add(rt);
-                }
-            }else break;
+        List<RepTop> nedo = new ArrayList<>();
+        for (String s : sorted.keySet()) {
+            RepTop rt = new RepTop(s, sorted.get(s));
+            nedo.add(rt);
         }
+
+        int i = 0;
+        while (i < nedo.size() && i < config.topLimit()) {
+            list.add(nedo.get(i));
+            i++;
+        }
+//        for(int i = 0; i < config.topLimit(); i++) {
+//            if(i < sorted.size()) {
+//                Bukkit.broadcastMessage("i < sorted.size()");
+//                for(String s : sorted.keySet()) {
+//                    RepTop rt = new RepTop(s, sorted.get(s));
+//                    list.add(rt);
+//                }
+//            }else break;
+//        }
         return list;
     }
 }

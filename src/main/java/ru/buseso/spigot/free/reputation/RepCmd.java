@@ -190,7 +190,7 @@ public class RepCmd implements CommandExecutor {
                                         .replaceAll("%prefix%", Reputation.config.prefix())
                                         .replaceAll("%player%", name).replaceAll("&", "§"));
                                 List<String> repp = p.getRepp();
-                                repp.add(a[1]);
+                                repp.add(name);
                                 p.setRepp(repp);
                                 if (Reputation.config.cooldownsEnabled()) {
                                     if (Reputation.config.cooldownsOnlyAddRemove()) {
@@ -239,7 +239,7 @@ public class RepCmd implements CommandExecutor {
                                         .replaceAll("%prefix%", Reputation.config.prefix())
                                         .replaceAll("%player%", name).replaceAll("&", "§"));
                                 List<String> repm = p.getRepm();
-                                repm.add(a[1]);
+                                repm.add(name);
                                 p.setRepm(repm);
                                 if (Reputation.config.cooldownsEnabled()) {
                                     if (Reputation.config.cooldownsOnlyAddRemove()) {

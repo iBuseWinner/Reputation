@@ -21,7 +21,7 @@ public class RepConfig {
         this.debugMode = cfg.getBoolean("settings.debug-mode");
         this.autoSave = cfg.getInt("settings.auto-save");
 
-        this.cooldownsEnabled = cfg.getBoolean("setting.cooldowns.enabled");
+        this.cooldownsEnabled = cfg.getBoolean("settings.cooldowns.enabled");
         this.cooldownsOnlyAddRemove = cfg.getBoolean("settings.cooldowns.only-add-and-remove");
         this.cooldownsTimeInSec = cfg.getLong("settings.cooldowns.time-in-sec");
 

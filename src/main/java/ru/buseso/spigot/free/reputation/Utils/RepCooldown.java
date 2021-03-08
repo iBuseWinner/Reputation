@@ -1,6 +1,5 @@
 package ru.buseso.spigot.free.reputation.Utils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
@@ -16,7 +15,6 @@ public class RepCooldown extends BukkitRunnable {
 
             if(time > 0) {
                 cd.put(uuid, time);
-                Bukkit.getPlayer(uuid).sendMessage("Cd: "+time);
             } else {
                 cd.remove(uuid);
             }
