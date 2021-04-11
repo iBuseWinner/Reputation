@@ -107,7 +107,10 @@ public class RepMySQL {
         if(isCon()) {
             try {
                 return getStat(sql).executeUpdate();
-            }catch (SQLException ignored) { }
+            }catch (SQLException ignored) {
+                RepSender.log("§6Stupid stacktrace:");
+                ignored.printStackTrace();
+            }
         } else {
             reconnect();
         }
@@ -130,9 +133,9 @@ public class RepMySQL {
             sendExecute("CREATE TABLE IF NOT EXISTS `"+sqlTable+"` (" +
                     "`id` INT(11) NOT NULL AUTO_INCREMENT," +
                     "`nick` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci'," +
-                    "`reps` INT(11) NULL DEFAULT NULL," +
-                    "`repp` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci'," +
-                    "`repm` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci'," +
+                    "`reps` INT(11) NOT NULL DEFAULT 0," +
+                    "`repp` VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8mb4_unicode_ci'," +
+                    "`repm` VARCHAR(50) NOT NULL DEFAULT '' COLLATE 'utf8mb4_unicode_ci'," +
                     "PRIMARY KEY (`id`)) COLLATE='utf8mb4_unicode_ci' ENGINE=InnoDB;");
         }
 

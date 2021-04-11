@@ -5,21 +5,26 @@ import ru.buseso.spigot.free.reputation.Reputation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class RepPlayer {
-    private String nick;
-    private int reps;
-    private List<String> repp;
-    private List<String> repm;
+    private String nick = "*@%";
+    private int reps = 0;
+    private List<String> repp = new ArrayList<>();
+    private List<String> repm = new ArrayList<>();
 
     public RepPlayer(ResultSet rs) {
         try {
-            this.nick = rs.getString("nick");
-            this.reps = rs.getInt("reps");
-            this.repp = Arrays.asList(rs.getString("repp").split(","));
-            this.repm = Arrays.asList(rs.getString("repm").split(", "));
+            if(rs.next()) {
+                this.nick = rs.getString("nick");
+                this.reps = rs.getInt("reps");
+                this.repp = Arrays.asList(rs.getString("repp")
+                        .replace("[","").replace("]","").split(","));
+                this.repm = Arrays.asList(rs.getString("repm")
+                        .replace("[","").replace("]","").split(", "));
+            }
         }catch (SQLException ignored) { }
     }
 
