@@ -64,7 +64,11 @@ settings:
     only-add-and-remove: true
     #Cooldown in seconds
     #Задержка в секундах
-    time-in-sec: 60
+    time-in-sec:
+      #permission: time
+      default: 60
+      vip: 30
+      owner: 5
 
   #Allows players add/remove unlimited reputations or only one time?
   #We don't recommend to enable this feature to prevent dupes

@@ -9,7 +9,6 @@ import ru.buseso.spigot.free.reputation.Utils.RepSender;
 import ru.buseso.spigot.free.reputation.Utils.RepTop;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RepCmd implements CommandExecutor {
@@ -45,7 +44,11 @@ public class RepCmd implements CommandExecutor {
                 if (Reputation.config.cooldownsEnabled()) {
                     if (!Reputation.config.cooldownsOnlyAddRemove()) {
                         if (!s.hasPermission("reputation.bypass.cd")) {
-                            Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                            for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                if(s.hasPermission("reputation.cooldown."+permission)) {
+                                    Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                }
+                            }
                         }
                     }
                 }
@@ -64,7 +67,11 @@ public class RepCmd implements CommandExecutor {
                     if(Reputation.config.cooldownsEnabled()) {
                         if (!Reputation.config.cooldownsOnlyAddRemove()) {
                             if(!s.hasPermission("reputation.bypass.cd")) {
-                                Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                                for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                    if(s.hasPermission("reputation.cooldown."+permission)) {
+                                        Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                    }
+                                }
                             }
                         }
                     }
@@ -87,7 +94,11 @@ public class RepCmd implements CommandExecutor {
                     if (Reputation.config.cooldownsEnabled()) {
                         if (!Reputation.config.cooldownsOnlyAddRemove()) {
                             if (!s.hasPermission("reputation.bypass.cd")) {
-                                Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                                for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                    if(s.hasPermission("reputation.cooldown."+permission)) {
+                                        Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                    }
+                                }
                             }
                         }
                     }
@@ -112,7 +123,11 @@ public class RepCmd implements CommandExecutor {
                     if (Reputation.config.cooldownsEnabled()) {
                         if (!Reputation.config.cooldownsOnlyAddRemove()) {
                             if (!s.hasPermission("reputation.bypass.cd")) {
-                                Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                                for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                    if(s.hasPermission("reputation.cooldown."+permission)) {
+                                        Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                    }
+                                }
                             }
                         }
                     }
@@ -134,7 +149,11 @@ public class RepCmd implements CommandExecutor {
                     if(Reputation.config.cooldownsEnabled()) {
                         if (!Reputation.config.cooldownsOnlyAddRemove()) {
                             if(!s.hasPermission("reputation.bypass.cd")) {
-                                Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                                for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                    if(s.hasPermission("reputation.cooldown."+permission)) {
+                                        Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                    }
+                                }
                             }
                         }
                     }
@@ -195,7 +214,11 @@ public class RepCmd implements CommandExecutor {
                                 if (Reputation.config.cooldownsEnabled()) {
                                     if (Reputation.config.cooldownsOnlyAddRemove()) {
                                         if (!s.hasPermission("reputation.bypass.cd")) {
-                                            Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                                            for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                                if(s.hasPermission("reputation.cooldown."+permission)) {
+                                                    Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -244,7 +267,11 @@ public class RepCmd implements CommandExecutor {
                                 if (Reputation.config.cooldownsEnabled()) {
                                     if (Reputation.config.cooldownsOnlyAddRemove()) {
                                         if (!s.hasPermission("reputation.bypass.cd")) {
-                                            Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                                            for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                                if(s.hasPermission("reputation.cooldown."+permission)) {
+                                                    Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -407,7 +434,11 @@ public class RepCmd implements CommandExecutor {
                 if (Reputation.config.cooldownsEnabled()) {
                     if (!Reputation.config.cooldownsOnlyAddRemove()) {
                         if (!s.hasPermission("reputation.bypass.cd")) {
-                            Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                            for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                if(s.hasPermission("reputation.cooldown."+permission)) {
+                                    Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                }
+                            }
                         }
                     }
                 }
@@ -451,7 +482,11 @@ public class RepCmd implements CommandExecutor {
                 if (Reputation.config.cooldownsEnabled()) {
                     if (!Reputation.config.cooldownsOnlyAddRemove()) {
                         if (!s.hasPermission("reputation.bypass.cd")) {
-                            Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                            for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                if(s.hasPermission("reputation.cooldown."+permission)) {
+                                    Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                }
+                            }
                         }
                     }
                 }
@@ -521,7 +556,11 @@ public class RepCmd implements CommandExecutor {
                 if (Reputation.config.cooldownsEnabled()) {
                     if (!Reputation.config.cooldownsOnlyAddRemove()) {
                         if (!s.hasPermission("reputation.bypass.cd")) {
-                            Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                            for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                if(s.hasPermission("reputation.cooldown."+permission)) {
+                                    Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                }
+                            }
                         }
                     }
                 }
@@ -536,7 +575,11 @@ public class RepCmd implements CommandExecutor {
                 if (Reputation.config.cooldownsEnabled()) {
                     if (!Reputation.config.cooldownsOnlyAddRemove()) {
                         if (!s.hasPermission("reputation.bypass.cd")) {
-                            Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                            for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                                if(s.hasPermission("reputation.cooldown."+permission)) {
+                                    Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                                }
+                            }
                         }
                     }
                 }
@@ -547,7 +590,11 @@ public class RepCmd implements CommandExecutor {
             if (Reputation.config.cooldownsEnabled()) {
                 if (!Reputation.config.cooldownsOnlyAddRemove()) {
                     if (!s.hasPermission("reputation.bypass.cd")) {
-                        Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec());
+                        for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
+                            if(s.hasPermission("reputation.cooldown."+permission)) {
+                                Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
+                            }
+                        }
                     }
                 }
             }

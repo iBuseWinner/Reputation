@@ -20,10 +20,22 @@ public class RepPlayer {
             if(rs.next()) {
                 this.nick = rs.getString("nick");
                 this.reps = rs.getInt("reps");
-                this.repp = Arrays.asList(rs.getString("repp")
-                        .replace("[","").replace("]","").split(","));
-                this.repm = Arrays.asList(rs.getString("repm")
-                        .replace("[","").replace("]","").split(", "));
+                String parseRepp = rs.getString("repp")
+                        .replace("[","").replace("]","");
+                String[] splitRepp = parseRepp.split(",");
+                for(String repp : splitRepp) {
+                    this.repp.add(repp);
+                }
+                String parseRepm = rs.getString("repm")
+                        .replace("[","").replace("]","");
+                String[] splitRepm = parseRepm.split(",");
+                for(String repp : splitRepm) {
+                    this.repm.add(repp);
+                }
+//                this.repp = Arrays.asList(rs.getString("repp")
+//                        .replace("[","").replace("]","").split(","));
+//                this.repm = Arrays.asList(rs.getString("repm")
+//                        .replace("[","").replace("]","").split(", "));
             }
         }catch (SQLException ignored) { }
     }

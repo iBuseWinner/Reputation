@@ -3,7 +3,9 @@ package ru.buseso.spigot.free.reputation.Data;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class RepConfig {
     public RepConfig(FileConfiguration cfg) {
@@ -23,7 +25,11 @@ public class RepConfig {
 
         this.cooldownsEnabled = cfg.getBoolean("settings.cooldowns.enabled");
         this.cooldownsOnlyAddRemove = cfg.getBoolean("settings.cooldowns.only-add-and-remove");
-        this.cooldownsTimeInSec = cfg.getLong("settings.cooldowns.time-in-sec");
+
+        Set<String> cdTimers = cfg.getConfigurationSection("settings.cooldowns.time-in-sec").getKeys(false);
+        for(String str : cdTimers) {
+            cooldownsTimeInSec.put(str, cfg.getLong("settings.cooldowns.time-in-sec."+str));
+        }
 
         this.canUnlimitedReps = cfg.getBoolean("settings.can-unlimited-reps");
 
@@ -79,7 +85,7 @@ public class RepConfig {
 
     private boolean cooldownsEnabled = true;
     private boolean cooldownsOnlyAddRemove = true;
-    private long cooldownsTimeInSec = 60L;
+    private HashMap<String, Long> cooldownsTimeInSec = new HashMap<>();
 
     private boolean canUnlimitedReps = false;
 
@@ -134,7 +140,7 @@ public class RepConfig {
     public int autoSave() { return this.autoSave; }
     public boolean cooldownsEnabled() { return this.cooldownsEnabled; }
     public boolean cooldownsOnlyAddRemove() { return this.cooldownsOnlyAddRemove; }
-    public long cooldownsTimeInSec() { return this.cooldownsTimeInSec; }
+    public HashMap<String, Long> cooldownsTimeInSec() { return this.cooldownsTimeInSec; }
     public boolean canUnlimitedReps() { return this.canUnlimitedReps; }
     public String prefix() { return this.prefix; }
     public String noPerm() { return this.noPerm; }
