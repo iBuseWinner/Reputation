@@ -121,7 +121,10 @@ public class RepMySQL {
         if(isCon()) {
             try {
                 return getStat(sql).executeQuery();
-            }catch (SQLException ignored) { }
+            }catch (SQLException ignored) {
+                RepSender.log("§6Stupid stacktrace:");
+                ignored.printStackTrace();
+            }
         } else {
             reconnect();
         }
@@ -182,7 +185,10 @@ public class RepMySQL {
                 }
 
                 return list;
-            } catch (SQLException ignored) { }
+            } catch (SQLException ignored) {
+                RepSender.log(ignored.getMessage());
+                ignored.printStackTrace();
+            }
             return null;
         }
     }

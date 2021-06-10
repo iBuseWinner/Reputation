@@ -15,6 +15,7 @@ public class RepListMySQL implements Listener {
         RepPlayer pp = Reputation.requests.getPlayer(p);
         if(pp.getUuid().equals("*@%")) {
             Reputation.requests.addPlayer(p);
+            pp = Reputation.requests.getPlayer(p);
         }
 
         Reputation.rps.add(pp);

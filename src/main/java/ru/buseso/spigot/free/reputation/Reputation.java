@@ -209,6 +209,12 @@ public final class Reputation extends JavaPlugin {
                 return ""+pp.getReps();
             }
         }
+
+        RepPlayer rp = getOfflineRepPlayerByNick(nick);
+        if(rp != null) {
+            return ""+rp.getReps();
+        }
+
         return "notfound";
     }
 

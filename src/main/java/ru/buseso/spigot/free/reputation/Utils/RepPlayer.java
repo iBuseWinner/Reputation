@@ -24,13 +24,17 @@ public class RepPlayer {
                         .replace("[","").replace("]","");
                 String[] splitRepp = parseRepp.split(",");
                 for(String repp : splitRepp) {
-                    this.repp.add(repp);
+                    if(repp.length() > 0) {
+                        this.repp.add(repp);
+                    }
                 }
                 String parseRepm = rs.getString("repm")
                         .replace("[","").replace("]","");
                 String[] splitRepm = parseRepm.split(",");
                 for(String repp : splitRepm) {
-                    this.repm.add(repp);
+                    if(repp.length() > 0) {
+                        this.repm.add(repp);
+                    }
                 }
 //                this.repp = Arrays.asList(rs.getString("repp")
 //                        .replace("[","").replace("]","").split(","));
@@ -80,5 +84,15 @@ public class RepPlayer {
 
     public void setReps(int reps) {
         this.reps = reps;
+    }
+
+    @Override
+    public String toString() {
+        return "RepPlayer{" +
+                "nick='" + nick + '\'' +
+                ", reps=" + reps +
+                ", repp=" + repp +
+                ", repm=" + repm +
+                '}';
     }
 }

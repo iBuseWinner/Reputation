@@ -1,5 +1,6 @@
 package ru.buseso.spigot.free.reputation;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -54,10 +55,17 @@ public class RepCmd implements CommandExecutor {
                 }
             }
         } else if(a.length == 1) {
+            if(a[0].equalsIgnoreCase("papi")) {
+                s.sendMessage(PlaceholderAPI.setPlaceholders((Player)s, ""));
+            } else
             if(a[0].equalsIgnoreCase("get")) {
+                System.out.println("sender used command `get`");
                 if (s instanceof Player) {
+                    System.out.println("Sender's uuid is "+((Player)s).getUniqueId());
                     for (RepPlayer pp : Reputation.rps) {
+                        System.out.println("Checking player "+pp.getUuid());
                         if (pp.getUuid().equals(s.getName())) {
+                            System.out.println("pp.getUuid() equals sender's uuid");
                             String reps = pp.getReps() + "";
                             RepSender.sendToPlayer(((Player) s), Reputation.config.playerSelfReps()
                                     .replaceAll("%reputation%",reps).replaceAll("&","§"));
@@ -179,11 +187,15 @@ public class RepCmd implements CommandExecutor {
                     RepPlayer p = Reputation.getRepPlayerByNick(s.getName());
 
                     if(p.getRepp() == null) {
+                        System.out.println("Sender's getRepp is null so creating it");
                         p.setRepp(new ArrayList<>());
                     }
 
+                    System.out.println("Sender's data: "+p.toString());
+
                     if(!Reputation.config.canUnlimitedReps()) {
                         if(p.getRepp().size() == 1) {
+                            System.out.println("Can't unlimited reps (option from config) and player already given repp");
                             RepSender.send(s, Reputation.config.playerErrorsAlreadyRepPlus()
                                     .replaceAll("%prefix%", Reputation.config.prefix()).replaceAll("&", "§"));
                             return false;
@@ -192,6 +204,7 @@ public class RepCmd implements CommandExecutor {
 
                     String name = a[1].toLowerCase();
                     if(p.getRepp().contains(name)) {
+                        System.out.println("Sender already repped this player");
                         RepSender.send(s, Reputation.config.playerErrorsAlreadyRepPlus()
                                 .replaceAll("%prefix%", Reputation.config.prefix()).replaceAll("&", "§"));
                         return false;
@@ -199,11 +212,13 @@ public class RepCmd implements CommandExecutor {
                         RepPlayer pp = Reputation.getRepPlayerByNick(a[1]);
 
                         if (pp == null) {
+                            System.out.println("Target not found by this nick");
                             RepSender.send(s, Reputation.config.playerErrorsTargetNotFound()
                                     .replaceAll("%prefix%", Reputation.config.prefix())
                                     .replaceAll("&", "§"));
                         } else {
                             if (!p.getUuid().equals(pp.getUuid())) {
+                                System.out.println("Trying to add repp");
                                 pp.setReps(pp.getReps() + 1);
                                 RepSender.send(s, Reputation.config.playerSuccRepPlus()
                                         .replaceAll("%prefix%", Reputation.config.prefix())
@@ -216,6 +231,8 @@ public class RepCmd implements CommandExecutor {
                                         if (!s.hasPermission("reputation.bypass.cd")) {
                                             for(String permission : Reputation.config.cooldownsTimeInSec().keySet()) {
                                                 if(s.hasPermission("reputation.cooldown."+permission)) {
+                                                    System.out.println("Cooldowns enabled, sender doesn't have permission `reputation.bypass.cd` and has permission " +
+                                                            "`reputation.cooldown."+permission+"` so adding him cd");
                                                     Reputation.repCD.cd.put(((Player) s).getUniqueId(), Reputation.config.cooldownsTimeInSec().get(permission));
                                                 }
                                             }
