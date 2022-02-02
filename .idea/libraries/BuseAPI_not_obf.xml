@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="BuseAPI-not-obf">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../BuseAPI/out/artifacts/BuseAPI/BuseAPI-not-obf.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
