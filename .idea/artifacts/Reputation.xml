@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Reputation">
-    <output-path>$PROJECT_DIR$/../AAAServer/plugins</output-path>
-    <root id="archive" name="Reputation.jar">
-      <element id="module-output" name="Reputation" />
-    </root>
-  </artifact>
-</component>

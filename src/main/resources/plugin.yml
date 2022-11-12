@@ -1,11 +1,8 @@
 name: Reputation
-version: ${project.version}
-main: ru.ibusewinner.reputation.Reputation
-api-version: 1.13
-description: Mega Reputation plugin
-website: https://spigotmc.ru/resources/124/
-softdepend: [PlaceholderAPI]
-
-commands:
-  adminreputation:
-    aliases: [adminrep,admrep]
+version: '${version}'
+main: ru.fennec.free.reputation.Reputation
+api-version: 1.19
+softdepend: [ PlaceholderAPI ]
+authors: [ BuseSo ]
+description: Система репутации как социальный рейтинг в Китае
+website: https://spigotmc.ru/members/307/
