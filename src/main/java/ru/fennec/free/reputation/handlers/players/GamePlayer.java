@@ -13,14 +13,14 @@ public class GamePlayer implements IGamePlayer {
     private Player bukkitPlayer;
     private UUID gamePlayerUUID;
     private long playerReputation;
-    private List<Long> UUIDsWhomGaveReputation;
+    private List<Long> IDsWhomGaveReputation;
 
     public GamePlayer(Player bukkitPlayer) {
         this.id = -1;
         this.bukkitPlayer = bukkitPlayer;
         this.gamePlayerUUID = bukkitPlayer.getUniqueId();
         this.playerReputation = 0;
-        this.UUIDsWhomGaveReputation = new ArrayList<>();
+        this.IDsWhomGaveReputation = new ArrayList<>();
     }
 
     public GamePlayer(Player bukkitPlayer, long playerReputation) {
@@ -28,23 +28,23 @@ public class GamePlayer implements IGamePlayer {
         this.bukkitPlayer = bukkitPlayer;
         this.gamePlayerUUID = bukkitPlayer.getUniqueId();
         this.playerReputation = playerReputation;
-        this.UUIDsWhomGaveReputation = new ArrayList<>();
+        this.IDsWhomGaveReputation = new ArrayList<>();
     }
 
-    public GamePlayer(Player bukkitPlayer, long playerReputation, List<Long> UUIDsWhomGaveReputation) {
+    public GamePlayer(Player bukkitPlayer, long playerReputation, List<Long> IDsWhomGaveReputation) {
         this.id = -1;
         this.bukkitPlayer = bukkitPlayer;
         this.gamePlayerUUID = bukkitPlayer.getUniqueId();
         this.playerReputation = playerReputation;
-        this.UUIDsWhomGaveReputation = UUIDsWhomGaveReputation;
+        this.IDsWhomGaveReputation = IDsWhomGaveReputation;
     }
 
-    public GamePlayer(long id, Player bukkitPlayer, long playerReputation, List<Long> UUIDsWhomGaveReputation) {
+    public GamePlayer(long id, Player bukkitPlayer, long playerReputation, List<Long> IDsWhomGaveReputation) {
         this.id = id;
         this.bukkitPlayer = bukkitPlayer;
         this.gamePlayerUUID = bukkitPlayer.getUniqueId();
         this.playerReputation = playerReputation;
-        this.UUIDsWhomGaveReputation = UUIDsWhomGaveReputation;
+        this.IDsWhomGaveReputation = IDsWhomGaveReputation;
     }
 
     public GamePlayer(long id, UUID playerUUID, long playerReputation) {
@@ -75,8 +75,8 @@ public class GamePlayer implements IGamePlayer {
     }
 
     @Override
-    public List<Long> getUUIDsWhomGaveReputation() {
-        return UUIDsWhomGaveReputation;
+    public List<Long> getIDsWhomGaveReputation() {
+        return IDsWhomGaveReputation;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class GamePlayer implements IGamePlayer {
     }
 
     @Override
-    public void setUUIDsWhomGaveReputation(List<Long> UUIDsWhomGaveReputation) {
-        this.UUIDsWhomGaveReputation = UUIDsWhomGaveReputation;
+    public void setIDsWhomGaveReputation(List<Long> IDsWhomGaveReputation) {
+        this.IDsWhomGaveReputation = IDsWhomGaveReputation;
     }
 }

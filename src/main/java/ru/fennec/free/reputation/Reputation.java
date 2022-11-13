@@ -11,6 +11,7 @@ import ru.fennec.free.reputation.handlers.database.date.MySQLDatabase;
 import ru.fennec.free.reputation.handlers.database.date.SQLDatabase;
 import ru.fennec.free.reputation.handlers.listeners.PlayerConnectionListener;
 import ru.fennec.free.reputation.handlers.messages.MessageManager;
+import ru.fennec.free.reputation.handlers.messages.PlaceholderHook;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
 
 public final class Reputation extends JavaPlugin {
@@ -46,6 +47,9 @@ public final class Reputation extends JavaPlugin {
     private void initializeHandlers() {
         this.playersContainer = new PlayersContainer();
         this.messageManager = new MessageManager(messagesConfigManager);
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PlaceholderHook(getDescription().getVersion(), playersContainer).register();
+        }
     }
 
     private void registerListeners() {

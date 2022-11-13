@@ -15,7 +15,7 @@ public interface IGamePlayer {
 
     long getPlayerReputation();
 
-    List<Long> getUUIDsWhomGaveReputation();
+    List<Long> getIDsWhomGaveReputation();
 
     void setId(long id);
 
@@ -23,6 +23,6 @@ public interface IGamePlayer {
 
     void setPlayerReputation(long playerReputation);
 
-    void setUUIDsWhomGaveReputation(List<Long> UUIDsWhomGaveReputation);
+    void setIDsWhomGaveReputation(List<Long> IDsWhomGaveReputation);
 
 }
