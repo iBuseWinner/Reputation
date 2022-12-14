@@ -1,4 +1,4 @@
-package ru.fennec.free.reputation.common.enums;
+package ru.fennec.free.reputation.handlers.enums;
 
 public enum SaveReason {
     PLAYER_QUIT, //Когда игрок выходит с сервера
