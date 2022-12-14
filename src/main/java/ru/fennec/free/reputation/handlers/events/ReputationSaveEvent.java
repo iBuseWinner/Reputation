@@ -3,7 +3,7 @@ package ru.fennec.free.reputation.handlers.events;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import ru.fennec.free.reputation.common.enums.SaveReason;
+import ru.fennec.free.reputation.handlers.enums.SaveReason;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 
 public class ReputationSaveEvent extends Event implements Cancellable {
