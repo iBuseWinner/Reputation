@@ -14,7 +14,7 @@ import ru.fennec.free.reputation.handlers.messages.MessageManager;
 import ru.fennec.free.reputation.handlers.messages.PlaceholderHook;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
 
-public final class Reputation extends JavaPlugin {
+public final class ReputationPlugin extends JavaPlugin {
 
     private ConfigManager<MainConfig> mainConfigManager;
     private ConfigManager<MessagesConfig> messagesConfigManager;
