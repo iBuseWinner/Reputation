@@ -41,10 +41,12 @@ public class PlayerConnectionListener implements Listener {
                 gamePlayer = new GamePlayer(player); //Создание пустого игрока с id = -1
                 database.insertNewPlayer(gamePlayer); //Запись пустого игрока
                 gamePlayer = database.wrapPlayer(player); //Получение игрока с id из бд
-                playersContainer.addCachedPlayer(gamePlayer); //Сохранение игрока в кэше до его выхода с сервера
 
+                player.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notifyOnFirstJoin()));
+            } else {
                 player.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notifyOnJoin()));
             }
+            playersContainer.addCachedPlayer(gamePlayer); //Сохранение игрока в кэше до его выхода с сервера
         } //Игрок уже в кэше??? Как.! Ну мб ничего делать не над...
 
     }
