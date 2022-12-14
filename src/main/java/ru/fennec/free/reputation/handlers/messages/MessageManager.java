@@ -2,8 +2,9 @@ package ru.fennec.free.reputation.handlers.messages;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.entity.Player;
 import ru.fennec.free.reputation.common.configs.ConfigManager;
+import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
+import ru.fennec.free.reputation.common.replacers.StaticReplacer;
 import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
 
 public class MessageManager {
@@ -19,11 +20,18 @@ public class MessageManager {
     }
 
     public String parsePluginPlaceholders(String message) {
-        return parseColors(message);
+        return StaticReplacer.replacer()
+                .set("prefix", messagesConfig.prefix())
+                .apply(parseColors(message));
     }
 
-    public String parsePlaceholders(Player player, String message) {
-        return PlaceholderAPI.setPlaceholders(player, message);
+    public String parsePlaceholders(IGamePlayer gamePlayer, String message) {
+        return PlaceholderAPI
+                .setPlaceholders(gamePlayer.getBukkitPlayer(),
+                        StaticReplacer.replacer()
+                                .set("player_reputation", gamePlayer.getPlayerReputation())
+                                .set("player_id", gamePlayer.getId())
+                                .apply(parsePluginPlaceholders(message)));
     }
 
 }
