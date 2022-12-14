@@ -6,10 +6,6 @@ import space.arim.dazzleconf.annote.SubSection;
 
 public interface MainConfig {
 
-    @ConfDefault.DefaultString("&6&lReputation &8»» &7")
-    @ConfComments("Префикс плагина можно использовать во всех строках, используемых данным плагином, с помощью заменителя ${prefix}")
-    String prefix();
-
     @SubSection
     DatabaseSection database();
 
