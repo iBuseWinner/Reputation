@@ -1,6 +1,6 @@
 name: Reputation
 version: '${version}'
-main: ru.fennec.free.reputation.Reputation
+main: ru.fennec.free.reputation.ReputationPlugin
 api-version: 1.19
 softdepend: [ PlaceholderAPI ]
 authors: [ BuseSo ]
