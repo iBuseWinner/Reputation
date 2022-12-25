@@ -82,7 +82,7 @@ public class SQLDatabase implements IDatabase {
                     .map(new GamePlayerMapper())
                     .first();
 
-            gamePlayer.setUUIDsWhomGaveReputation(handle.createQuery("SELECT * FROM ? WHERE `id`=?;")
+            gamePlayer.setIDsWhomGaveReputation(handle.createQuery("SELECT * FROM ? WHERE `id`=?;")
                     .bind(0, this.databaseSection.favoritesTableName())
                     .bind(1, gamePlayer.getId())
                     .mapTo(Long.class)
