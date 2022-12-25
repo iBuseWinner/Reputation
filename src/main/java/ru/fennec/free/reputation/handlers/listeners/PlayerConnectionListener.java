@@ -42,9 +42,9 @@ public class PlayerConnectionListener implements Listener {
                 database.insertNewPlayer(gamePlayer); //Запись пустого игрока
                 gamePlayer = database.wrapPlayer(player); //Получение игрока с id из бд
 
-                player.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notifyOnFirstJoin()));
+                player.sendMessage(messageManager.parsePlaceholders(gamePlayer, messagesConfig.playerSection().notifyOnFirstJoin()));
             } else {
-                player.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notifyOnJoin()));
+                player.sendMessage(messageManager.parsePlaceholders(gamePlayer, messagesConfig.playerSection().notifyOnJoin()));
             }
             playersContainer.addCachedPlayer(gamePlayer); //Сохранение игрока в кэше до его выхода с сервера
         } //Игрок уже в кэше??? Как.! Ну мб ничего делать не над...
