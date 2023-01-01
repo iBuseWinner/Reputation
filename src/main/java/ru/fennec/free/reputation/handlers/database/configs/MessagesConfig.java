@@ -24,10 +24,6 @@ public interface MessagesConfig {
         @ConfComments("Ответ Администратору, когда конфиги плагина были успешно перезагружены")
         String configsReloadedSuccessfully();
 
-        @ConfDefault.DefaultString("${prefix} &cКонфиги плагина не были перезагружены из-за ошибок! Смотрите консоль сервера для подробностей!")
-        @ConfComments("Ответ Администратору, когда конфиги плагина не были перезагружены из-за ошибок")
-        String configsReloadedError();
-
         @ConfDefault.DefaultString("${prefix} &fУ Вас недостаточно прав для выполнения данной команды!")
         @ConfComments("Сообщение, если у игрока нет права reputation.admin.reset")
         String noPermission();
@@ -35,6 +31,14 @@ public interface MessagesConfig {
         @ConfDefault.DefaultString("${prefix} &fИнформация об игроке &a%player_name%&f успешно сброшена!")
         @ConfComments("Сообщение, когда сбрасывается информация об игроке")
         String playerReset();
+
+        @ConfDefault.DefaultString("${prefix} &fИгроку &a%player_name%&f было установлено &a${reputation}&f очков репутации!")
+        @ConfComments("Сообщение, когда игроку устанавливается кол-во очков репутации")
+        String playerSet();
+
+        @ConfDefault.DefaultString("${prefix} &cЗначение должно быть числом!")
+        @ConfComments("Сообщение, когда в команде вместо числа указывается что-то другое")
+        String mustBeNumber();
 
         @ConfDefault.DefaultStrings({"${prefix} &fАктуальный список команд плагина для Администраторов:",
                 "  &a/reputation help -&f открыть данный список команд",
