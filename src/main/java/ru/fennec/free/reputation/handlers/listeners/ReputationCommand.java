@@ -5,8 +5,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.fennec.free.reputation.common.abstracts.AbstractCommand;
+import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IDatabase;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
+import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
 import ru.fennec.free.reputation.handlers.messages.MessageManager;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
@@ -15,15 +17,19 @@ import java.util.ArrayList;
 
 public class ReputationCommand extends AbstractCommand {
 
-    private final MessagesConfig messagesConfig;
+    private final ConfigManager<MessagesConfig> messagesConfigManager;
+    private final ConfigManager<MainConfig> mainConfigManager;
+    private MessagesConfig messagesConfig;
     private final IDatabase database;
     private final PlayersContainer playersContainer;
     private final MessageManager messageManager;
 
-    public ReputationCommand(Plugin plugin, MessagesConfig messagesConfig, IDatabase database,
+    public ReputationCommand(Plugin plugin, ConfigManager<MessagesConfig> messagesConfigManager, ConfigManager<MainConfig> mainConfigManager, IDatabase database,
                              PlayersContainer playersContainer, MessageManager messageManager) {
         super(plugin, "reputation");
-        this.messagesConfig = messagesConfig;
+        this.messagesConfigManager = messagesConfigManager;
+        this.mainConfigManager = mainConfigManager;
+        this.messagesConfig = messagesConfigManager.getConfigData();
         this.database = database;
         this.playersContainer = playersContainer;
         this.messageManager = messageManager;
@@ -32,9 +38,6 @@ public class ReputationCommand extends AbstractCommand {
     @Override
     public void execute(CommandSender commandSender, String label, String[] args) {
         switch (args.length) {
-            case 0:
-                sendHelp(commandSender);
-                break;
             case 1:
                 switch (args[0].toLowerCase()) {
                     case "help" -> sendHelp(commandSender);
@@ -42,18 +45,31 @@ public class ReputationCommand extends AbstractCommand {
                     case "reload" -> reloadPlugin(commandSender);
                     default -> sendPlayerInfo(commandSender, args[0]);
                 }
+                break;
             case 2:
                 if (args[0].equalsIgnoreCase("give")) {
                     giveReputation(commandSender, args[1]);
                 } else {
                     sendHelp(commandSender);
                 }
+                break;
             case 3:
                 if (args[0].equalsIgnoreCase("player") && args[2].equalsIgnoreCase("reset")) {
                     resetPlayerReputation(commandSender, args[1]);
                 } else {
                     sendHelp(commandSender);
                 }
+                break;
+            case 4:
+                if (args[0].equalsIgnoreCase("player") && args[2].equalsIgnoreCase("set")) {
+                    setPlayerReputation(commandSender, args[1], args[3]);
+                } else {
+                    sendHelp(commandSender);
+                }
+                break;
+            default:
+                sendHelp(commandSender);
+                break;
         }
     }
 
@@ -105,6 +121,7 @@ public class ReputationCommand extends AbstractCommand {
                     } else {
                         targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation()+1);
                         gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
+                        database.saveAction(gamePlayer, targetGamePlayer);
                         commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
                     }
                 }
@@ -133,7 +150,35 @@ public class ReputationCommand extends AbstractCommand {
         }
     }
 
+    private void setPlayerReputation(CommandSender commandSender, String targetName, String reputation) {
+        if (commandSender.hasPermission("reputation.admin.set")) {
+            Player targetPlayer = Bukkit.getPlayer(targetName);
+            if (targetPlayer == null) {
+                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
+            } else {
+                IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
+                if (targetGamePlayer == null) {
+                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+                } else {
+                    if (reputation.chars().allMatch(Character::isDigit)) {
+                        targetGamePlayer.setPlayerReputation(Long.parseLong(reputation));
+                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                    } else {
+                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().mustBeNumber()));
+                    }
+                }
+            }
+        } else {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
+        }
+    }
+
     private void reloadPlugin(CommandSender commandSender) {
-        //ToDo
+        if (commandSender.hasPermission("reputation.admin.reload")) {
+            messagesConfigManager.reloadConfig();
+            mainConfigManager.reloadConfig();
+        } else {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
+        }
     }
 }
