@@ -81,6 +81,16 @@ public class SQLDatabase implements IDatabase {
     }
 
     @Override
+    public void deleteAction(IGamePlayer gamePlayer) {
+        this.jdbi.useHandle(handle -> {
+            handle.execute("DELETE FROM ? WHERE `id`=? OR `favorite`=?",
+                    this.databaseSection.favoritesTableName(),
+                    gamePlayer.getId(),
+                    gamePlayer.getId());
+        });
+    }
+
+    @Override
     public IGamePlayer wrapPlayer(Player player) {
         AtomicReference<IGamePlayer> atomicGamePlayer = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
