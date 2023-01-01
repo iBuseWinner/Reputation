@@ -43,8 +43,8 @@ public class MySQLDatabase implements IDatabase {
     public void insertNewPlayer(IGamePlayer gamePlayer) {
         jdbi.useHandle(handle -> {
             handle.execute("INSERT IGNORE INTO ? " +
-                            "(`uuid`)" +
-                            "VALUES (?);",
+                            "(`uuid`, `reputation`)" +
+                            "VALUES (?, '0');",
                     this.databaseSection.tableName(),
                     gamePlayer.getGamePlayerUUID().toString());
         });
@@ -68,6 +68,16 @@ public class MySQLDatabase implements IDatabase {
                     this.databaseSection.favoritesTableName(),
                     acting.getId(),
                     target.getId());
+        });
+    }
+
+    @Override
+    public void deleteAction(IGamePlayer gamePlayer) {
+        this.jdbi.useHandle(handle -> {
+            handle.execute("DELETE FROM ? WHERE `id`=? OR `favorite`=?",
+                    this.databaseSection.favoritesTableName(),
+                    gamePlayer.getId(),
+                    gamePlayer.getId());
         });
     }
 
