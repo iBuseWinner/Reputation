@@ -2,12 +2,15 @@ package ru.fennec.free.reputation.handlers.database.date;
 
 import org.bukkit.entity.Player;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.h2.H2DatabasePlugin;
 import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IDatabase;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.date.mappers.GamePlayerMapper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SQLDatabase implements IDatabase {
@@ -15,12 +18,17 @@ public class SQLDatabase implements IDatabase {
     private final MainConfig.DatabaseSection databaseSection;
     private final Jdbi jdbi;
 
-    //ToDo change from MYSQL to SQL (local file)!!!
     public SQLDatabase(ConfigManager<MainConfig> mainConfigManager) {
         MainConfig mainConfig = mainConfigManager.getConfigData();
         this.databaseSection = mainConfig.database();
-        this.jdbi = Jdbi.create("jdbc:mysql://" + databaseSection.url() + "/" + databaseSection.database() + databaseSection.args(),
-                databaseSection.username(), databaseSection.password());
+        File databaseFile = new File("Reputation", "database.rep");
+        try {
+            databaseFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.jdbi = Jdbi.create("jdbc:h2:~/Reputation/database.rep");
+        this.jdbi.installPlugin(new H2DatabasePlugin());
     }
 
     @Override
