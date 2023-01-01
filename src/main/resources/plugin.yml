@@ -6,3 +6,8 @@ softdepend: [ PlaceholderAPI ]
 authors: [ BuseSo ]
 description: Система репутации как социальный рейтинг в Китае
 website: https://spigotmc.ru/members/307/
+
+commands:
+  reputation:
+    description: Главная команда плагина
+    aliases: [rep,fenrep,buserep]
