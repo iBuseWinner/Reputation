@@ -20,13 +20,21 @@ public interface MessagesConfig {
 
     interface AdminSection {
 
-        @ConfDefault.DefaultString("${prefix} &aКонфиги плагина успешно перезагружены!")
+        @ConfDefault.DefaultString("${prefix} &fКонфиги плагина успешно перезагружены!")
         @ConfComments("Ответ Администратору, когда конфиги плагина были успешно перезагружены")
         String configsReloadedSuccessfully();
 
         @ConfDefault.DefaultString("${prefix} &cКонфиги плагина не были перезагружены из-за ошибок! Смотрите консоль сервера для подробностей!")
         @ConfComments("Ответ Администратору, когда конфиги плагина не были перезагружены из-за ошибок")
         String configsReloadedError();
+
+        @ConfDefault.DefaultString("${prefix} &fУ Вас недостаточно прав для выполнения данной команды!")
+        @ConfComments("Сообщение, если у игрока нет права reputation.admin.reset")
+        String noPermission();
+
+        @ConfDefault.DefaultString("${prefix} &fИнформация об игроке &a%player_name%&f успешно сброшена!")
+        @ConfComments("Сообщение, когда сбрасывается информация об игроке")
+        String playerReset();
 
         @ConfDefault.DefaultStrings({"${prefix} &fАктуальный список команд плагина для Администраторов:",
                 "  &a/reputation help -&f открыть данный список команд",
@@ -58,8 +66,27 @@ public interface MessagesConfig {
         @ConfComments("Сообщение, если команду использует не игрок")
         String notAPlayer();
 
+        @ConfDefault.DefaultString("${prefix} &cИгрок оффлайн!")
+        @ConfComments("Сообщение, если игрок оффлайн")
+        String playerIsOffline();
+
+        @ConfDefault.DefaultString("${prefix} &cВнутренняя ошибка плагина: игрок не в кэше плагина!")
+        @ConfComments("Сообщение, если игрок не в кэше плагина")
+        String playerNotInCache();
+
+        @ConfDefault.DefaultString("${prefix} &cВы уже выдавали очки репутации данному игроку!")
+        @ConfComments("Сообщение, если игрок уже выдавал очки репутации данному игроку")
+        String alreadyGaveReputation();
+
+        @ConfDefault.DefaultString("${prefix} &fВы успешно выдали очко репутации игроку &a%player_name%&f!")
+        @ConfComments("Сообщение, когда игроку выдали очко репутации")
+        String gaveReputation();
+
         @ConfDefault.DefaultString("${prefix} &fУ Вас сейчас &a${reputation}&f очков репутации!")
         String selfInfo();
+
+        @ConfDefault.DefaultString("${prefix} &fУ игрока &a%player_name%&f сейчас &a${reputation}&f очков репутации!")
+        String playerInfo();
     }
 
 }
