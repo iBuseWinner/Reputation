@@ -12,6 +12,8 @@ public interface IDatabase {
 
     void saveAction(IGamePlayer acting, IGamePlayer target);
 
+    void deleteAction(IGamePlayer gamePlayer);
+
     IGamePlayer wrapPlayer(Player player);
 
 }
