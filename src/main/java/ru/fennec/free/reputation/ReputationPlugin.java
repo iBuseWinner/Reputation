@@ -10,6 +10,7 @@ import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
 import ru.fennec.free.reputation.handlers.database.date.MySQLDatabase;
 import ru.fennec.free.reputation.handlers.database.date.SQLDatabase;
 import ru.fennec.free.reputation.handlers.listeners.PlayerConnectionListener;
+import ru.fennec.free.reputation.handlers.listeners.ReputationCommand;
 import ru.fennec.free.reputation.handlers.messages.MessageManager;
 import ru.fennec.free.reputation.handlers.messages.PlaceholderHook;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
@@ -28,6 +29,7 @@ public final class ReputationPlugin extends JavaPlugin {
         initializeDatabase();
         initializeHandlers();
         registerListeners();
+        registerCommand();
     }
 
     private void loadConfigs() {
@@ -41,6 +43,9 @@ public final class ReputationPlugin extends JavaPlugin {
         switch (mainConfigManager.getConfigData().database().type()) {
             case MYSQL -> this.database = new MySQLDatabase(this.mainConfigManager);
             case SQL -> this.database = new SQLDatabase(this.mainConfigManager);
+        }
+        if (this.database != null) {
+            this.database.initializeTables();
         }
     }
 
@@ -56,6 +61,10 @@ public final class ReputationPlugin extends JavaPlugin {
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new PlayerConnectionListener(mainConfigManager, messagesConfigManager, database,
                 playersContainer, messageManager), this);
+    }
+
+    private void registerCommand() {
+        Bukkit.getPluginCommand("reputation").setExecutor(new ReputationCommand(this, messagesConfigManager.getConfigData(), database, playersContainer, messageManager));
     }
 
     @Override
