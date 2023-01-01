@@ -64,7 +64,7 @@ public final class ReputationPlugin extends JavaPlugin {
     }
 
     private void registerCommand() {
-        Bukkit.getPluginCommand("reputation").setExecutor(new ReputationCommand(this, messagesConfigManager.getConfigData(), database, playersContainer, messageManager));
+        new ReputationCommand(this, messagesConfigManager, mainConfigManager, database, playersContainer, messageManager);
     }
 
     @Override
