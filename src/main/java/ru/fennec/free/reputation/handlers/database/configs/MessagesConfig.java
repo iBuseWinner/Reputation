@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MessagesConfig {
 
-    @ConfDefault.DefaultString("&6&lReputation &8»» &7")
+    @ConfDefault.DefaultString("&6&lReputation &8»&7")
     @ConfComments("Префикс плагина можно использовать во всех строках, используемых данным плагином, с помощью заменителя ${prefix}")
     String prefix();
 
@@ -32,7 +32,7 @@ public interface MessagesConfig {
         @ConfComments("Сообщение, когда сбрасывается информация об игроке")
         String playerReset();
 
-        @ConfDefault.DefaultString("${prefix} &fИгроку &a%player_name%&f было установлено &a${reputation}&f очков репутации!")
+        @ConfDefault.DefaultString("${prefix} &fИгроку &a%player_name%&f было установлено &a${player_reputation}&f очков репутации!")
         @ConfComments("Сообщение, когда игроку устанавливается кол-во очков репутации")
         String playerSet();
 
@@ -54,7 +54,7 @@ public interface MessagesConfig {
         @ConfComments("Сообщение игроку при входе на сервер. Чтобы выключить сообщение, оставьте поле пустым.")
         String notifyOnFirstJoin();
 
-        @ConfDefault.DefaultString("${prefix} &fС возвращением! У Вас сейчас &a${reputation}&f очков репутации!")
+        @ConfDefault.DefaultString("${prefix} &fС возвращением! У Вас сейчас &a${player_reputation}&f очков репутации!")
         @ConfComments("Сообщение игроку при входе на сервер. Чтобы выключить сообщение, оставьте поле пустым.")
         String notifyOnJoin();
 
@@ -82,14 +82,18 @@ public interface MessagesConfig {
         @ConfComments("Сообщение, если игрок уже выдавал очки репутации данному игроку")
         String alreadyGaveReputation();
 
+        @ConfDefault.DefaultString("${prefix} &cВы не можете выдавать себе очки репутации!")
+        @ConfComments("Сообщение, если игрок пытается выдать очко репутации самому себе")
+        String cantSelf();
+
         @ConfDefault.DefaultString("${prefix} &fВы успешно выдали очко репутации игроку &a%player_name%&f!")
         @ConfComments("Сообщение, когда игроку выдали очко репутации")
         String gaveReputation();
 
-        @ConfDefault.DefaultString("${prefix} &fУ Вас сейчас &a${reputation}&f очков репутации!")
+        @ConfDefault.DefaultString("${prefix} &fУ Вас сейчас &a${player_reputation}&f очков репутации!")
         String selfInfo();
 
-        @ConfDefault.DefaultString("${prefix} &fУ игрока &a%player_name%&f сейчас &a${reputation}&f очков репутации!")
+        @ConfDefault.DefaultString("${prefix} &fУ игрока &a%player_name%&f сейчас &a${player_reputation}&f очков репутации!")
         String playerInfo();
     }
 
