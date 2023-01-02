@@ -11,6 +11,7 @@ import space.arim.dazzleconf.helper.ConfigurationHelper;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 public final class ConfigManager<C> {
@@ -26,6 +27,7 @@ public final class ConfigManager<C> {
         // SnakeYaml example
         SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder()
                 .commentMode(CommentMode.alternativeWriter()) // Enables writing YAML comments
+                .charset(StandardCharsets.UTF_8)
                 .build();
         ConfigurationFactory<C> configFactory = SnakeYamlConfigurationFactory.create(
                 configClass,

@@ -1,7 +1,7 @@
 name: Reputation
-version: '${version}'
+version: '3.0-BETA'
 main: ru.fennec.free.reputation.ReputationPlugin
-api-version: 1.19
+#api-version: 1.19
 softdepend: [ PlaceholderAPI ]
 authors: [ BuseSo ]
 description: Система репутации как социальный рейтинг в Китае

@@ -21,13 +21,13 @@ public class SQLDatabase implements IDatabase {
     public SQLDatabase(ConfigManager<MainConfig> mainConfigManager) {
         MainConfig mainConfig = mainConfigManager.getConfigData();
         this.databaseSection = mainConfig.database();
-        File databaseFile = new File("Reputation", "database.rep");
+        File databaseFile = new File("plugins/Reputation", "database.db");
         try {
             databaseFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.jdbi = Jdbi.create("jdbc:h2:~/Reputation/database.rep");
+        this.jdbi = Jdbi.create("jdbc:h2:file:"+databaseFile.toPath().toAbsolutePath()); //Ничего не работает, я плакать.
         this.jdbi.installPlugin(new H2DatabasePlugin());
     }
 

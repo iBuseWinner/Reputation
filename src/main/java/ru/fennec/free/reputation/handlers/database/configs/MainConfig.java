@@ -10,7 +10,7 @@ public interface MainConfig {
     DatabaseSection database();
 
     interface DatabaseSection {
-        @ConfDefault.DefaultString("SQL")
+        @ConfDefault.DefaultString("MYSQL")
         @ConfComments("Тип хранения данных репутации игроков. SQL - локально в папке плагина; MYSQL - удалённая база данных")
         DatabaseType type();
 

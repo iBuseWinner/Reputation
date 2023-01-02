@@ -177,6 +177,7 @@ public class ReputationCommand extends AbstractCommand {
         if (commandSender.hasPermission("reputation.admin.reload")) {
             messagesConfigManager.reloadConfig();
             mainConfigManager.reloadConfig();
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().configsReloadedSuccessfully()));
         } else {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
         }
