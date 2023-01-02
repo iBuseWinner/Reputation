@@ -107,22 +107,26 @@ public class ReputationCommand extends AbstractCommand {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
         } else {
-            IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(((Player) commandSender).getUniqueId());
-            Player targetPlayer = Bukkit.getPlayer(targetName);
-            if (targetPlayer == null) {
-                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
+            if (commandSender.getName().equalsIgnoreCase(targetName)) {
+                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().cantSelf()));
             } else {
-                IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
-                if (targetGamePlayer == null) {
-                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+                IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(((Player) commandSender).getUniqueId());
+                Player targetPlayer = Bukkit.getPlayer(targetName);
+                if (targetPlayer == null) {
+                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
                 } else {
-                    if (gamePlayer.getIDsWhomGaveReputation().contains(targetGamePlayer.getId())) {
-                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyGaveReputation()));
+                    IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
+                    if (targetGamePlayer == null) {
+                        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
                     } else {
-                        targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation()+1);
-                        gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
-                        database.saveAction(gamePlayer, targetGamePlayer);
-                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
+                        if (gamePlayer.getIDsWhomGaveReputation().contains(targetGamePlayer.getId())) {
+                            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyGaveReputation()));
+                        } else {
+                            targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + 1);
+                            gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
+                            database.saveAction(gamePlayer, targetGamePlayer);
+                            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
+                        }
                     }
                 }
             }
