@@ -20,9 +20,9 @@ public class MessageManager {
     }
 
     public String parsePluginPlaceholders(String message) {
-        return StaticReplacer.replacer()
+        return parseColors(StaticReplacer.replacer()
                 .set("prefix", messagesConfig.prefix())
-                .apply(parseColors(message));
+                .apply(message));
     }
 
     public String parsePlaceholders(IGamePlayer gamePlayer, String message) {
