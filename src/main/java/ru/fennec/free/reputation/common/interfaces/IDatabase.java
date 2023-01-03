@@ -2,6 +2,8 @@ package ru.fennec.free.reputation.common.interfaces;
 
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public interface IDatabase {
 
     void initializeTables();
@@ -15,5 +17,9 @@ public interface IDatabase {
     void deleteAction(IGamePlayer gamePlayer);
 
     IGamePlayer wrapPlayer(Player player);
+
+    UUID getTopGamePlayerUUIDByReputation(int place);
+
+    Long getTopGamePlayerReputationByReputation(int place);
 
 }

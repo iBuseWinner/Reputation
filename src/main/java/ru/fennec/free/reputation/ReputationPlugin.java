@@ -53,7 +53,7 @@ public final class ReputationPlugin extends JavaPlugin {
         this.playersContainer = new PlayersContainer();
         this.messageManager = new MessageManager(messagesConfigManager);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new PlaceholderHook(getDescription().getVersion(), playersContainer).register();
+            new PlaceholderHook(getDescription().getVersion(), playersContainer, database).register();
         }
     }
 

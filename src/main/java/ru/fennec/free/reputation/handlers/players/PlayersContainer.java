@@ -3,6 +3,7 @@ package ru.fennec.free.reputation.handlers.players;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,5 +35,11 @@ public class PlayersContainer {
 
     public List<IGamePlayer> getAllCachedPlayers() {
         return this.cachedPlayers;
+    }
+
+    //А вот фиг тут плавал. Это онлайн игроки, кек.
+    public IGamePlayer getTopGamePlayerByReputation(int place) {
+        return cachedPlayers
+                .stream().max(Comparator.comparingLong(IGamePlayer::getPlayerReputation)).get();
     }
 }

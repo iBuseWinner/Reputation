@@ -8,6 +8,7 @@ import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.date.mappers.GamePlayerMapper;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MySQLDatabase implements IDatabase {
@@ -85,7 +86,8 @@ public class MySQLDatabase implements IDatabase {
                         .map(new GamePlayerMapper())
                         .first();
 
-                gamePlayer.setIDsWhomGaveReputation(handle.createQuery("SELECT * FROM `" + this.databaseSection.favoritesTableName() + "` WHERE `id`=?;")
+                gamePlayer.setIDsWhomGaveReputation(handle.createQuery("SELECT * FROM `" + this.databaseSection.favoritesTableName()
+                                + "` WHERE `id`=?;")
                         .bind(0, gamePlayer.getId())
                         .mapTo(Long.class)
                         .list());
@@ -94,5 +96,31 @@ public class MySQLDatabase implements IDatabase {
             });
         } catch (IllegalStateException ignored) { atomicGamePlayer.set(null); }
         return atomicGamePlayer.get();
+    }
+
+    @Override
+    public UUID getTopGamePlayerUUIDByReputation(int place) {
+        AtomicReference<UUID> atomicUUID = new AtomicReference<>();
+        this.jdbi.useHandle(handle -> {
+            atomicUUID.set(UUID.fromString(handle.createQuery("SELECT `uuid` FROM `" + this.databaseSection.tableName()
+                    + "` ORDER BY `reputation` DESC " +
+                    "LIMIT " + place + " OFFSET " + place)
+                    .mapTo(String.class)
+                    .first()));
+        });
+        return atomicUUID.get();
+    }
+
+    @Override
+    public Long getTopGamePlayerReputationByReputation(int place) {
+        AtomicReference<Long> atomicLong = new AtomicReference<>();
+        this.jdbi.useHandle(handle -> {
+            atomicLong.set(handle.createQuery("SELECT `reputation` FROM `" + this.databaseSection.tableName()
+                            + "` ORDER BY `reputation` DESC " +
+                            "LIMIT " + place + " OFFSET " + place)
+                    .mapTo(Long.class)
+                    .first());
+        });
+        return atomicLong.get();
     }
 }

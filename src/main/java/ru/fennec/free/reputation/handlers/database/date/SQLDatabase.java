@@ -11,6 +11,7 @@ import ru.fennec.free.reputation.handlers.database.date.mappers.GamePlayerMapper
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SQLDatabase implements IDatabase {
@@ -101,5 +102,31 @@ public class SQLDatabase implements IDatabase {
             atomicGamePlayer.set(gamePlayer);
         });
         return atomicGamePlayer.get();
+    }
+
+    @Override
+    public UUID getTopGamePlayerUUIDByReputation(int place) {
+        AtomicReference<UUID> atomicUUID = new AtomicReference<>();
+        this.jdbi.useHandle(handle -> {
+            atomicUUID.set(UUID.fromString(handle.createQuery("SELECT `uuid` FROM `" + this.databaseSection.tableName()
+                            + "` ORDER BY `reputation` DESC " +
+                            "LIMIT " + place + " OFFSET " + place)
+                    .mapTo(String.class)
+                    .first()));
+        });
+        return atomicUUID.get();
+    }
+
+    @Override
+    public Long getTopGamePlayerReputationByReputation(int place) {
+        AtomicReference<Long> atomicLong = new AtomicReference<>();
+        this.jdbi.useHandle(handle -> {
+            atomicLong.set(handle.createQuery("SELECT `reputation` FROM `" + this.databaseSection.tableName()
+                            + "` ORDER BY `reputation` DESC " +
+                            "LIMIT " + place + " OFFSET " + place)
+                    .mapTo(Long.class)
+                    .first());
+        });
+        return atomicLong.get();
     }
 }
