@@ -12,9 +12,12 @@ import space.arim.dazzleconf.helper.ConfigurationHelper;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
+/***
+ * Используется менеджер для работы с конфигами dazzleConf
+ * https://github.com/A248/DazzleConf
+ */
 public final class ConfigManager<C> {
 
     private final ConfigurationHelper<C> configHelper;
@@ -24,8 +27,15 @@ public final class ConfigManager<C> {
         this.configHelper = configHelper;
     }
 
+    /***
+     * Метод создания менеджера конфигурационного файла, и создание этого файла на диске, если его ещё нет.
+     *
+     * @param configFolder Папка с конфигурационным файлом
+     * @param fileName Название файла (включая его расширение)
+     * @param configClass Класс файла (interface)
+     * @return Менеджер конфигурационного файла
+     */
     public static <C> ConfigManager<C> create(Path configFolder, String fileName, Class<C> configClass) {
-        // SnakeYaml example
         SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder()
                 .commentMode(CommentMode.alternativeWriter())
                 .charset(Charset.defaultCharset())
@@ -37,6 +47,9 @@ public final class ConfigManager<C> {
         return new ConfigManager<>(new ConfigurationHelper<>(configFolder, fileName, configFactory));
     }
 
+    /***
+     * Метод перезагрузки конфигурационного файла
+     */
     public void reloadConfig() {
         try {
             configData = configHelper.reloadConfigData();
@@ -57,6 +70,11 @@ public final class ConfigManager<C> {
         }
     }
 
+    /***
+     * Метод получения конфигурационного файла
+     *
+     * @return полученный конфигурационный файл
+     */
     public C getConfigData() {
         C configData = this.configData;
         if (configData == null) {

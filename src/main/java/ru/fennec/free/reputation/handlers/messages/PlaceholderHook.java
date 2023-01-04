@@ -39,11 +39,11 @@ public class PlaceholderHook extends PlaceholderExpansion {
         IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(player.getUniqueId());
         if (gamePlayer != null) {
             switch (params.toLowerCase()) {
-                case "reputation":
+                case "reputation": //%reputation_reputation% - показывает игроку его репутацию
                     return String.valueOf(gamePlayer.getPlayerReputation());
-                case "id":
+                case "id": //%reputation_id% - показывает игроку его id из БД
                     return String.valueOf(gamePlayer.getId());
-                case "favorites_amount":
+                case "favorites_amount": //%reputation_favorites_amount% - показывает, скольким игрокам игрок давал очко репутации
                     return String.valueOf(gamePlayer.getIDsWhomGaveReputation().size());
                 default:
                     try {
@@ -52,11 +52,13 @@ public class PlaceholderHook extends PlaceholderExpansion {
                                 int place = Integer.parseInt(params.toLowerCase()
                                         .replace("top_online_", "")
                                         .replace("_name", ""));
+                                //Возвращает НИК игрока из ОНЛАЙН топа на N месте
                                 return playersContainer.getTopGamePlayerByReputation(place - 1).getBukkitPlayer().getName();
                             } else if (params.toLowerCase().endsWith("_reputation")) {
                                 int place = Integer.parseInt(params.toLowerCase()
                                         .replace("top_online_", "")
                                         .replace("_reputation", ""));
+                                //Возвращает РЕПУТАЦИЮ игрока из ОНЛАЙН топа на N месте
                                 return String.valueOf(playersContainer.getTopGamePlayerByReputation(place - 1).getPlayerReputation());
                             }
                         } else if (params.toLowerCase().startsWith("top_")) {
@@ -64,11 +66,13 @@ public class PlaceholderHook extends PlaceholderExpansion {
                                 int place = Integer.parseInt(params.toLowerCase()
                                         .replace("top_", "")
                                         .replace("_name", ""));
+                                //Возвращает НИК игрока из топа на N месте
                                 return Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place - 1)).getName();
                             } else if (params.toLowerCase().endsWith("_reputation")) {
                                 int place = Integer.parseInt(params.toLowerCase()
                                         .replace("top_", "")
                                         .replace("_reputation", ""));
+                                //Возвращает РЕПУТАЦИЮ игрока из ОНЛАЙН топа на N месте
                                 return String.valueOf(database.getTopGamePlayerReputationByReputation(place - 1));
                             }
                         }

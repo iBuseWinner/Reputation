@@ -6,6 +6,9 @@ import org.bukkit.event.HandlerList;
 import ru.fennec.free.reputation.handlers.enums.UpdateAction;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 
+/***
+ * Ивент вызывается из ReputationCommand при изменении очков репутации игрока
+ */
 public class ReputationUpdateEvent extends Event implements Cancellable {
     private final IGamePlayer gamePlayer;
     private final UpdateAction updateAction;

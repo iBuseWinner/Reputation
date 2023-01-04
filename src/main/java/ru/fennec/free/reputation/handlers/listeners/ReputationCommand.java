@@ -40,39 +40,42 @@ public class ReputationCommand extends AbstractCommand {
         switch (args.length) {
             case 1:
                 switch (args[0].toLowerCase()) {
-                    case "help" -> sendHelp(commandSender);
-                    case "info", "me", "self" -> sendSelfInfo(commandSender);
-                    case "reload" -> reloadPlugin(commandSender);
-                    default -> sendPlayerInfo(commandSender, args[0]);
+                    case "help" -> sendHelp(commandSender); // /rep help
+                    case "info", "me", "self" -> sendSelfInfo(commandSender); // /rep me
+                    case "reload" -> reloadPlugin(commandSender); // /rep reload
+                    default -> sendPlayerInfo(commandSender, args[0]); // /rep <Target name>
                 }
                 break;
             case 2:
                 if (args[0].equalsIgnoreCase("give")) {
-                    giveReputation(commandSender, args[1]);
+                    giveReputation(commandSender, args[1]); // /rep give <Target name>
                 } else {
-                    sendHelp(commandSender);
+                    sendHelp(commandSender); // /rep target give
                 }
                 break;
             case 3:
                 if (args[0].equalsIgnoreCase("player") && args[2].equalsIgnoreCase("reset")) {
-                    resetPlayerReputation(commandSender, args[1]);
+                    resetPlayerReputation(commandSender, args[1]); // /rep player <Target name> reset
                 } else {
-                    sendHelp(commandSender);
+                    sendHelp(commandSender); // /rep target reset player
                 }
                 break;
             case 4:
                 if (args[0].equalsIgnoreCase("player") && args[2].equalsIgnoreCase("set")) {
-                    setPlayerReputation(commandSender, args[1], args[3]);
+                    setPlayerReputation(commandSender, args[1], args[3]); // /rep player <Target name> set <Amount>
                 } else {
-                    sendHelp(commandSender);
+                    sendHelp(commandSender); // /rep target set player amount
                 }
                 break;
             default:
-                sendHelp(commandSender);
+                sendHelp(commandSender); // /rep
                 break;
         }
     }
 
+    /*
+    Отправить игроку сообщение со списком доступных команд плагина
+     */
     private void sendHelp(CommandSender commandSender) {
         messagesConfig.playerSection().helpStrings().forEach(str -> commandSender.sendMessage(messageManager.parsePluginPlaceholders(str)));
         if (commandSender.hasPermission("reputation.admin.help")) {
@@ -80,6 +83,9 @@ public class ReputationCommand extends AbstractCommand {
         }
     }
 
+    /*
+    Отправить игроку информацию о его репутации
+     */
     private void sendSelfInfo(CommandSender commandSender) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
@@ -89,6 +95,9 @@ public class ReputationCommand extends AbstractCommand {
         }
     }
 
+    /*
+    Отправить игроку информацию о репутации запрашиваемого игрока при его нахождении на сервере
+     */
     private void sendPlayerInfo(CommandSender commandSender, String targetName) {
         Player targetPlayer = Bukkit.getPlayer(targetName);
         if (targetPlayer == null) {
@@ -103,6 +112,9 @@ public class ReputationCommand extends AbstractCommand {
         }
     }
 
+    /*
+    Дать игроку при его нахождении на сервере очко репутации, если уже не было дано
+     */
     private void giveReputation(CommandSender commandSender, String targetName) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
@@ -133,6 +145,9 @@ public class ReputationCommand extends AbstractCommand {
         }
     }
 
+    /*
+    Сбросить игроку очки репутации, сбросить кому он давал и кто давал ему
+     */
     private void resetPlayerReputation(CommandSender commandSender, String targetName) {
         if (commandSender.hasPermission("reputation.admin.reset")) {
             Player targetPlayer = Bukkit.getPlayer(targetName);
@@ -154,6 +169,9 @@ public class ReputationCommand extends AbstractCommand {
         }
     }
 
+    /*
+    Установить игроку очки репутации
+     */
     private void setPlayerReputation(CommandSender commandSender, String targetName, String reputation) {
         if (commandSender.hasPermission("reputation.admin.set")) {
             Player targetPlayer = Bukkit.getPlayer(targetName);
@@ -177,6 +195,9 @@ public class ReputationCommand extends AbstractCommand {
         }
     }
 
+    /*
+    Перезагрузить файлы конфигурации плагина (config.yml, lang.yml)
+     */
     private void reloadPlugin(CommandSender commandSender) {
         if (commandSender.hasPermission("reputation.admin.reload")) {
             messagesConfigManager.reloadConfig();

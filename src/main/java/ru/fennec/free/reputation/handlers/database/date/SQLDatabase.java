@@ -19,6 +19,9 @@ public class SQLDatabase implements IDatabase {
     private final MainConfig.DatabaseSection databaseSection;
     private final Jdbi jdbi;
 
+    /*
+    Локальная БД, хранящаяся в файле /plugins/Reputation/database.db. Работает через SQLite
+     */
     public SQLDatabase(ConfigManager<MainConfig> mainConfigManager) {
         MainConfig mainConfig = mainConfigManager.getConfigData();
         this.databaseSection = mainConfig.database();
@@ -31,6 +34,9 @@ public class SQLDatabase implements IDatabase {
         this.jdbi = Jdbi.create("jdbc:sqlite:" + databaseFile.toPath()).installPlugin(new SQLitePlugin());
     }
 
+    /*
+    Создание таблиц для плагина, если их нет
+     */
     @Override
     public void initializeTables() {
         this.jdbi.useHandle(handle -> {
@@ -38,13 +44,16 @@ public class SQLDatabase implements IDatabase {
                     "`id` INTEGER, " +
                     "`uuid` VARCHAR(50), " +
                     "`reputation` BIGINT(50), " +
-                    "PRIMARY KEY (`id` AUTOINCREMENT));");
+                    "PRIMARY KEY (`id` AUTOINCREMENT));"); //Таблица с репутацией игроков
             handle.execute("CREATE TABLE IF NOT EXISTS \"" + this.databaseSection.favoritesTableName() + "\" (" +
                     "`id` BIGINT(50), " +
-                    "`favorite` BIGINT(50));");
+                    "`favorite` BIGINT(50));"); //Таблица с историей фаворитов игроков
         });
     }
 
+    /*
+    Добавить нового игрока в бд
+     */
     @Override
     public void insertNewPlayer(IGamePlayer gamePlayer) {
         jdbi.useHandle(handle -> {
@@ -55,6 +64,9 @@ public class SQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Сохранить очки репутации игрока в бд
+     */
     @Override
     public void savePlayer(IGamePlayer gamePlayer) {
         this.jdbi.useHandle(handle -> {
@@ -65,6 +77,9 @@ public class SQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Добавить нового фаворита игрока в бд
+     */
     @Override
     public void saveAction(IGamePlayer acting, IGamePlayer target) {
         this.jdbi.useHandle(handle -> {
@@ -75,6 +90,9 @@ public class SQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Удалить всю историю с фаворитами, связанную с определённым игроком
+     */
     @Override
     public void deleteAction(IGamePlayer gamePlayer) {
         this.jdbi.useHandle(handle -> {
@@ -84,6 +102,9 @@ public class SQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Получить игрока и его список фаворитов из бд, засунуть в объект GamePlayer (implements IGamePlayer)
+     */
     @Override
     public IGamePlayer wrapPlayer(Player player) {
         AtomicReference<IGamePlayer> atomicGamePlayer = new AtomicReference<>();
@@ -104,6 +125,9 @@ public class SQLDatabase implements IDatabase {
         return atomicGamePlayer.get();
     }
 
+    /*
+    Получить UUID игрока с N места в топе игроков по репутации
+     */
     @Override
     public UUID getTopGamePlayerUUIDByReputation(int place) {
         AtomicReference<UUID> atomicUUID = new AtomicReference<>();
@@ -117,6 +141,9 @@ public class SQLDatabase implements IDatabase {
         return atomicUUID.get();
     }
 
+    /*
+    Получить репутацию игрока с N места в топе игроков по репутации
+     */
     @Override
     public Long getTopGamePlayerReputationByReputation(int place) {
         AtomicReference<Long> atomicLong = new AtomicReference<>();

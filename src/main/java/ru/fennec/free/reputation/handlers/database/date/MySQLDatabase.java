@@ -16,6 +16,9 @@ public class MySQLDatabase implements IDatabase {
     private final MainConfig.DatabaseSection databaseSection;
     private final Jdbi jdbi;
 
+    /*
+    Удалённая БД, работает через MySQL (MariaDB)
+     */
     public MySQLDatabase(ConfigManager<MainConfig> mainConfigManager) {
         MainConfig mainConfig = mainConfigManager.getConfigData();
         this.databaseSection = mainConfig.database();
@@ -23,6 +26,9 @@ public class MySQLDatabase implements IDatabase {
                 databaseSection.username(), databaseSection.password());
     }
 
+    /*
+    Создание таблиц для плагина, если их нет
+     */
     @Override
     public void initializeTables() {
         this.jdbi.useHandle(handle -> {
@@ -37,6 +43,9 @@ public class MySQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Добавить нового игрока в бд
+     */
     @Override
     public void insertNewPlayer(IGamePlayer gamePlayer) {
         jdbi.useHandle(handle -> {
@@ -47,6 +56,9 @@ public class MySQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Сохранить очки репутации игрока в бд
+     */
     @Override
     public void savePlayer(IGamePlayer gamePlayer) {
         this.jdbi.useHandle(handle -> {
@@ -57,6 +69,9 @@ public class MySQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Добавить нового фаворита игрока в бд
+     */
     @Override
     public void saveAction(IGamePlayer acting, IGamePlayer target) {
         this.jdbi.useHandle(handle -> {
@@ -67,6 +82,9 @@ public class MySQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Удалить всю историю с фаворитами, связанную с определённым игроком
+     */
     @Override
     public void deleteAction(IGamePlayer gamePlayer) {
         this.jdbi.useHandle(handle -> {
@@ -76,6 +94,9 @@ public class MySQLDatabase implements IDatabase {
         });
     }
 
+    /*
+    Получить игрока и его список фаворитов из бд, засунуть в объект GamePlayer (implements IGamePlayer)
+     */
     @Override
     public IGamePlayer wrapPlayer(Player player) {
         AtomicReference<IGamePlayer> atomicGamePlayer = new AtomicReference<>();
@@ -98,6 +119,9 @@ public class MySQLDatabase implements IDatabase {
         return atomicGamePlayer.get();
     }
 
+    /*
+    Получить UUID игрока с N места в топе игроков по репутации
+     */
     @Override
     public UUID getTopGamePlayerUUIDByReputation(int place) {
         AtomicReference<UUID> atomicUUID = new AtomicReference<>();
@@ -111,6 +135,9 @@ public class MySQLDatabase implements IDatabase {
         return atomicUUID.get();
     }
 
+    /*
+    Получить репутацию игрока с N места в топе игроков по репутации
+     */
     @Override
     public Long getTopGamePlayerReputationByReputation(int place) {
         AtomicReference<Long> atomicLong = new AtomicReference<>();

@@ -7,15 +7,15 @@ import java.util.UUID;
 
 public interface IGamePlayer {
 
-    long getId();
+    long getId(); //id из БД
 
-    Player getBukkitPlayer();
+    Player getBukkitPlayer(); //Bukkit игрок
 
-    UUID getGamePlayerUUID();
+    UUID getGamePlayerUUID(); //UUID от Bukkit игрока
 
-    long getPlayerReputation();
+    long getPlayerReputation(); //Репутация игрока
 
-    List<Long> getIDsWhomGaveReputation();
+    List<Long> getIDsWhomGaveReputation(); //Список игроков, которым игрок давал очки репутации
 
     void setId(long id);
 

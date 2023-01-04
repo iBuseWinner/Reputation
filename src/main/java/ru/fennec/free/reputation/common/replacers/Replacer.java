@@ -15,7 +15,7 @@ public abstract class Replacer {
     }
 
     protected String replace(String str, Map<String, Object> map) {
-        StrSubstitutor substitutor = new StrSubstitutor(map, "${", "}");
+        StrSubstitutor substitutor = new StrSubstitutor(map, "${", "}"); //Плейсхолдеры выглядят типа ${name}
         substitutor.setEnableSubstitutionInVariables(true);
         substitutor.setEscapeChar((char) 0);
         return substitutor.replace(str);

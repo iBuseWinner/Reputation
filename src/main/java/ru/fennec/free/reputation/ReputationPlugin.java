@@ -25,11 +25,11 @@ public final class ReputationPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        loadConfigs();
-        initializeDatabase();
-        initializeHandlers();
-        registerListeners();
-        registerCommand();
+        loadConfigs(); //Загружаем конфигурацию плагина (config.yml, lang.yml), создаём и записываем файлы, если их нет (MainConfig, MessagesConfig)
+        initializeDatabase(); //Определение типа БД из конфига, подключение, создание таблиц, если их нет
+        initializeHandlers(); //Инициализация контейнера-кэша с игроками, менеджера сообщений (цвет, плейсхолеры) и хук с PlaceholderAPI
+        registerListeners(); //Инициализация слушателей событий
+        registerCommand(); //Регистрация команды
     }
 
     private void loadConfigs() {

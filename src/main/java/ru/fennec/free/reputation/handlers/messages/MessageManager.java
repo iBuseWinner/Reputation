@@ -15,16 +15,29 @@ public class MessageManager {
         this.messagesConfig = messagesConfigManager.getConfigData();
     }
 
-    public String parseColors(String message) {
+    private String parseColors(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    /***
+     * Заменяет все (1) общие плейхолдеры из плагина, а дальше конвертирует цвета
+     *
+     * @param message сообщение, в котором необходимо заменить
+     * @return сообщение, в котором плейсхолдеры заменены, а цвета сконвертированы
+     */
     public String parsePluginPlaceholders(String message) {
         return parseColors(StaticReplacer.replacer()
                 .set("prefix", messagesConfig.prefix())
                 .apply(message));
     }
 
+    /***
+     * Заменяет все плейсхолдеры из плагина, сначала общие, потом личные (reputation, id), дальше из PlaceholderAPI
+     *
+     * @param gamePlayer игрок, на которого должны быть нацелены плейсхолдеры
+     * @param message исходное сообщение
+     * @return отформатированное сообщение
+     */
     public String parsePlaceholders(IGamePlayer gamePlayer, String message) {
         return PlaceholderAPI
                 .setPlaceholders(gamePlayer.getBukkitPlayer(),
