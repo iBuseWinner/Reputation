@@ -126,9 +126,12 @@ public class MySQLDatabase implements IDatabase {
     public UUID getTopGamePlayerUUIDByReputation(int place) {
         AtomicReference<UUID> atomicUUID = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicUUID.set(UUID.fromString(handle.createQuery("SELECT `uuid` FROM `" + this.databaseSection.tableName()
-                    + "` ORDER BY `reputation` DESC " +
-                    "LIMIT " + place + " OFFSET " + place)
+            atomicUUID.set(UUID.fromString(handle.createQuery("SELECT `uuid` FROM (" +
+                            "SELECT uuid, RANK() OVER (ORDER BY `reputation` DESC) rnk " +
+                            "FROM `" + this.databaseSection.tableName() + "` " +
+                            "ORDER BY rnk" +
+                            ") ranked_players " +
+                            "WHERE rnk=" + place)
                     .mapTo(String.class)
                     .first()));
         });
@@ -142,9 +145,12 @@ public class MySQLDatabase implements IDatabase {
     public Long getTopGamePlayerReputationByReputation(int place) {
         AtomicReference<Long> atomicLong = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicLong.set(handle.createQuery("SELECT `reputation` FROM `" + this.databaseSection.tableName()
-                            + "` ORDER BY `reputation` DESC " +
-                            "LIMIT " + place + " OFFSET " + place)
+            atomicLong.set(handle.createQuery("SELECT `reputation` FROM (" +
+                            "SELECT reputation, RANK() OVER (ORDER BY `reputation` DESC) rnk " +
+                            "FROM `" + this.databaseSection.tableName() + "` " +
+                            "ORDER BY rnk" +
+                            ") ranked_players " +
+                            "WHERE rnk=" + place)
                     .mapTo(Long.class)
                     .first());
         });

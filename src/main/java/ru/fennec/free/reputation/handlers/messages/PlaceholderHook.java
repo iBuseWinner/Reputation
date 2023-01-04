@@ -67,13 +67,13 @@ public class PlaceholderHook extends PlaceholderExpansion {
                                         .replace("top_", "")
                                         .replace("_name", ""));
                                 //Возвращает НИК игрока из топа на N месте
-                                return Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place - 1)).getName();
+                                return Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place)).getName();
                             } else if (params.toLowerCase().endsWith("_reputation")) {
                                 int place = Integer.parseInt(params.toLowerCase()
                                         .replace("top_", "")
                                         .replace("_reputation", ""));
                                 //Возвращает РЕПУТАЦИЮ игрока из ОНЛАЙН топа на N месте
-                                return String.valueOf(database.getTopGamePlayerReputationByReputation(place - 1));
+                                return String.valueOf(database.getTopGamePlayerReputationByReputation(place));
                             }
                         }
                     } catch (NumberFormatException ignored) {  }
