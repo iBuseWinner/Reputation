@@ -2,7 +2,7 @@ package ru.fennec.free.reputation.handlers.database.date;
 
 import org.bukkit.entity.Player;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.h2.H2DatabasePlugin;
+import org.jdbi.v3.sqlite3.SQLitePlugin;
 import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IDatabase;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
@@ -28,28 +28,27 @@ public class SQLDatabase implements IDatabase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.jdbi = Jdbi.create("jdbc:h2:file:"+databaseFile.toPath().toAbsolutePath()); //Ничего не работает, я плакать.
-        this.jdbi.installPlugin(new H2DatabasePlugin());
+        this.jdbi = Jdbi.create("jdbc:sqlite:" + databaseFile.toPath()).installPlugin(new SQLitePlugin());
     }
 
     @Override
     public void initializeTables() {
         this.jdbi.useHandle(handle -> {
-            handle.execute("CREATE TABLE IF NOT EXISTS `" + this.databaseSection.tableName() + "` (" +
-                            "`id` BIGINT(50) auto_increment, " +
-                            "`uuid` VARCHAR(50), " +
-                            "`reputation` BIGINT(50), " +
-                            "PRIMARY KEY (`id`) USING BTREE);");
-            handle.execute("CREATE TABLE IF NOT EXISTS `" + this.databaseSection.favoritesTableName() + "` (" +
-                            "`id` BIGINT(50), " +
-                            "`favorite` BIGINT(50));");
+            handle.execute("CREATE TABLE IF NOT EXISTS \"" + this.databaseSection.tableName() + "\" (" +
+                    "`id` INTEGER, " +
+                    "`uuid` VARCHAR(50), " +
+                    "`reputation` BIGINT(50), " +
+                    "PRIMARY KEY (`id` AUTOINCREMENT));");
+            handle.execute("CREATE TABLE IF NOT EXISTS \"" + this.databaseSection.favoritesTableName() + "\" (" +
+                    "`id` BIGINT(50), " +
+                    "`favorite` BIGINT(50));");
         });
     }
 
     @Override
     public void insertNewPlayer(IGamePlayer gamePlayer) {
         jdbi.useHandle(handle -> {
-            handle.execute("INSERT IGNORE INTO `" + this.databaseSection.tableName() + "` " +
+            handle.execute("INSERT IGNORE INTO \"" + this.databaseSection.tableName() + "\" " +
                             "(`uuid`, `reputation`)" +
                             "VALUES (?, '0');",
                     gamePlayer.getGamePlayerUUID().toString());
@@ -59,7 +58,7 @@ public class SQLDatabase implements IDatabase {
     @Override
     public void savePlayer(IGamePlayer gamePlayer) {
         this.jdbi.useHandle(handle -> {
-            handle.execute("UPDATE `" + this.databaseSection.tableName() + "` SET " +
+            handle.execute("UPDATE \"" + this.databaseSection.tableName() + "\" SET " +
                             "`reputation`=? WHERE `id`=?",
                     gamePlayer.getPlayerReputation(),
                     gamePlayer.getId());
@@ -69,7 +68,7 @@ public class SQLDatabase implements IDatabase {
     @Override
     public void saveAction(IGamePlayer acting, IGamePlayer target) {
         this.jdbi.useHandle(handle -> {
-            handle.execute("INSERT INTO `" + this.databaseSection.favoritesTableName() + "` " +
+            handle.execute("INSERT INTO \"" + this.databaseSection.favoritesTableName() + "\" " +
                             "(`id`, `favorite`) VALUES (?, ?);",
                     acting.getId(),
                     target.getId());
@@ -79,7 +78,7 @@ public class SQLDatabase implements IDatabase {
     @Override
     public void deleteAction(IGamePlayer gamePlayer) {
         this.jdbi.useHandle(handle -> {
-            handle.execute("DELETE FROM `" + this.databaseSection.favoritesTableName() + "` WHERE `id`=? OR `favorite`=?",
+            handle.execute("DELETE FROM \"" + this.databaseSection.favoritesTableName() + "\" WHERE `id`=? OR `favorite`=?",
                     gamePlayer.getId(),
                     gamePlayer.getId());
         });
@@ -89,12 +88,13 @@ public class SQLDatabase implements IDatabase {
     public IGamePlayer wrapPlayer(Player player) {
         AtomicReference<IGamePlayer> atomicGamePlayer = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            IGamePlayer gamePlayer = handle.createQuery("SELECT * FROM `" + this.databaseSection.tableName() + "` WHERE `uuid`=?;")
+            IGamePlayer gamePlayer = handle.createQuery("SELECT * FROM \"" + this.databaseSection.tableName() + "\" WHERE `uuid`=?;")
                     .bind(0, player.getUniqueId().toString())
                     .map(new GamePlayerMapper())
                     .first();
 
-            gamePlayer.setIDsWhomGaveReputation(handle.createQuery("SELECT * FROM `" + this.databaseSection.favoritesTableName() + "` WHERE `id`=?;")
+            gamePlayer.setIDsWhomGaveReputation(handle.createQuery("SELECT * FROM \"" + this.databaseSection.favoritesTableName()
+                            + "\" WHERE `id`=?;")
                     .bind(0, gamePlayer.getId())
                     .mapTo(Long.class)
                     .list());
@@ -108,8 +108,8 @@ public class SQLDatabase implements IDatabase {
     public UUID getTopGamePlayerUUIDByReputation(int place) {
         AtomicReference<UUID> atomicUUID = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicUUID.set(UUID.fromString(handle.createQuery("SELECT `uuid` FROM `" + this.databaseSection.tableName()
-                            + "` ORDER BY `reputation` DESC " +
+            atomicUUID.set(UUID.fromString(handle.createQuery("SELECT `uuid` FROM \"" + this.databaseSection.tableName()
+                            + "\" ORDER BY `reputation` DESC " +
                             "LIMIT " + place + " OFFSET " + place)
                     .mapTo(String.class)
                     .first()));
@@ -121,8 +121,8 @@ public class SQLDatabase implements IDatabase {
     public Long getTopGamePlayerReputationByReputation(int place) {
         AtomicReference<Long> atomicLong = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicLong.set(handle.createQuery("SELECT `reputation` FROM `" + this.databaseSection.tableName()
-                            + "` ORDER BY `reputation` DESC " +
+            atomicLong.set(handle.createQuery("SELECT `reputation` FROM \"" + this.databaseSection.tableName()
+                            + "\" ORDER BY `reputation` DESC " +
                             "LIMIT " + place + " OFFSET " + place)
                     .mapTo(Long.class)
                     .first());
