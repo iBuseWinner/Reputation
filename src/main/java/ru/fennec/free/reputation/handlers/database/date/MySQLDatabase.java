@@ -50,7 +50,7 @@ public class MySQLDatabase implements IDatabase {
     public void insertNewPlayer(IGamePlayer gamePlayer) {
         jdbi.useHandle(handle -> {
             handle.execute("INSERT IGNORE INTO `" + this.databaseSection.tableName() + "` " +
-                            "(`uuid`, `reputation`)" +
+                            "(`uuid`, `reputation`) " +
                             "VALUES (?, '0');",
                     gamePlayer.getGamePlayerUUID().toString());
         });
