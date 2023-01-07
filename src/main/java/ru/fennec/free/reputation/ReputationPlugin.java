@@ -22,6 +22,7 @@ public final class ReputationPlugin extends JavaPlugin {
     private IDatabase database;
     private PlayersContainer playersContainer;
     private MessageManager messageManager;
+    private PlayerConnectionListener playerConnectionListener;
 
     @Override
     public void onEnable() {
@@ -58,9 +59,10 @@ public final class ReputationPlugin extends JavaPlugin {
     }
 
     private void registerListeners() {
+        this.playerConnectionListener = new PlayerConnectionListener(mainConfigManager, messagesConfigManager, database,
+                playersContainer, messageManager);
         PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new PlayerConnectionListener(mainConfigManager, messagesConfigManager, database,
-                playersContainer, messageManager), this);
+        pluginManager.registerEvents(playerConnectionListener, this);
     }
 
     private void registerCommand() {
@@ -70,5 +72,10 @@ public final class ReputationPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public void updateConfigData(ConfigManager<MainConfig> mainConfigManager, ConfigManager<MessagesConfig> messagesConfigManager) {
+        this.playerConnectionListener.updateConfigData(mainConfigManager, messagesConfigManager);
+        this.messageManager.updateConfigData(messagesConfigManager);
     }
 }

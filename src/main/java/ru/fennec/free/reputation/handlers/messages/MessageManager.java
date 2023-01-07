@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ChatColor;
 import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.common.replacers.StaticReplacer;
+import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
 
 public class MessageManager {
@@ -45,6 +46,10 @@ public class MessageManager {
                                 .set("player_reputation", gamePlayer.getPlayerReputation())
                                 .set("player_id", gamePlayer.getId())
                                 .apply(parsePluginPlaceholders(message)));
+    }
+
+    public void updateConfigData(ConfigManager<MessagesConfig> messagesConfigManager) {
+        this.messagesConfig = messagesConfigManager.getConfigData();
     }
 
 }

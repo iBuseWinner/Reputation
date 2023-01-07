@@ -3,7 +3,7 @@ package ru.fennec.free.reputation.handlers.listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import ru.fennec.free.reputation.ReputationPlugin;
 import ru.fennec.free.reputation.common.abstracts.AbstractCommand;
 import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IDatabase;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 public class ReputationCommand extends AbstractCommand {
 
+    private final ReputationPlugin plugin;
     private final ConfigManager<MessagesConfig> messagesConfigManager;
     private final ConfigManager<MainConfig> mainConfigManager;
     private MessagesConfig messagesConfig;
@@ -24,9 +25,10 @@ public class ReputationCommand extends AbstractCommand {
     private final PlayersContainer playersContainer;
     private final MessageManager messageManager;
 
-    public ReputationCommand(Plugin plugin, ConfigManager<MessagesConfig> messagesConfigManager, ConfigManager<MainConfig> mainConfigManager, IDatabase database,
+    public ReputationCommand(ReputationPlugin plugin, ConfigManager<MessagesConfig> messagesConfigManager, ConfigManager<MainConfig> mainConfigManager, IDatabase database,
                              PlayersContainer playersContainer, MessageManager messageManager) {
         super(plugin, "reputation");
+        this.plugin = plugin;
         this.messagesConfigManager = messagesConfigManager;
         this.mainConfigManager = mainConfigManager;
         this.messagesConfig = messagesConfigManager.getConfigData();
@@ -202,6 +204,8 @@ public class ReputationCommand extends AbstractCommand {
         if (commandSender.hasPermission("reputation.admin.reload")) {
             messagesConfigManager.reloadConfig();
             mainConfigManager.reloadConfig();
+            plugin.updateConfigData(mainConfigManager, messagesConfigManager);
+            messagesConfig = messagesConfigManager.getConfigData();
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().configsReloadedSuccessfully()));
         } else {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));

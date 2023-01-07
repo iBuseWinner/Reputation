@@ -16,11 +16,11 @@ import ru.fennec.free.reputation.handlers.players.PlayersContainer;
 
 public class PlayerConnectionListener implements Listener {
 
-    private final MainConfig mainConfig;
-    private final MessagesConfig messagesConfig;
     private final IDatabase database;
     private final PlayersContainer playersContainer;
     private final MessageManager messageManager;
+    private MainConfig mainConfig;
+    private MessagesConfig messagesConfig;
 
     public PlayerConnectionListener(ConfigManager<MainConfig> mainConfigManager, ConfigManager<MessagesConfig> messagesConfigManager,
                                     IDatabase database, PlayersContainer playersContainer, MessageManager messageManager) {
@@ -60,6 +60,11 @@ public class PlayerConnectionListener implements Listener {
             database.savePlayer(gamePlayer);
             playersContainer.removeCachedPlayerByUUID(player.getUniqueId());
         } //Игрока нет в кэше, ну блин как...
+    }
+
+    public void updateConfigData(ConfigManager<MainConfig> mainConfigManager, ConfigManager<MessagesConfig> messagesConfigManager) {
+        this.mainConfig = mainConfigManager.getConfigData();
+        this.messagesConfig = messagesConfigManager.getConfigData();
     }
 
 }
