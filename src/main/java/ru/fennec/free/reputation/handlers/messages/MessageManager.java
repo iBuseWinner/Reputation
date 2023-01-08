@@ -45,6 +45,8 @@ public class MessageManager {
                         StaticReplacer.replacer()
                                 .set("player_reputation", gamePlayer.getPlayerReputation())
                                 .set("player_id", gamePlayer.getId())
+                                .set("player_name", gamePlayer.getBukkitPlayer().getName())
+                                .set("player_favorites_amount", gamePlayer.getIDsWhomGaveReputation().size())
                                 .apply(parsePluginPlaceholders(message)));
     }
 

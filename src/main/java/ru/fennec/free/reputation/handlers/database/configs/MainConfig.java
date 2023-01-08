@@ -45,6 +45,10 @@ public interface MainConfig {
         String args();
     }
 
+    @ConfDefault.DefaultInteger(5)
+    @ConfComments("Количество игроков для топа /rep top и /rep top online")
+    int topAmount();
+
     enum DatabaseType {
         SQL, //Локальная база данных (В папке плагина)
         MYSQL //Удалённая база данных (Без создания отдельных файлов)

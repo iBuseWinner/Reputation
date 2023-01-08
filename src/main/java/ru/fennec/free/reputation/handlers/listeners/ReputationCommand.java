@@ -8,6 +8,7 @@ import ru.fennec.free.reputation.common.abstracts.AbstractCommand;
 import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IDatabase;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
+import ru.fennec.free.reputation.common.replacers.StaticReplacer;
 import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
 import ru.fennec.free.reputation.handlers.messages.MessageManager;
@@ -20,6 +21,7 @@ public class ReputationCommand extends AbstractCommand {
     private final ReputationPlugin plugin;
     private final ConfigManager<MessagesConfig> messagesConfigManager;
     private final ConfigManager<MainConfig> mainConfigManager;
+    private MainConfig mainConfig;
     private MessagesConfig messagesConfig;
     private final IDatabase database;
     private final PlayersContainer playersContainer;
@@ -31,6 +33,7 @@ public class ReputationCommand extends AbstractCommand {
         this.plugin = plugin;
         this.messagesConfigManager = messagesConfigManager;
         this.mainConfigManager = mainConfigManager;
+        this.mainConfig = mainConfigManager.getConfigData();
         this.messagesConfig = messagesConfigManager.getConfigData();
         this.database = database;
         this.playersContainer = playersContainer;
@@ -45,14 +48,14 @@ public class ReputationCommand extends AbstractCommand {
                     case "help" -> sendHelp(commandSender); // /rep help
                     case "info", "me", "self" -> sendSelfInfo(commandSender); // /rep me
                     case "reload" -> reloadPlugin(commandSender); // /rep reload
+                    case "top" -> sendTop(commandSender);
                     default -> sendPlayerInfo(commandSender, args[0]); // /rep <Target name>
                 }
                 break;
             case 2:
-                if (args[0].equalsIgnoreCase("give")) {
-                    giveReputation(commandSender, args[1]); // /rep give <Target name>
-                } else {
-                    sendHelp(commandSender); // /rep target give
+                switch (args[0].toLowerCase()) {
+                    case "give" -> giveReputation(commandSender, args[1]); // /rep give <Target name>
+                    case "top" -> sendTopOnline(commandSender); // /rep top online /rep top lalalal
                 }
                 break;
             case 3:
@@ -205,10 +208,54 @@ public class ReputationCommand extends AbstractCommand {
             messagesConfigManager.reloadConfig();
             mainConfigManager.reloadConfig();
             plugin.updateConfigData(mainConfigManager, messagesConfigManager);
+            mainConfig = mainConfigManager.getConfigData();
             messagesConfig = messagesConfigManager.getConfigData();
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().configsReloadedSuccessfully()));
         } else {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
+        }
+    }
+
+    /*
+    Отправить топ игроков по репутации
+     */
+    private void sendTop(CommandSender commandSender) {
+        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().topMessage()));
+        for (int place = 0; place < mainConfig.topAmount(); place++) {
+            try {
+                String playerName = Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place + 1)).getName();
+                long playerReputation = database.getTopGamePlayerReputationByReputation(place + 1);
+
+                String message = messagesConfig.playerSection().topFormat();
+                message = StaticReplacer.replacer()
+                        .set("place", place + 1)
+                        .set("player_name", playerName)
+                        .set("player_reputation", playerReputation)
+                        .apply(message);
+                commandSender.sendMessage(messageManager.parsePluginPlaceholders(message));
+            } catch (IllegalStateException e) { break; } //Если в бд игроков меньше, чем показывает топ
+        }
+    }
+
+    /*
+    Отправить топ онлайн игроков по репутации
+     */
+    private void sendTopOnline(CommandSender commandSender) {
+        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().topMessage()));
+        for (int place = 0; place < mainConfig.topAmount(); place++) {
+            try {
+                IGamePlayer gamePlayer = playersContainer.getTopGamePlayerByReputation(place);
+                String playerName = gamePlayer.getBukkitPlayer().getName();
+                long playerReputation = gamePlayer.getPlayerReputation();
+
+                String message = messagesConfig.playerSection().topFormat();
+                message = StaticReplacer.replacer()
+                        .set("place", place + 1)
+                        .set("player_name", playerName)
+                        .set("player_reputation", playerReputation)
+                        .apply(message);
+                commandSender.sendMessage(messageManager.parsePluginPlaceholders(message));
+            } catch (ArrayIndexOutOfBoundsException e) { break; } //Если онлайн игроков меньше, чем показывает топ
         }
     }
 }

@@ -1,5 +1,5 @@
 name: Reputation
-version: '3.0.1-BETA'
+version: '3.0.2-BETA'
 main: ru.fennec.free.reputation.ReputationPlugin
 #api-version: 1.19
 softdepend: [ PlaceholderAPI ]

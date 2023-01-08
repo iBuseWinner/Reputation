@@ -66,7 +66,12 @@ public class PlayersContainer {
      * @return IGamePlayer - игрока на N месте. Ошибка стоп ноль ноль ноль ноль если нет такого
      */
     public IGamePlayer getTopGamePlayerByReputation(int place) {
-        return cachedPlayers //Тут ошибка в методе ору, возвращается всегда топ с первого места :/
-                .stream().max(Comparator.comparingLong(IGamePlayer::getPlayerReputation)).get();
+//        return cachedPlayers //Тут ошибка в методе ору, возвращается всегда топ с первого места :/
+//                .stream().max(Comparator.comparingLong(IGamePlayer::getPlayerReputation)).get();
+        return cachedPlayers
+                .stream()
+                .sorted(Comparator.comparingLong(IGamePlayer::getPlayerReputation))
+                .toList()
+                .get(place);
     }
 }

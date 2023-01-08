@@ -49,7 +49,6 @@ public interface MessagesConfig {
 
         @AnnotationBasedSorter.Order(6)
         @ConfDefault.DefaultStrings({"${prefix} &fАктуальный список команд плагина для Администраторов:",
-                "  &a/reputation help -&f открыть данный список команд",
                 "  &a/reputation reload -&f перезагрузить конфиги плагина (не трогает БД)",
                 "  &a/reputation player <Игрок> reset -&f сбросить репутацию игроку",
                 "  &a/reputation player <Игрок> set <Очки> -&f установить репутацию игроку"})
@@ -70,10 +69,12 @@ public interface MessagesConfig {
 
         @AnnotationBasedSorter.Order(3)
         @ConfDefault.DefaultStrings({"${prefix} &fАктуальный список команд плагина для Игроков:",
-                "  &a/reputation help -&f открыть данный список команд",
+                "  &a/reputation help -&f показать данный список команд",
                 "  &a/reputation <self|me|info> -&f посмотреть информацию о себе",
                 "  &a/reputation <Игрок> -&f посмотреть информацию об онлайн игроке",
-                "  &a/reputation give <Игрок> -&f прибавить очко репутации игроку"})
+                "  &a/reputation give <Игрок> -&f прибавить очко репутации игроку",
+                "  &a/reputation top -&f показать топ игроков по репутации",
+                "  &a/reputation top online -&f показать топ онлайн игроков по репутации"})
         @ConfComments("Ответ Администратору, когда он запрашивает список команд")
         List<String> helpStrings();
 
@@ -114,6 +115,14 @@ public interface MessagesConfig {
         @AnnotationBasedSorter.Order(11)
         @ConfDefault.DefaultString("${prefix} &fУ игрока &a%player_name%&f сейчас &a${player_reputation}&f очков репутации!")
         String playerInfo();
+
+        @AnnotationBasedSorter.Order(12)
+        @ConfDefault.DefaultString("${prefix} &fТоп игроков по репутации:")
+        String topMessage();
+
+        @AnnotationBasedSorter.Order(12)
+        @ConfDefault.DefaultString("&a${place}&f. &a${player_name}&f -&a ${player_reputation}&f очков")
+        String topFormat();
     }
 
 }
