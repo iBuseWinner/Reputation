@@ -1,6 +1,7 @@
 package ru.fennec.free.reputation.handlers.listeners;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.fennec.free.reputation.ReputationPlugin;
@@ -15,6 +16,7 @@ import ru.fennec.free.reputation.handlers.messages.MessageManager;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReputationCommand extends AbstractCommand {
 
@@ -94,10 +96,11 @@ public class ReputationCommand extends AbstractCommand {
     private void sendSelfInfo(CommandSender commandSender) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
-        } else {
-            IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(((Player) commandSender).getUniqueId());
-            commandSender.sendMessage(messageManager.parsePlaceholders(gamePlayer, messagesConfig.playerSection().selfInfo()));
+            return;
         }
+
+        IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(((Player) commandSender).getUniqueId());
+        commandSender.sendMessage(messageManager.parsePlaceholders(gamePlayer, messagesConfig.playerSection().selfInfo()));
     }
 
     /*
@@ -107,14 +110,16 @@ public class ReputationCommand extends AbstractCommand {
         Player targetPlayer = Bukkit.getPlayer(targetName);
         if (targetPlayer == null) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
-        } else {
-            IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
-            if (targetGamePlayer == null) {
-                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
-            } else {
-                commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().playerInfo()));
-            }
+            return;
         }
+
+        IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
+        if (targetGamePlayer == null) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+            return;
+        }
+
+        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().playerInfo()));
     }
 
     /*
@@ -123,31 +128,36 @@ public class ReputationCommand extends AbstractCommand {
     private void giveReputation(CommandSender commandSender, String targetName) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
-        } else {
-            if (commandSender.getName().equalsIgnoreCase(targetName)) {
-                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().cantSelf()));
-            } else {
-                IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(((Player) commandSender).getUniqueId());
-                Player targetPlayer = Bukkit.getPlayer(targetName);
-                if (targetPlayer == null) {
-                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
-                } else {
-                    IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
-                    if (targetGamePlayer == null) {
-                        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
-                    } else {
-                        if (gamePlayer.getIDsWhomGaveReputation().contains(targetGamePlayer.getId())) {
-                            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyGaveReputation()));
-                        } else {
-                            targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + 1);
-                            gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
-                            database.saveAction(gamePlayer, targetGamePlayer);
-                            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
-                        }
-                    }
-                }
-            }
+            return;
         }
+
+        if (commandSender.getName().equalsIgnoreCase(targetName)) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().cantSelf()));
+            return;
+        }
+
+        IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(((Player) commandSender).getUniqueId());
+        Player targetPlayer = Bukkit.getPlayer(targetName);
+        if (targetPlayer == null) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
+            return;
+        }
+
+        IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
+        if (targetGamePlayer == null) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+            return;
+        }
+
+        if (gamePlayer.getIDsWhomGaveReputation().contains(targetGamePlayer.getId())) {
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyGaveReputation()));
+            return;
+        }
+
+        targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + 1);
+        gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
+        database.saveAction(gamePlayer, targetGamePlayer);
+        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
     }
 
     /*
@@ -158,20 +168,23 @@ public class ReputationCommand extends AbstractCommand {
             Player targetPlayer = Bukkit.getPlayer(targetName);
             if (targetPlayer == null) {
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
-            } else {
-                IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
-                if (targetGamePlayer == null) {
-                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
-                } else {
-                    targetGamePlayer.setPlayerReputation(0);
-                    targetGamePlayer.setIDsWhomGaveReputation(new ArrayList<>());
-                    playersContainer.getAllCachedPlayers().forEach(cachedPlayer -> cachedPlayer.getIDsWhomGaveReputation().remove(targetGamePlayer.getId()));
-                    commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerReset()));
-                }
+                return;
             }
-        } else {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
+
+            IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
+            if (targetGamePlayer == null) {
+                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+                return;
+            }
+
+            targetGamePlayer.setPlayerReputation(0);
+            targetGamePlayer.setIDsWhomGaveReputation(new ArrayList<>());
+            playersContainer.getAllCachedPlayers().forEach(cachedPlayer -> cachedPlayer.getIDsWhomGaveReputation().remove(targetGamePlayer.getId()));
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerReset()));
+            return;
         }
+
+        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
     }
 
     /*
@@ -182,22 +195,25 @@ public class ReputationCommand extends AbstractCommand {
             Player targetPlayer = Bukkit.getPlayer(targetName);
             if (targetPlayer == null) {
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
-            } else {
-                IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
-                if (targetGamePlayer == null) {
-                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
-                } else {
-                    if (reputation.chars().allMatch(Character::isDigit)) {
-                        targetGamePlayer.setPlayerReputation(Long.parseLong(reputation));
-                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
-                    } else {
-                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().mustBeNumber()));
-                    }
-                }
+                return;
             }
-        } else {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
+
+            IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
+            if (targetGamePlayer == null) {
+                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+                return;
+            }
+            if (reputation.chars().allMatch(Character::isDigit)) {
+                targetGamePlayer.setPlayerReputation(Long.parseLong(reputation));
+                commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                return;
+            }
+
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().mustBeNumber()));
+            return;
         }
+
+        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
     }
 
     /*
@@ -211,9 +227,10 @@ public class ReputationCommand extends AbstractCommand {
             mainConfig = mainConfigManager.getConfigData();
             messagesConfig = messagesConfigManager.getConfigData();
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().configsReloadedSuccessfully()));
-        } else {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
+            return;
         }
+
+        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
     }
 
     /*
@@ -233,7 +250,9 @@ public class ReputationCommand extends AbstractCommand {
                         .set("player_reputation", playerReputation)
                         .apply(message);
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(message));
-            } catch (IllegalStateException e) { break; } //Если в бд игроков меньше, чем показывает топ
+            } catch (IllegalStateException e) {
+                break;
+            } //Если в бд игроков меньше, чем показывает топ
         }
     }
 
@@ -255,7 +274,36 @@ public class ReputationCommand extends AbstractCommand {
                         .set("player_reputation", playerReputation)
                         .apply(message);
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(message));
-            } catch (ArrayIndexOutOfBoundsException e) { break; } //Если онлайн игроков меньше, чем показывает топ
+            } catch (ArrayIndexOutOfBoundsException e) {
+                break;
+            } //Если онлайн игроков меньше, чем показывает топ
         }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
+        List<String> tab = new ArrayList<>();
+        switch (args.length) {
+            case 1:
+                tab.addAll(List.of("help", "me", "self", "info", "top"));
+                tab.add("give");
+                if (commandSender.hasPermission("reputation.admin.reload")) tab.add("reload");
+                if (commandSender.hasPermission("reputation.admin.set") ||
+                        commandSender.hasPermission("reputation.admin.reset")) tab.add("player");
+                Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
+            case 2:
+                if (args[0].equalsIgnoreCase("top")) tab.add("online");
+                if (args[0].equalsIgnoreCase("give"))
+                    Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
+                if (args[0].equalsIgnoreCase("player") &&
+                        (commandSender.hasPermission("reputation.admin.set") || commandSender.hasPermission("reputation.admin.reset")))
+                    Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
+            case 3:
+                if (args[0].equalsIgnoreCase("player")) {
+                    if (commandSender.hasPermission("reputation.admin.set")) tab.add("set");
+                    if (commandSender.hasPermission("reputation.admin.reset")) tab.add("reset");
+                }
+        }
+        return tab;
     }
 }
