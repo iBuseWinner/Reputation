@@ -6,17 +6,20 @@ import org.bukkit.entity.Player;
 import ru.fennec.free.reputation.common.interfaces.IDatabase;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
+import ru.fennec.free.reputation.handlers.players.TitlesHandler;
 
 public class PlaceholderHook extends PlaceholderExpansion {
 
     private final String version;
     private final PlayersContainer playersContainer;
     private final IDatabase database;
+    private final TitlesHandler titlesHandler;
 
-    public PlaceholderHook(String version, PlayersContainer playersContainer, IDatabase database) {
+    public PlaceholderHook(String version, PlayersContainer playersContainer, IDatabase database, TitlesHandler titlesHandler) {
         this.version = version;
         this.playersContainer = playersContainer;
         this.database = database;
+        this.titlesHandler = titlesHandler;
     }
 
     @Override
@@ -45,6 +48,8 @@ public class PlaceholderHook extends PlaceholderExpansion {
                     return String.valueOf(gamePlayer.getId());
                 case "favorites_amount": //%reputation_favorites_amount% - показывает, скольким игрокам игрок давал очко репутации
                     return String.valueOf(gamePlayer.getIDsWhomGaveReputation().size());
+                case "title": //%reputation_title% - показывает звание игрока в зависимости от его репутации
+                    return titlesHandler.getPlayerTitle(gamePlayer);
                 default:
                     try {
                         if (params.toLowerCase().startsWith("top_online_")) {

@@ -12,11 +12,15 @@ import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.common.replacers.StaticReplacer;
 import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
+import ru.fennec.free.reputation.handlers.enums.UpdateAction;
+import ru.fennec.free.reputation.handlers.events.ReputationUpdateEvent;
 import ru.fennec.free.reputation.handlers.messages.MessageManager;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
+import ru.fennec.free.reputation.handlers.players.TitlesHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ReputationCommand extends AbstractCommand {
 
@@ -28,9 +32,10 @@ public class ReputationCommand extends AbstractCommand {
     private final IDatabase database;
     private final PlayersContainer playersContainer;
     private final MessageManager messageManager;
+    private final TitlesHandler titlesHandler;
 
     public ReputationCommand(ReputationPlugin plugin, ConfigManager<MessagesConfig> messagesConfigManager, ConfigManager<MainConfig> mainConfigManager, IDatabase database,
-                             PlayersContainer playersContainer, MessageManager messageManager) {
+                             PlayersContainer playersContainer, MessageManager messageManager, TitlesHandler titlesHandler) {
         super(plugin, "reputation");
         this.plugin = plugin;
         this.messagesConfigManager = messagesConfigManager;
@@ -40,6 +45,7 @@ public class ReputationCommand extends AbstractCommand {
         this.database = database;
         this.playersContainer = playersContainer;
         this.messageManager = messageManager;
+        this.titlesHandler = titlesHandler;
     }
 
     @Override
@@ -154,10 +160,25 @@ public class ReputationCommand extends AbstractCommand {
             return;
         }
 
-        targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + 1);
-        gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
-        database.saveAction(gamePlayer, targetGamePlayer);
-        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
+        AtomicLong maxReputationCanGive = new AtomicLong();
+        mainConfig.maxReputation().forEach((permission, reputation) -> {
+            if (commandSender.hasPermission("reputation.max."+permission)) maxReputationCanGive.set(reputation);
+        });
+
+        boolean canGive = false;
+        if (maxReputationCanGive.get() == -1) canGive = true;
+        else if (gamePlayer.getIDsWhomGaveReputation().size() < maxReputationCanGive.get()) canGive = true;
+
+        if (canGive) {
+            ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.INCREASE);
+            Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
+            if (!reputationUpdateEvent.isCancelled()) {
+                targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + 1);
+                gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
+                database.saveAction(gamePlayer, targetGamePlayer);
+                commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
+            }
+        }
     }
 
     /*
@@ -177,10 +198,16 @@ public class ReputationCommand extends AbstractCommand {
                 return;
             }
 
-            targetGamePlayer.setPlayerReputation(0);
-            targetGamePlayer.setIDsWhomGaveReputation(new ArrayList<>());
-            playersContainer.getAllCachedPlayers().forEach(cachedPlayer -> cachedPlayer.getIDsWhomGaveReputation().remove(targetGamePlayer.getId()));
-            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerReset()));
+            ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.RESET);
+            Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
+            if (!reputationUpdateEvent.isCancelled()) {
+                targetGamePlayer.setPlayerReputation(0);
+                targetGamePlayer.setIDsWhomGaveReputation(new ArrayList<>());
+                playersContainer.getAllCachedPlayers().forEach(cachedPlayer -> cachedPlayer.getIDsWhomGaveReputation().remove(targetGamePlayer.getId()));
+                database.deleteAction(targetGamePlayer);
+
+                commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerReset()));
+            }
             return;
         }
 
@@ -204,8 +231,13 @@ public class ReputationCommand extends AbstractCommand {
                 return;
             }
             if (reputation.chars().allMatch(Character::isDigit)) {
-                targetGamePlayer.setPlayerReputation(Long.parseLong(reputation));
-                commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.SET);
+                Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
+                if (!reputationUpdateEvent.isCancelled()) {
+                    targetGamePlayer.setPlayerReputation(Long.parseLong(reputation));
+
+                    commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                }
                 return;
             }
 

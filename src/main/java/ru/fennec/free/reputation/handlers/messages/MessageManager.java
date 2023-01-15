@@ -5,15 +5,17 @@ import net.md_5.bungee.api.ChatColor;
 import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.common.replacers.StaticReplacer;
-import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
+import ru.fennec.free.reputation.handlers.players.TitlesHandler;
 
 public class MessageManager {
 
     private MessagesConfig messagesConfig;
+    private TitlesHandler titlesHandler;
 
-    public MessageManager(ConfigManager<MessagesConfig> messagesConfigManager) {
+    public MessageManager(ConfigManager<MessagesConfig> messagesConfigManager, TitlesHandler titlesHandler) {
         this.messagesConfig = messagesConfigManager.getConfigData();
+        this.titlesHandler = titlesHandler;
     }
 
     private String parseColors(String message) {
@@ -47,6 +49,7 @@ public class MessageManager {
                                 .set("player_id", gamePlayer.getId())
                                 .set("player_name", gamePlayer.getBukkitPlayer().getName())
                                 .set("player_favorites_amount", gamePlayer.getIDsWhomGaveReputation().size())
+                                .set("player_title", titlesHandler.getPlayerTitle(gamePlayer))
                                 .apply(parsePluginPlaceholders(message)));
     }
 

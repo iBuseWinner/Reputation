@@ -109,11 +109,11 @@ public interface MessagesConfig {
         String gaveReputation();
 
         @AnnotationBasedSorter.Order(10)
-        @ConfDefault.DefaultString("${prefix} &fУ Вас сейчас &a${player_reputation}&f очков репутации!")
+        @ConfDefault.DefaultString("${prefix} &fУ Вас сейчас &a${player_reputation}&f очков репутации, Ваше звание: &a${player_title}&f!")
         String selfInfo();
 
         @AnnotationBasedSorter.Order(11)
-        @ConfDefault.DefaultString("${prefix} &fУ игрока &a%player_name%&f сейчас &a${player_reputation}&f очков репутации!")
+        @ConfDefault.DefaultString("${prefix} &fУ игрока &a%player_name%&f сейчас &a${player_reputation}&f очков репутации, его звание: &a${player_title}&f!")
         String playerInfo();
 
         @AnnotationBasedSorter.Order(12)

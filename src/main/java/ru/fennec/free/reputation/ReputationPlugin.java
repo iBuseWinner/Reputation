@@ -14,6 +14,7 @@ import ru.fennec.free.reputation.handlers.listeners.ReputationCommand;
 import ru.fennec.free.reputation.handlers.messages.MessageManager;
 import ru.fennec.free.reputation.handlers.messages.PlaceholderHook;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
+import ru.fennec.free.reputation.handlers.players.TitlesHandler;
 
 public final class ReputationPlugin extends JavaPlugin {
 
@@ -23,6 +24,7 @@ public final class ReputationPlugin extends JavaPlugin {
     private PlayersContainer playersContainer;
     private MessageManager messageManager;
     private PlayerConnectionListener playerConnectionListener;
+    private TitlesHandler titlesHandler;
 
     @Override
     public void onEnable() {
@@ -52,9 +54,10 @@ public final class ReputationPlugin extends JavaPlugin {
 
     private void initializeHandlers() {
         this.playersContainer = new PlayersContainer();
-        this.messageManager = new MessageManager(messagesConfigManager);
+        this.titlesHandler = new TitlesHandler(mainConfigManager);
+        this.messageManager = new MessageManager(messagesConfigManager, titlesHandler);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new PlaceholderHook(getDescription().getVersion(), playersContainer, database).register();
+            new PlaceholderHook(getDescription().getVersion(), playersContainer, database, titlesHandler).register();
         }
     }
 
@@ -66,7 +69,7 @@ public final class ReputationPlugin extends JavaPlugin {
     }
 
     private void registerCommand() {
-        new ReputationCommand(this, messagesConfigManager, mainConfigManager, database, playersContainer, messageManager);
+        new ReputationCommand(this, messagesConfigManager, mainConfigManager, database, playersContainer, messageManager, titlesHandler);
     }
 
     @Override
@@ -77,5 +80,6 @@ public final class ReputationPlugin extends JavaPlugin {
     public void updateConfigData(ConfigManager<MainConfig> mainConfigManager, ConfigManager<MessagesConfig> messagesConfigManager) {
         this.playerConnectionListener.updateConfigData(mainConfigManager, messagesConfigManager);
         this.messageManager.updateConfigData(messagesConfigManager);
+        this.titlesHandler.updateConfigData(mainConfigManager);
     }
 }
