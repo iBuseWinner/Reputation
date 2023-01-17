@@ -331,7 +331,7 @@ public class ReputationCommand extends AbstractCommand {
                         (commandSender.hasPermission("reputation.admin.set") || commandSender.hasPermission("reputation.admin.reset")))
                     Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
             case 3:
-                if (args[0].equalsIgnoreCase("player")) {
+                if (args[0].equalsIgnoreCase("player") && args.length > 1 && args[1].length() > 0) {
                     if (commandSender.hasPermission("reputation.admin.set")) tab.add("set");
                     if (commandSender.hasPermission("reputation.admin.reset")) tab.add("reset");
                 }
