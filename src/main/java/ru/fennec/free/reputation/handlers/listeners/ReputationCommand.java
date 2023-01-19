@@ -56,13 +56,14 @@ public class ReputationCommand extends AbstractCommand {
                     case "help" -> sendHelp(commandSender); // /rep help
                     case "info", "me", "self" -> sendSelfInfo(commandSender); // /rep me
                     case "reload" -> reloadPlugin(commandSender); // /rep reload
-                    case "top" -> sendTop(commandSender);
+                    case "top" -> sendTop(commandSender); // /rep top
                     default -> sendPlayerInfo(commandSender, args[0]); // /rep <Target name>
                 }
                 break;
             case 2:
                 switch (args[0].toLowerCase()) {
                     case "give" -> giveReputation(commandSender, args[1]); // /rep give <Target name>
+                    case "take" -> takeReputation(commandSender, args[1]); // /rep take <Target name>
                     case "top" -> sendTopOnline(commandSender); // /rep top online /rep top lalalal
                 }
                 break;
@@ -175,8 +176,66 @@ public class ReputationCommand extends AbstractCommand {
             if (!reputationUpdateEvent.isCancelled()) {
                 targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + 1);
                 gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
-                database.saveAction(gamePlayer, targetGamePlayer);
+                database.saveAction(gamePlayer, targetGamePlayer, "INCREASE");
                 commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
+            }
+        }
+    }
+
+    /*
+    Дать игроку при его нахождении на сервере очко репутации, если уже не было дано
+     */
+    private void takeReputation(CommandSender commandSender, String targetName) {
+        if (!mainConfig.tookReputation()) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().functionDisabled()));
+            return;
+        }
+
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
+            return;
+        }
+
+        if (commandSender.getName().equalsIgnoreCase(targetName)) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().cantSelf()));
+            return;
+        }
+
+        IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(((Player) commandSender).getUniqueId());
+        Player targetPlayer = Bukkit.getPlayer(targetName);
+        if (targetPlayer == null) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
+            return;
+        }
+
+        IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
+        if (targetGamePlayer == null) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+            return;
+        }
+
+        if (gamePlayer.getIDsWhomTookReputation().contains(targetGamePlayer.getId())) {
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyTookReputation()));
+            return;
+        }
+
+        AtomicLong maxReputationCanGive = new AtomicLong();
+        mainConfig.maxReputation().forEach((permission, reputation) -> {
+            if (commandSender.hasPermission("reputation.max."+permission)) maxReputationCanGive.set(reputation);
+        });
+
+        boolean canGive = false;
+        if (maxReputationCanGive.get() == -1) canGive = true;
+        else if (gamePlayer.getIDsWhomTookReputation().size() < maxReputationCanGive.get()) canGive = true;
+
+        if (canGive) {
+            ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.DECREASE);
+            Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
+            if (!reputationUpdateEvent.isCancelled()) {
+                targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() - 1);
+                gamePlayer.getIDsWhomTookReputation().add(targetGamePlayer.getId());
+                database.saveAction(gamePlayer, targetGamePlayer, "DECREASE");
+                commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().tookReputation()));
             }
         }
     }
@@ -317,8 +376,8 @@ public class ReputationCommand extends AbstractCommand {
         List<String> tab = new ArrayList<>();
         switch (args.length) {
             case 1:
-                tab.addAll(List.of("help", "me", "self", "info", "top"));
-                tab.add("give");
+                tab.addAll(List.of("help", "me", "self", "info", "top", "give"));
+                if (mainConfig.tookReputation()) tab.add("take");
                 if (commandSender.hasPermission("reputation.admin.reload")) tab.add("reload");
                 if (commandSender.hasPermission("reputation.admin.set") ||
                         commandSender.hasPermission("reputation.admin.reset")) tab.add("player");

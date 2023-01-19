@@ -14,6 +14,7 @@ public class GamePlayer implements IGamePlayer {
     private UUID gamePlayerUUID;
     private long playerReputation;
     private List<Long> IDsWhomGaveReputation;
+    private List<Long> IDsWhomTookReputation;
 
     public GamePlayer(Player bukkitPlayer) {
         this.id = -1;
@@ -21,30 +22,6 @@ public class GamePlayer implements IGamePlayer {
         this.gamePlayerUUID = bukkitPlayer.getUniqueId();
         this.playerReputation = 0;
         this.IDsWhomGaveReputation = new ArrayList<>();
-    }
-
-    public GamePlayer(Player bukkitPlayer, long playerReputation) {
-        this.id = -1;
-        this.bukkitPlayer = bukkitPlayer;
-        this.gamePlayerUUID = bukkitPlayer.getUniqueId();
-        this.playerReputation = playerReputation;
-        this.IDsWhomGaveReputation = new ArrayList<>();
-    }
-
-    public GamePlayer(Player bukkitPlayer, long playerReputation, List<Long> IDsWhomGaveReputation) {
-        this.id = -1;
-        this.bukkitPlayer = bukkitPlayer;
-        this.gamePlayerUUID = bukkitPlayer.getUniqueId();
-        this.playerReputation = playerReputation;
-        this.IDsWhomGaveReputation = IDsWhomGaveReputation;
-    }
-
-    public GamePlayer(long id, Player bukkitPlayer, long playerReputation, List<Long> IDsWhomGaveReputation) {
-        this.id = id;
-        this.bukkitPlayer = bukkitPlayer;
-        this.gamePlayerUUID = bukkitPlayer.getUniqueId();
-        this.playerReputation = playerReputation;
-        this.IDsWhomGaveReputation = IDsWhomGaveReputation;
     }
 
     public GamePlayer(long id, UUID playerUUID, long playerReputation) {
@@ -79,6 +56,10 @@ public class GamePlayer implements IGamePlayer {
         return IDsWhomGaveReputation;
     }
 
+    public List<Long> getIDsWhomTookReputation() {
+        return IDsWhomTookReputation;
+    }
+
     @Override
     public void setId(long id) {
         this.id = id;
@@ -97,5 +78,9 @@ public class GamePlayer implements IGamePlayer {
     @Override
     public void setIDsWhomGaveReputation(List<Long> IDsWhomGaveReputation) {
         this.IDsWhomGaveReputation = IDsWhomGaveReputation;
+    }
+
+    public void setIDsWhomTookReputation(List<Long> IDsWhomTookReputation) {
+        this.IDsWhomTookReputation = IDsWhomTookReputation;
     }
 }

@@ -12,7 +12,7 @@ public interface IDatabase {
 
     void savePlayer(IGamePlayer gamePlayer);
 
-    void saveAction(IGamePlayer acting, IGamePlayer target);
+    void saveAction(IGamePlayer acting, IGamePlayer target, String action);
 
     void deleteAction(IGamePlayer gamePlayer);
 

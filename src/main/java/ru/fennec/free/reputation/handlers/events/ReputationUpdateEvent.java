@@ -9,7 +9,8 @@ import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 /***
  * Ивент вызывается из ReputationCommand при изменении очков репутации игрока
  * IGamePlayer - игрок, у которого изменяется репутация
- * UpdateAction - действие, которое произошло с репутацией игрока (INCREASE - выдал другой игрок, (RE)SET - админской командой)
+ * UpdateAction - действие, которое произошло с репутацией игрока:
+ *     INCREASE - выдал другой игрок, DECREASE - отнял другой игрок, (RE)SET - админской командой
  */
 public class ReputationUpdateEvent extends Event implements Cancellable {
     private final IGamePlayer gamePlayer;

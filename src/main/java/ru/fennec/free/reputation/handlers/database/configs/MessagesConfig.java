@@ -99,7 +99,7 @@ public interface MessagesConfig {
         String alreadyGaveReputation();
 
         @AnnotationBasedSorter.Order(8)
-        @ConfDefault.DefaultString("${prefix} &cВы не можете выдавать себе очки репутации!")
+        @ConfDefault.DefaultString("${prefix} &cВы не можете взаимодействовать с самим собой!")
         @ConfComments("Сообщение, если игрок пытается выдать очко репутации самому себе")
         String cantSelf();
 
@@ -123,6 +123,20 @@ public interface MessagesConfig {
         @AnnotationBasedSorter.Order(12)
         @ConfDefault.DefaultString("&a${place}&f. &a${player_name}&f -&a ${player_reputation}&f очков")
         String topFormat();
+
+        @AnnotationBasedSorter.Order(13)
+        @ConfDefault.DefaultString("${prefix} &cДанная функция отключена в конфигурации плагина!")
+        String functionDisabled();
+
+        @AnnotationBasedSorter.Order(14)
+        @ConfDefault.DefaultString("${prefix} &cВы уже забирали очки репутации у данного игрока!")
+        @ConfComments("Сообщение, если игрок уже забирал очки репутации данному игроку")
+        String alreadyTookReputation();
+
+        @AnnotationBasedSorter.Order(15)
+        @ConfDefault.DefaultString("${prefix} &fВы успешно отняли очко репутации у игрока &a%player_name%&f!")
+        @ConfComments("Сообщение, когда у игрока отняли очко репутации")
+        String tookReputation();
     }
 
 }

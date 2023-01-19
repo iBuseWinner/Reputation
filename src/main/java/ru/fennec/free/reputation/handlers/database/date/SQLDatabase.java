@@ -47,7 +47,8 @@ public class SQLDatabase implements IDatabase {
                     "PRIMARY KEY (`id` AUTOINCREMENT));"); //Таблица с репутацией игроков
             handle.execute("CREATE TABLE IF NOT EXISTS \"" + this.databaseSection.favoritesTableName() + "\" (" +
                     "`id` BIGINT(50), " +
-                    "`favorite` BIGINT(50));"); //Таблица с историей фаворитов игроков
+                    "`favorite` BIGINT(50), " +
+                    "`action` VARCHAR(50));"); //Таблица с историей фаворитов игроков
         });
     }
 
@@ -81,12 +82,13 @@ public class SQLDatabase implements IDatabase {
     Добавить нового фаворита игрока в бд
      */
     @Override
-    public void saveAction(IGamePlayer acting, IGamePlayer target) {
+    public void saveAction(IGamePlayer acting, IGamePlayer target, String action) {
         this.jdbi.useHandle(handle -> {
             handle.execute("INSERT INTO \"" + this.databaseSection.favoritesTableName() + "\" " +
-                            "(`id`, `favorite`) VALUES (?, ?);",
+                            "(`id`, `favorite`, `action`) VALUES (?, ?, ?);",
                     acting.getId(),
-                    target.getId());
+                    target.getId(),
+                    action);
         });
     }
 
@@ -116,7 +118,13 @@ public class SQLDatabase implements IDatabase {
                         .first();
 
                 gamePlayer.setIDsWhomGaveReputation(handle.createQuery("SELECT * FROM \"" + this.databaseSection.favoritesTableName()
-                                + "\" WHERE `id`=?;")
+                                + "\" WHERE `id`=? AND `action`='INCREASE';")
+                        .bind(0, gamePlayer.getId())
+                        .mapTo(Long.class)
+                        .list());
+
+                gamePlayer.setIDsWhomTookReputation(handle.createQuery("SELECT * FROM \"" + this.databaseSection.favoritesTableName()
+                                + "\" WHERE `id`=? AND `action`='DECREASE';")
                         .bind(0, gamePlayer.getId())
                         .mapTo(Long.class)
                         .list());

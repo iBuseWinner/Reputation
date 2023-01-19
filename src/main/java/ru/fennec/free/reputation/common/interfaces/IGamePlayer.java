@@ -17,6 +17,8 @@ public interface IGamePlayer {
 
     List<Long> getIDsWhomGaveReputation(); //Список игроков, которым игрок давал очки репутации
 
+    List<Long> getIDsWhomTookReputation(); //Список игроков, у которых игрок отнимал очки репутации
+
     void setId(long id);
 
     void setGamePlayerUUID(UUID gamePlayerUUID);
@@ -24,5 +26,7 @@ public interface IGamePlayer {
     void setPlayerReputation(long playerReputation);
 
     void setIDsWhomGaveReputation(List<Long> IDsWhomGaveReputation);
+
+    void setIDsWhomTookReputation(List<Long> IDsWhomTookReputation);
 
 }

@@ -63,6 +63,11 @@ public interface MainConfig {
     @ConfComments("Звание, показывающееся игроку, достигшему определённого количества очков репутации")
     Map<Long, String> titles();
 
+    @AnnotationBasedSorter.Order(4)
+    @ConfDefault.DefaultBoolean(false)
+    @ConfComments("Разрешить ли отнимать игрокам репутацию друг у друга")
+    boolean tookReputation();
+
     enum DatabaseType {
         SQL, //Локальная база данных (В папке плагина)
         MYSQL //Удалённая база данных (Без создания отдельных файлов)
