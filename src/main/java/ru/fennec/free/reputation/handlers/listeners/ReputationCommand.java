@@ -53,7 +53,7 @@ public class ReputationCommand extends AbstractCommand {
         switch (args.length) {
             case 1:
                 switch (args[0].toLowerCase()) {
-                    case "help" -> sendHelp(commandSender); // /rep help
+                    case "help", "give", "take", "player" -> sendHelp(commandSender); // /rep help
                     case "info", "me", "self" -> sendSelfInfo(commandSender); // /rep me
                     case "reload" -> reloadPlugin(commandSender); // /rep reload
                     case "top" -> sendTop(commandSender); // /rep top
@@ -179,6 +179,8 @@ public class ReputationCommand extends AbstractCommand {
                 database.saveAction(gamePlayer, targetGamePlayer, "INCREASE");
                 commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
             }
+        } else {
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().maxReputation()));
         }
     }
 
@@ -237,6 +239,8 @@ public class ReputationCommand extends AbstractCommand {
                 database.saveAction(gamePlayer, targetGamePlayer, "DECREASE");
                 commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().tookReputation()));
             }
+        } else {
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().maxReputation()));
         }
     }
 

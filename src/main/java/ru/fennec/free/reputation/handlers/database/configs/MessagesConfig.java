@@ -137,6 +137,11 @@ public interface MessagesConfig {
         @ConfDefault.DefaultString("${prefix} &fВы успешно отняли очко репутации у игрока &a%player_name%&f!")
         @ConfComments("Сообщение, когда у игрока отняли очко репутации")
         String tookReputation();
+
+        @AnnotationBasedSorter.Order(16)
+        @ConfDefault.DefaultString("${prefix} &cВы достигли лимита для взаимодействия с очками репутации игроков!")
+        @ConfComments("Сообщение, когда игрок превысил свой лимит по выдаче/забирании очков репутации")
+        String maxReputation();
     }
 
 }
