@@ -293,7 +293,11 @@ public class ReputationCommand extends AbstractCommand {
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
                 return;
             }
-            if (reputation.chars().allMatch(Character::isDigit)) {
+            boolean isNumber = false;
+            if (reputation.chars().allMatch(Character::isDigit)) isNumber = true;
+            else if (reputation.startsWith("-") && reputation.substring(1).chars().allMatch(Character::isDigit)) isNumber = true;
+
+            if (isNumber) {
                 ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.SET);
                 Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
                 if (!reputationUpdateEvent.isCancelled()) {
