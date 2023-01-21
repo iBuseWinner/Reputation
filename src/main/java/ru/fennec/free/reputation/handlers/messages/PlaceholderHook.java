@@ -38,6 +38,11 @@ public class PlaceholderHook extends PlaceholderExpansion {
     }
 
     @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
     public String onPlaceholderRequest(Player player, String params) {
         IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(player.getUniqueId());
         if (gamePlayer != null) {
