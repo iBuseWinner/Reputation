@@ -68,6 +68,11 @@ public interface MainConfig {
     @ConfComments("Разрешить ли отнимать игрокам репутацию друг у друга")
     boolean tookReputation();
 
+    @AnnotationBasedSorter.Order(5)
+    @ConfDefault.DefaultBoolean(false)
+    @ConfComments("Поставить true, если используете несколько серверов")
+    boolean bungeeMode();
+
     enum DatabaseType {
         SQL, //Локальная база данных (В папке плагина)
         MYSQL //Удалённая база данных (Без создания отдельных файлов)

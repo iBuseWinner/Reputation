@@ -62,7 +62,7 @@ public final class ReputationPlugin extends JavaPlugin {
     }
 
     private void registerListeners() {
-        this.playerConnectionListener = new PlayerConnectionListener(mainConfigManager, messagesConfigManager, database,
+        this.playerConnectionListener = new PlayerConnectionListener(this, mainConfigManager, messagesConfigManager, database,
                 playersContainer, messageManager);
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(playerConnectionListener, this);
