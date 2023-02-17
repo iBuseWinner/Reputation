@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class MySQLDatabase implements IDatabase {
 
+    private final MainConfig mainConfig;
     private final MainConfig.DatabaseSection databaseSection;
     private final Jdbi jdbi;
 
@@ -20,7 +21,7 @@ public class MySQLDatabase implements IDatabase {
     Удалённая БД, работает через MySQL (MariaDB)
      */
     public MySQLDatabase(ConfigManager<MainConfig> mainConfigManager) {
-        MainConfig mainConfig = mainConfigManager.getConfigData();
+        this.mainConfig = mainConfigManager.getConfigData();
         this.databaseSection = mainConfig.database();
         this.jdbi = Jdbi.create("jdbc:mysql://" + databaseSection.url() + "/" + databaseSection.database() + databaseSection.args(),
                 databaseSection.username(), databaseSection.password());
@@ -52,8 +53,9 @@ public class MySQLDatabase implements IDatabase {
         jdbi.useHandle(handle -> {
             handle.execute("INSERT IGNORE INTO `" + this.databaseSection.tableName() + "` " +
                             "(`uuid`, `reputation`) " +
-                            "VALUES (?, '0');",
-                    gamePlayer.getGamePlayerUUID().toString());
+                            "VALUES (?, ?);",
+                    gamePlayer.getGamePlayerUUID().toString(),
+                    mainConfig.defaultReputation());
         });
     }
 

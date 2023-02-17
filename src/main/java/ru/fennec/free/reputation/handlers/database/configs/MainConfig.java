@@ -73,6 +73,11 @@ public interface MainConfig {
     @ConfComments("Поставить true, если используете несколько серверов")
     boolean bungeeMode();
 
+    @AnnotationBasedSorter.Order(6)
+    @ConfDefault.DefaultLong(0)
+    @ConfComments("Репутация, устанавливаемая игроку при первом входе")
+    long defaultReputation();
+
     enum DatabaseType {
         SQL, //Локальная база данных (В папке плагина)
         MYSQL //Удалённая база данных (Без создания отдельных файлов)

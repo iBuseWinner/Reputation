@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class SQLDatabase implements IDatabase {
 
+    private final MainConfig mainConfig;
     private final MainConfig.DatabaseSection databaseSection;
     private final Jdbi jdbi;
 
@@ -23,7 +24,7 @@ public class SQLDatabase implements IDatabase {
     Локальная БД, хранящаяся в файле /plugins/Reputation/database.db. Работает через SQLite
      */
     public SQLDatabase(ConfigManager<MainConfig> mainConfigManager) {
-        MainConfig mainConfig = mainConfigManager.getConfigData();
+        this.mainConfig = mainConfigManager.getConfigData();
         this.databaseSection = mainConfig.database();
         File databaseFile = new File("plugins/Reputation", "database.db");
         try {
@@ -60,8 +61,9 @@ public class SQLDatabase implements IDatabase {
         jdbi.useHandle(handle -> {
             handle.execute("INSERT OR IGNORE INTO \"" + this.databaseSection.tableName() + "\" " +
                             "(`uuid`, `reputation`) " +
-                            "VALUES (?, '0');",
-                    gamePlayer.getGamePlayerUUID().toString());
+                            "VALUES (?, ?);",
+                    gamePlayer.getGamePlayerUUID().toString(),
+                    mainConfig.defaultReputation());
         });
     }
 

@@ -91,6 +91,11 @@ public class ReputationCommand extends AbstractCommand {
     Отправить игроку сообщение со списком доступных команд плагина
      */
     private void sendHelp(CommandSender commandSender) {
+        if (!commandSender.hasPermission("reputation.use")) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+            return;
+        }
+
         messagesConfig.playerSection().helpStrings().forEach(str -> commandSender.sendMessage(messageManager.parsePluginPlaceholders(str)));
         if (commandSender.hasPermission("reputation.admin.help")) {
             messagesConfig.adminSection().helpStrings().forEach(str -> commandSender.sendMessage(messageManager.parsePluginPlaceholders(str)));
@@ -101,6 +106,11 @@ public class ReputationCommand extends AbstractCommand {
     Отправить игроку информацию о его репутации
      */
     private void sendSelfInfo(CommandSender commandSender) {
+        if (!commandSender.hasPermission("reputation.use")) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+            return;
+        }
+
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
             return;
@@ -114,9 +124,19 @@ public class ReputationCommand extends AbstractCommand {
     Отправить игроку информацию о репутации запрашиваемого игрока при его нахождении на сервере
      */
     private void sendPlayerInfo(CommandSender commandSender, String targetName) {
+        if (!commandSender.hasPermission("reputation.use")) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+            return;
+        }
+
         Player targetPlayer = Bukkit.getPlayer(targetName);
         if (targetPlayer == null) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
+            return;
+        }
+
+        if (!targetPlayer.hasPermission("reputation.use")) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
             return;
         }
 
@@ -133,6 +153,11 @@ public class ReputationCommand extends AbstractCommand {
     Дать игроку при его нахождении на сервере очко репутации, если уже не было дано
      */
     private void giveReputation(CommandSender commandSender, String targetName) {
+        if (!commandSender.hasPermission("reputation.use")) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+            return;
+        }
+
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
             return;
@@ -150,9 +175,19 @@ public class ReputationCommand extends AbstractCommand {
             return;
         }
 
+        if (!targetPlayer.hasPermission("reputation.use")) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
+            return;
+        }
+
         IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
         if (targetGamePlayer == null) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+            return;
+        }
+
+        if (targetPlayer.getAddress().getAddress().equals(((Player) commandSender).getAddress().getAddress())) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().cantSelf()));
             return;
         }
 
@@ -188,6 +223,11 @@ public class ReputationCommand extends AbstractCommand {
     Дать игроку при его нахождении на сервере очко репутации, если уже не было дано
      */
     private void takeReputation(CommandSender commandSender, String targetName) {
+        if (!commandSender.hasPermission("reputation.use")) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+            return;
+        }
+
         if (!mainConfig.tookReputation()) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().functionDisabled()));
             return;
@@ -207,6 +247,11 @@ public class ReputationCommand extends AbstractCommand {
         Player targetPlayer = Bukkit.getPlayer(targetName);
         if (targetPlayer == null) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
+            return;
+        }
+
+        if (!targetPlayer.hasPermission("reputation.use")) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
             return;
         }
 
@@ -384,7 +429,7 @@ public class ReputationCommand extends AbstractCommand {
         List<String> tab = new ArrayList<>();
         switch (args.length) {
             case 1:
-                tab.addAll(List.of("help", "me", "self", "info", "top", "give"));
+                tab.addAll(List.of("help", "me", "self", "info", "top", "give", "take"));
                 if (mainConfig.tookReputation()) tab.add("take");
                 if (commandSender.hasPermission("reputation.admin.reload")) tab.add("reload");
                 if (commandSender.hasPermission("reputation.admin.set") ||
@@ -392,7 +437,7 @@ public class ReputationCommand extends AbstractCommand {
                 Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
             case 2:
                 if (args[0].equalsIgnoreCase("top")) tab.add("online");
-                if (args[0].equalsIgnoreCase("give"))
+                if (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("take"))
                     Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
                 if (args[0].equalsIgnoreCase("player") &&
                         (commandSender.hasPermission("reputation.admin.set") || commandSender.hasPermission("reputation.admin.reset")))

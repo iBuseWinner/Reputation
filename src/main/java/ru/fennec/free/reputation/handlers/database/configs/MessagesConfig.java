@@ -142,6 +142,16 @@ public interface MessagesConfig {
         @ConfDefault.DefaultString("${prefix} &cВы достигли лимита для взаимодействия с очками репутации игроков!")
         @ConfComments("Сообщение, когда игрок превысил свой лимит по выдаче/забирании очков репутации")
         String maxReputation();
+
+        @AnnotationBasedSorter.Order(17)
+        @ConfDefault.DefaultString("${prefix} &cВы отказались от репутации!")
+        @ConfComments("Сообщение, если игрок отказался от репутации")
+        String youDeclinedReputation();
+
+        @AnnotationBasedSorter.Order(18)
+        @ConfDefault.DefaultString("${prefix} &cИгрок&e %player_name%&c отказался от репутации!")
+        @ConfComments("Сообщение, если указанный игрок отказался от репутации")
+        String playerDeclinedReputation();
     }
 
 }
