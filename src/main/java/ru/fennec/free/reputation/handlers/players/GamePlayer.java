@@ -13,6 +13,7 @@ public class GamePlayer implements IGamePlayer {
     private Player bukkitPlayer;
     private UUID gamePlayerUUID;
     private long playerReputation;
+    private boolean acceptReputation;
     private List<Long> IDsWhomGaveReputation;
     private List<Long> IDsWhomTookReputation;
 
@@ -21,14 +22,16 @@ public class GamePlayer implements IGamePlayer {
         this.bukkitPlayer = bukkitPlayer;
         this.gamePlayerUUID = bukkitPlayer.getUniqueId();
         this.playerReputation = 0;
+        this.acceptReputation = false;
         this.IDsWhomGaveReputation = new ArrayList<>();
     }
 
-    public GamePlayer(long id, UUID playerUUID, long playerReputation) {
+    public GamePlayer(long id, UUID playerUUID, long playerReputation, boolean acceptReputation) {
         this.id = id;
         this.gamePlayerUUID = playerUUID;
         this.bukkitPlayer = getBukkitPlayer();
         this.playerReputation = playerReputation;
+        this.acceptReputation = acceptReputation;
     }
 
     @Override
@@ -49,6 +52,11 @@ public class GamePlayer implements IGamePlayer {
     @Override
     public long getPlayerReputation() {
         return playerReputation;
+    }
+
+    @Override
+    public boolean acceptReputation() {
+        return acceptReputation;
     }
 
     @Override
@@ -73,6 +81,10 @@ public class GamePlayer implements IGamePlayer {
     @Override
     public void setPlayerReputation(long playerReputation) {
         this.playerReputation = playerReputation;
+    }
+
+    public void setAcceptReputation(boolean acceptReputation) {
+        this.acceptReputation = acceptReputation;
     }
 
     @Override

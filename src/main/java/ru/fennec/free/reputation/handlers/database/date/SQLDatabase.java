@@ -45,6 +45,7 @@ public class SQLDatabase implements IDatabase {
                     "`id` INTEGER, " +
                     "`uuid` VARCHAR(50) UNIQUE, " +
                     "`reputation` BIGINT(50), " +
+                    "`acceptReputation` BOOLEAN, " +
                     "PRIMARY KEY (`id` AUTOINCREMENT));"); //Таблица с репутацией игроков
             handle.execute("CREATE TABLE IF NOT EXISTS \"" + this.databaseSection.favoritesTableName() + "\" (" +
                     "`id` BIGINT(50), " +

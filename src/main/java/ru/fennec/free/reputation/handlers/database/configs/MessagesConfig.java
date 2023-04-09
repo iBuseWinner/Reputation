@@ -152,6 +152,16 @@ public interface MessagesConfig {
         @ConfDefault.DefaultString("${prefix} &cИгрок&e %player_name%&c отказался от репутации!")
         @ConfComments("Сообщение, если указанный игрок отказался от репутации")
         String playerDeclinedReputation();
+
+        @AnnotationBasedSorter.Order(19)
+        @ConfDefault.DefaultString("${prefix} &fИгрок &a%player_name%&f поделился с Вами положительной репутацией!")
+        @ConfComments("Сообщение, когда игроку добавляют репутацию")
+        String youGotReputation();
+
+        @AnnotationBasedSorter.Order(20)
+        @ConfDefault.DefaultString("${prefix} &fИгрок &a%player_name%&f поделился с Вами отрицательной репутацией!")
+        @ConfComments("Сообщение, когда у игрока отнимают репутацию")
+        String youGotNegativeReputation();
     }
 
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PlayersContainer {
 
@@ -71,7 +72,7 @@ public class PlayersContainer {
         return cachedPlayers
                 .stream()
                 .sorted(Comparator.comparingLong(IGamePlayer::getPlayerReputation))
-                .toList()
+                .collect(Collectors.toList())
                 .get(place);
     }
 }

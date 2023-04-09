@@ -91,10 +91,10 @@ public class ReputationCommand extends AbstractCommand {
     Отправить игроку сообщение со списком доступных команд плагина
      */
     private void sendHelp(CommandSender commandSender) {
-        if (!commandSender.hasPermission("reputation.use")) {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
-            return;
-        }
+//        if (!commandSender.hasPermission("reputation.use")) {
+//            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+//            return;
+//        }
 
         messagesConfig.playerSection().helpStrings().forEach(str -> commandSender.sendMessage(messageManager.parsePluginPlaceholders(str)));
         if (commandSender.hasPermission("reputation.admin.help")) {
@@ -106,10 +106,10 @@ public class ReputationCommand extends AbstractCommand {
     Отправить игроку информацию о его репутации
      */
     private void sendSelfInfo(CommandSender commandSender) {
-        if (!commandSender.hasPermission("reputation.use")) {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
-            return;
-        }
+//        if (!commandSender.hasPermission("reputation.use")) {
+//            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+//            return;
+//        }
 
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
@@ -117,6 +117,12 @@ public class ReputationCommand extends AbstractCommand {
         }
 
         IGamePlayer gamePlayer = playersContainer.getCachedPlayerByUUID(((Player) commandSender).getUniqueId());
+
+        if (!gamePlayer.acceptReputation()) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+            return;
+        }
+
         commandSender.sendMessage(messageManager.parsePlaceholders(gamePlayer, messagesConfig.playerSection().selfInfo()));
     }
 
@@ -124,10 +130,10 @@ public class ReputationCommand extends AbstractCommand {
     Отправить игроку информацию о репутации запрашиваемого игрока при его нахождении на сервере
      */
     private void sendPlayerInfo(CommandSender commandSender, String targetName) {
-        if (!commandSender.hasPermission("reputation.use")) {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
-            return;
-        }
+//        if (!commandSender.hasPermission("reputation.use")) {
+//            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+//            return;
+//        }
 
         Player targetPlayer = Bukkit.getPlayer(targetName);
         if (targetPlayer == null) {
@@ -135,14 +141,19 @@ public class ReputationCommand extends AbstractCommand {
             return;
         }
 
-        if (!targetPlayer.hasPermission("reputation.use")) {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
-            return;
-        }
+//        if (!targetPlayer.hasPermission("reputation.use")) {
+//            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
+//            return;
+//        }
 
         IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
         if (targetGamePlayer == null) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+            return;
+        }
+
+        if (!targetGamePlayer.acceptReputation()) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
             return;
         }
 
@@ -153,10 +164,10 @@ public class ReputationCommand extends AbstractCommand {
     Дать игроку при его нахождении на сервере очко репутации, если уже не было дано
      */
     private void giveReputation(CommandSender commandSender, String targetName) {
-        if (!commandSender.hasPermission("reputation.use")) {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
-            return;
-        }
+//        if (!commandSender.hasPermission("reputation.use")) {
+//            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+//            return;
+//        }
 
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
@@ -175,14 +186,24 @@ public class ReputationCommand extends AbstractCommand {
             return;
         }
 
-        if (!targetPlayer.hasPermission("reputation.use")) {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
+        if (!gamePlayer.acceptReputation()) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
             return;
         }
+
+//        if (!targetPlayer.hasPermission("reputation.use")) {
+//            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
+//            return;
+//        }
 
         IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
         if (targetGamePlayer == null) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+            return;
+        }
+
+        if (!targetGamePlayer.acceptReputation()) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
             return;
         }
 
@@ -193,6 +214,11 @@ public class ReputationCommand extends AbstractCommand {
 
         if (gamePlayer.getIDsWhomGaveReputation().contains(targetGamePlayer.getId())) {
             commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyGaveReputation()));
+            return;
+        }
+
+        if (mainConfig.oneReputationPerPlayer() && gamePlayer.getIDsWhomTookReputation().contains(targetGamePlayer.getId())) {
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyTookReputation()));
             return;
         }
 
@@ -213,6 +239,7 @@ public class ReputationCommand extends AbstractCommand {
                 gamePlayer.getIDsWhomGaveReputation().add(targetGamePlayer.getId());
                 database.saveAction(gamePlayer, targetGamePlayer, "INCREASE");
                 commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().gaveReputation()));
+                targetPlayer.sendMessage(messageManager.parsePlaceholders(gamePlayer, messagesConfig.playerSection().youGotReputation()));
             }
         } else {
             commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().maxReputation()));
@@ -223,10 +250,10 @@ public class ReputationCommand extends AbstractCommand {
     Дать игроку при его нахождении на сервере очко репутации, если уже не было дано
      */
     private void takeReputation(CommandSender commandSender, String targetName) {
-        if (!commandSender.hasPermission("reputation.use")) {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
-            return;
-        }
+//        if (!commandSender.hasPermission("reputation.use")) {
+//            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
+//            return;
+//        }
 
         if (!mainConfig.tookReputation()) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().functionDisabled()));
@@ -250,10 +277,15 @@ public class ReputationCommand extends AbstractCommand {
             return;
         }
 
-        if (!targetPlayer.hasPermission("reputation.use")) {
-            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
+        if (!gamePlayer.acceptReputation()) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().youDeclinedReputation()));
             return;
         }
+
+//        if (!targetPlayer.hasPermission("reputation.use")) {
+//            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
+//            return;
+//        }
 
         IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
         if (targetGamePlayer == null) {
@@ -261,8 +293,18 @@ public class ReputationCommand extends AbstractCommand {
             return;
         }
 
+        if (!targetGamePlayer.acceptReputation()) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerDeclinedReputation()));
+            return;
+        }
+
         if (gamePlayer.getIDsWhomTookReputation().contains(targetGamePlayer.getId())) {
             commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyTookReputation()));
+            return;
+        }
+
+        if (mainConfig.oneReputationPerPlayer() && gamePlayer.getIDsWhomGaveReputation().contains(targetGamePlayer.getId())) {
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().alreadyGaveReputation()));
             return;
         }
 
@@ -283,6 +325,7 @@ public class ReputationCommand extends AbstractCommand {
                 gamePlayer.getIDsWhomTookReputation().add(targetGamePlayer.getId());
                 database.saveAction(gamePlayer, targetGamePlayer, "DECREASE");
                 commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().tookReputation()));
+                targetPlayer.sendMessage(messageManager.parsePlaceholders(gamePlayer, messagesConfig.playerSection().youGotNegativeReputation()));
             }
         } else {
             commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.playerSection().maxReputation()));

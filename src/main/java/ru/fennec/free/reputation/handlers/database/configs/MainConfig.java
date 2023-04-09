@@ -78,6 +78,11 @@ public interface MainConfig {
     @ConfComments("Репутация, устанавливаемая игроку при первом входе")
     long defaultReputation();
 
+    @AnnotationBasedSorter.Order(7)
+    @ConfDefault.DefaultBoolean(false)
+    @ConfComments("Поставить true, если не хотите, чтобы игрок не мог выдавать +1 и -1 репутацию одному и тому же игроку")
+    boolean oneReputationPerPlayer();
+
     enum DatabaseType {
         SQL, //Локальная база данных (В папке плагина)
         MYSQL //Удалённая база данных (Без создания отдельных файлов)

@@ -15,6 +15,7 @@ public class GamePlayerMapper implements RowMapper<IGamePlayer> {
         return new GamePlayer(
                 rs.getLong("id"),
                 UUID.fromString(rs.getString("uuid")),
-                rs.getLong("reputation"));
+                rs.getLong("reputation"),
+                rs.getBoolean("acceptReputation"));
     }
 }

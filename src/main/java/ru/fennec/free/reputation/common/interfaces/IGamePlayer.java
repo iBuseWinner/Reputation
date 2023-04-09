@@ -15,6 +15,8 @@ public interface IGamePlayer {
 
     long getPlayerReputation(); //Репутация игрока
 
+    boolean acceptReputation();
+
     List<Long> getIDsWhomGaveReputation(); //Список игроков, которым игрок давал очки репутации
 
     List<Long> getIDsWhomTookReputation(); //Список игроков, у которых игрок отнимал очки репутации

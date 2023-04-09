@@ -37,6 +37,7 @@ public class MySQLDatabase implements IDatabase {
                             "`id` BIGINT(50) auto_increment, " +
                             "`uuid` VARCHAR(50), " +
                             "`reputation` BIGINT(50), " +
+                            "`acceptReputation` BOOLEAN, " +
                             "PRIMARY KEY (`id`) USING BTREE);");
             handle.execute("CREATE TABLE IF NOT EXISTS `" + this.databaseSection.favoritesTableName() + "` (" +
                             "`id` BIGINT(50), " +
