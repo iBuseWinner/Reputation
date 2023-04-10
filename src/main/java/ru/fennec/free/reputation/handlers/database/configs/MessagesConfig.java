@@ -74,7 +74,8 @@ public interface MessagesConfig {
                 "  &a/reputation <Игрок> -&f посмотреть информацию об онлайн игроке",
                 "  &a/reputation give <Игрок> -&f прибавить очко репутации игроку",
                 "  &a/reputation top -&f показать топ игроков по репутации",
-                "  &a/reputation top online -&f показать топ онлайн игроков по репутации"})
+                "  &a/reputation top online -&f показать топ онлайн игроков по репутации",
+                "  &a/reputation reject -&f отказаться от репутации"})
         @ConfComments("Ответ Администратору, когда он запрашивает список команд")
         List<String> helpStrings();
 
@@ -162,6 +163,16 @@ public interface MessagesConfig {
         @ConfDefault.DefaultString("${prefix} &fИгрок &a%player_name%&f поделился с Вами отрицательной репутацией!")
         @ConfComments("Сообщение, когда у игрока отнимают репутацию")
         String youGotNegativeReputation();
+
+        @AnnotationBasedSorter.Order(21)
+        @ConfDefault.DefaultString("${prefix} &aВы отказались от репутации!")
+        @ConfComments("Сообщение, когда игрок отказывается от репутации")
+        String rejectReputation();
+
+        @AnnotationBasedSorter.Order(22)
+        @ConfDefault.DefaultString("${prefix} &aВы вновь можете взаимодействовать с репутацией!")
+        @ConfComments("Сообщение, когда игрок возвращается к репутации")
+        String removeRejectionReputation();
     }
 
 }

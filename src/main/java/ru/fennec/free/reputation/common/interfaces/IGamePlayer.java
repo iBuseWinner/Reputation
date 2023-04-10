@@ -27,6 +27,8 @@ public interface IGamePlayer {
 
     void setPlayerReputation(long playerReputation);
 
+    void setAcceptReputation(boolean acceptReputation);
+
     void setIDsWhomGaveReputation(List<Long> IDsWhomGaveReputation);
 
     void setIDsWhomTookReputation(List<Long> IDsWhomTookReputation);

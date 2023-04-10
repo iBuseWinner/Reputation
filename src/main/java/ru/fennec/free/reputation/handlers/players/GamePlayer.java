@@ -83,6 +83,7 @@ public class GamePlayer implements IGamePlayer {
         this.playerReputation = playerReputation;
     }
 
+    @Override
     public void setAcceptReputation(boolean acceptReputation) {
         this.acceptReputation = acceptReputation;
     }

@@ -66,7 +66,7 @@ public interface MainConfig {
     @AnnotationBasedSorter.Order(4)
     @ConfDefault.DefaultBoolean(false)
     @ConfComments("Разрешить ли отнимать игрокам репутацию друг у друга")
-    boolean tookReputation();
+    boolean takeReputation();
 
     @AnnotationBasedSorter.Order(5)
     @ConfDefault.DefaultBoolean(false)
@@ -82,6 +82,11 @@ public interface MainConfig {
     @ConfDefault.DefaultBoolean(false)
     @ConfComments("Поставить true, если не хотите, чтобы игрок не мог выдавать +1 и -1 репутацию одному и тому же игроку")
     boolean oneReputationPerPlayer();
+
+    @AnnotationBasedSorter.Order(4)
+    @ConfDefault.DefaultBoolean(false)
+    @ConfComments("Разрешить ли отказываться от репутации")
+    boolean rejectReputation();
 
     enum DatabaseType {
         SQL, //Локальная база данных (В папке плагина)
