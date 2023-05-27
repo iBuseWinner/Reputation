@@ -16,6 +16,8 @@ import ru.fennec.free.reputation.handlers.messages.PlaceholderHook;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
 import ru.fennec.free.reputation.handlers.players.TitlesHandler;
 
+import java.util.logging.Level;
+
 public final class ReputationPlugin extends JavaPlugin {
 
     private ConfigManager<MainConfig> mainConfigManager;
@@ -58,6 +60,9 @@ public final class ReputationPlugin extends JavaPlugin {
         this.messageManager = new MessageManager(messagesConfigManager, titlesHandler);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new PlaceholderHook(getDescription().getVersion(), playersContainer, database, titlesHandler).register();
+        } else {
+            getLogger().log(Level.WARNING, "Плагин PlaceholderAPI не обнаружен на данном сервере!");
+            getLogger().log(Level.WARNING, "Плагин Reputation может нестабильно работать!");
         }
     }
 
