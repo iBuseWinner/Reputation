@@ -39,7 +39,7 @@ public interface MessagesConfig {
 
         @AnnotationBasedSorter.Order(4)
         @ConfDefault.DefaultString("${prefix} &fИгроку &a%player_name%&f было установлено &a${player_reputation}&f очков репутации!")
-        @ConfComments("Сообщение, когда игроку устанавливается кол-во очков репутации")
+        @ConfComments("Сообщение, когда игроку устанавливается/добавляется кол-во очков репутации")
         String playerSet();
 
         @AnnotationBasedSorter.Order(5)
@@ -51,7 +51,8 @@ public interface MessagesConfig {
         @ConfDefault.DefaultStrings({"${prefix} &fАктуальный список команд плагина для Администраторов:",
                 "  &a/reputation reload -&f перезагрузить конфиги плагина (не трогает БД)",
                 "  &a/reputation player <Игрок> reset -&f сбросить репутацию игроку",
-                "  &a/reputation player <Игрок> set <Очки> -&f установить репутацию игроку"})
+                "  &a/reputation player <Игрок> set <Очки> -&f установить репутацию игроку",
+                "  &a/reputation player <Игрок> add <Очки> -&f добавить репутацию игроку"})
         @ConfComments("Ответ Администратору, когда он запрашивает список команд")
         List<String> helpStrings();
     }
