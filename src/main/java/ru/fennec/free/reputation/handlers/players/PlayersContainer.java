@@ -71,7 +71,8 @@ public class PlayersContainer {
 //                .stream().max(Comparator.comparingLong(IGamePlayer::getPlayerReputation)).get();
         return cachedPlayers
                 .stream()
-                .sorted(Comparator.comparingLong(IGamePlayer::getPlayerReputation))
+//                .sorted((f1, f2) -> Long.compare(f2.getPlayerReputation(), f1.getPlayerReputation()))
+                .sorted(Comparator.comparingLong(IGamePlayer::getPlayerReputation).reversed())
                 .collect(Collectors.toList())
                 .get(place);
     }
