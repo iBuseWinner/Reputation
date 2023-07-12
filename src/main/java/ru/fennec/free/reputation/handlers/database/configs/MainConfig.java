@@ -78,6 +78,11 @@ public interface MainConfig {
     @ConfComments("Репутация, устанавливаемая игроку при первом входе")
     long defaultReputation();
 
+    @AnnotationBasedSorter.Order(6)
+    @ConfDefault.DefaultBoolean(true)
+    @ConfComments("Разрешить ли игроку взаимодействовать с репутацией при первом входе (/rep reject)")
+    boolean defaultAcceptReputation();
+
     @AnnotationBasedSorter.Order(7)
     @ConfDefault.DefaultBoolean(false)
     @ConfComments("Поставить true, если не хотите, чтобы игрок не мог выдавать +1 и -1 репутацию одному и тому же игроку")
