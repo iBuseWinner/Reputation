@@ -201,7 +201,7 @@ public class ReputationCommand extends AbstractCommand {
 
         AtomicLong maxReputationCanGive = new AtomicLong();
         mainConfig.maxReputation().forEach((permission, reputation) -> {
-            if (commandSender.hasPermission("reputation.max."+permission)) maxReputationCanGive.set(reputation);
+            if (commandSender.hasPermission("reputation.max." + permission)) maxReputationCanGive.set(reputation);
         });
 
         boolean canGive = false;
@@ -277,7 +277,7 @@ public class ReputationCommand extends AbstractCommand {
 
         AtomicLong maxReputationCanGive = new AtomicLong();
         mainConfig.maxReputation().forEach((permission, reputation) -> {
-            if (commandSender.hasPermission("reputation.max."+permission)) maxReputationCanGive.set(reputation);
+            if (commandSender.hasPermission("reputation.max." + permission)) maxReputationCanGive.set(reputation);
         });
 
         boolean canGive = false;
@@ -348,17 +348,19 @@ public class ReputationCommand extends AbstractCommand {
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
                 return;
             }
-            boolean isNumber = false;
-            if (reputation.chars().allMatch(Character::isDigit)) isNumber = true;
-            else if (reputation.startsWith("-") && reputation.substring(1).chars().allMatch(Character::isDigit)) isNumber = true;
+            boolean isNumber = reputation.matches("[+-]?[0-9]+");
 
             if (isNumber) {
-                ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.SET);
-                Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
-                if (!reputationUpdateEvent.isCancelled()) {
-                    targetGamePlayer.setPlayerReputation(Long.parseLong(reputation));
+                try {
+                    ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.SET);
+                    Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
+                    if (!reputationUpdateEvent.isCancelled()) {
+                        targetGamePlayer.setPlayerReputation(Long.parseLong(reputation));
 
-                    commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                    }
+                } catch (NumberFormatException e) {
+                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().numberIsTooLong()));
                 }
                 return;
             }
@@ -386,17 +388,19 @@ public class ReputationCommand extends AbstractCommand {
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
                 return;
             }
-            boolean isNumber = false;
-            if (reputation.chars().allMatch(Character::isDigit)) isNumber = true;
-            else if (reputation.startsWith("-") && reputation.substring(1).chars().allMatch(Character::isDigit)) isNumber = true;
+            boolean isNumber = reputation.matches("[+-]?[0-9]+");
 
             if (isNumber) {
-                ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.ADD);
-                Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
-                if (!reputationUpdateEvent.isCancelled()) {
-                    targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation()+Long.parseLong(reputation));
+                try {
+                    ReputationUpdateEvent reputationUpdateEvent = new ReputationUpdateEvent(targetGamePlayer, UpdateAction.ADD);
+                    Bukkit.getPluginManager().callEvent(reputationUpdateEvent);
+                    if (!reputationUpdateEvent.isCancelled()) {
+                        targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + Long.parseLong(reputation));
 
-                    commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                    }
+                } catch (NumberFormatException e) {
+                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().numberIsTooLong()));
                 }
                 return;
             }
@@ -478,6 +482,11 @@ public class ReputationCommand extends AbstractCommand {
     private void rejectReputation(CommandSender commandSender) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().notAPlayer()));
+            return;
+        }
+
+        if (!mainConfig.rejectReputation()) {
+            commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().rejectionDisabled()));
             return;
         }
 
