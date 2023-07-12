@@ -5,6 +5,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IDatabase;
+import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
 import ru.fennec.free.reputation.handlers.database.date.MySQLDatabase;
@@ -79,7 +80,9 @@ public final class ReputationPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        for (IGamePlayer gamePlayer : playersContainer.getAllCachedPlayers()) {
+            database.savePlayer(gamePlayer);
+        }
     }
 
     public void updateConfigData(ConfigManager<MainConfig> mainConfigManager, ConfigManager<MessagesConfig> messagesConfigManager) {
