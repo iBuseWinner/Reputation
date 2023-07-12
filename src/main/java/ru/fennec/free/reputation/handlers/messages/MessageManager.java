@@ -11,7 +11,7 @@ import ru.fennec.free.reputation.handlers.players.TitlesHandler;
 public class MessageManager {
 
     private MessagesConfig messagesConfig;
-    private TitlesHandler titlesHandler;
+    private final TitlesHandler titlesHandler;
 
     public MessageManager(ConfigManager<MessagesConfig> messagesConfigManager, TitlesHandler titlesHandler) {
         this.messagesConfig = messagesConfigManager.getConfigData();
