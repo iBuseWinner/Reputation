@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class TitlesHandler {
 
@@ -40,13 +41,20 @@ public class TitlesHandler {
     }
 
     private void sortMap() {
-        LinkedHashMap<Long, String> tempMap = new LinkedHashMap<>(this.sortedMap);
-        this.sortedMap.entrySet()
+//        LinkedHashMap<Long, String> tempMap = new LinkedHashMap<>(this.sortedMap);
+//        this.sortedMap.entrySet()
+//                .stream()
+//                .sorted(Map.Entry.comparingByKey(Comparator.naturalOrder()))
+//                .forEachOrdered(x -> tempMap.put(x.getKey(), x.getValue()));
+//        this.sortedMap.clear();
+//        this.sortedMap.putAll(tempMap);
+
+        this.sortedMap = this.sortedMap.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
-                .forEachOrdered(x -> tempMap.put(x.getKey(), x.getValue()));
-        this.sortedMap.clear();
-        this.sortedMap.putAll(tempMap);
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+        this.sortedMap.forEach((key, value) -> System.out.println("Key: "+key+", value: "+value));
     }
 
 }
