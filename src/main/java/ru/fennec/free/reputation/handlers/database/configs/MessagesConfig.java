@@ -38,7 +38,7 @@ public interface MessagesConfig {
         String playerReset();
 
         @AnnotationBasedSorter.Order(4)
-        @ConfDefault.DefaultString("${prefix} &fИгроку &a%player_name%&f было установлено &a${player_reputation}&f очков репутации!")
+        @ConfDefault.DefaultString("${prefix} &fИгроку &a${player_name}&f было установлено &a${player_reputation}&f очков репутации!")
         @ConfComments("Сообщение, когда игроку устанавливается/добавляется кол-во очков репутации")
         String playerSet();
 
@@ -46,6 +46,11 @@ public interface MessagesConfig {
         @ConfDefault.DefaultString("${prefix} &cЗначение должно быть числом!")
         @ConfComments("Сообщение, когда в команде вместо числа указывается что-то другое")
         String mustBeNumber();
+
+        @AnnotationBasedSorter.Order(5)
+        @ConfDefault.DefaultString("${prefix} &cЧисло превышает максимальное значение типа Long!")
+        @ConfComments("Сообщение, когда в команде число очень большое")
+        String numberIsTooLong();
 
         @AnnotationBasedSorter.Order(6)
         @ConfDefault.DefaultStrings({"${prefix} &fАктуальный список команд плагина для Администраторов:",
@@ -106,7 +111,7 @@ public interface MessagesConfig {
         String cantSelf();
 
         @AnnotationBasedSorter.Order(9)
-        @ConfDefault.DefaultString("${prefix} &fВы успешно выдали очко репутации игроку &a%player_name%&f!")
+        @ConfDefault.DefaultString("${prefix} &fВы успешно выдали очко репутации игроку &a{player_name}&f!")
         @ConfComments("Сообщение, когда игроку выдали очко репутации")
         String gaveReputation();
 
@@ -136,7 +141,7 @@ public interface MessagesConfig {
         String alreadyTookReputation();
 
         @AnnotationBasedSorter.Order(15)
-        @ConfDefault.DefaultString("${prefix} &fВы успешно отняли очко репутации у игрока &a%player_name%&f!")
+        @ConfDefault.DefaultString("${prefix} &fВы успешно отняли очко репутации у игрока &a{player_name}&f!")
         @ConfComments("Сообщение, когда у игрока отняли очко репутации")
         String tookReputation();
 
@@ -151,17 +156,17 @@ public interface MessagesConfig {
         String youDeclinedReputation();
 
         @AnnotationBasedSorter.Order(18)
-        @ConfDefault.DefaultString("${prefix} &cИгрок&e %player_name%&c отказался от репутации!")
+        @ConfDefault.DefaultString("${prefix} &cИгрок&e {player_name}&c отказался от репутации!")
         @ConfComments("Сообщение, если указанный игрок отказался от репутации")
         String playerDeclinedReputation();
 
         @AnnotationBasedSorter.Order(19)
-        @ConfDefault.DefaultString("${prefix} &fИгрок &a%player_name%&f поделился с Вами положительной репутацией!")
+        @ConfDefault.DefaultString("${prefix} &fИгрок &a{player_name}&f поделился с Вами положительной репутацией!")
         @ConfComments("Сообщение, когда игроку добавляют репутацию")
         String youGotReputation();
 
         @AnnotationBasedSorter.Order(20)
-        @ConfDefault.DefaultString("${prefix} &fИгрок &a%player_name%&f поделился с Вами отрицательной репутацией!")
+        @ConfDefault.DefaultString("${prefix} &fИгрок &a{player_name}&f поделился с Вами отрицательной репутацией!")
         @ConfComments("Сообщение, когда у игрока отнимают репутацию")
         String youGotNegativeReputation();
 
@@ -174,6 +179,11 @@ public interface MessagesConfig {
         @ConfDefault.DefaultString("${prefix} &aВы вновь можете взаимодействовать с репутацией!")
         @ConfComments("Сообщение, когда игрок возвращается к репутации")
         String removeRejectionReputation();
+
+        @AnnotationBasedSorter.Order(23)
+        @ConfDefault.DefaultString("${prefix} &cДанная функция отключена Администрацией сервера!")
+        @ConfComments("Сообщение, когда отказ от репутации выключен в конфигурации плагина")
+        String rejectionDisabled();
     }
 
 }
