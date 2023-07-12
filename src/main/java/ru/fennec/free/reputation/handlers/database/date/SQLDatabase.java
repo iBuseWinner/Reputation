@@ -61,10 +61,11 @@ public class SQLDatabase implements IDatabase {
     public void insertNewPlayer(IGamePlayer gamePlayer) {
         jdbi.useHandle(handle -> {
             handle.execute("INSERT OR IGNORE INTO \"" + this.databaseSection.tableName() + "\" " +
-                            "(`uuid`, `reputation`) " +
-                            "VALUES (?, ?);",
+                            "(`uuid`, `reputation`, `acceptReputation`) " +
+                            "VALUES (?, ?, ?);",
                     gamePlayer.getGamePlayerUUID().toString(),
-                    mainConfig.defaultReputation());
+                    mainConfig.defaultReputation(),
+                    mainConfig.defaultAcceptReputation());
         });
     }
 
