@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /***
  * Используется менеджер для работы с конфигами dazzleConf
@@ -52,7 +54,7 @@ public final class ConfigManager<C> {
     /***
      * Метод перезагрузки конфигурационного файла
      */
-    public void reloadConfig() {
+    public void reloadConfig(Logger logger) {
         try {
             configData = configHelper.reloadConfigData();
         } catch (IOException ex) {
@@ -60,13 +62,13 @@ public final class ConfigManager<C> {
 
         } catch (ConfigFormatSyntaxException ex) {
             configData = configHelper.getFactory().loadDefaults();
-            System.err.println("Вы нарушили синтаксис YAML. "
+            logger.log(Level.WARNING, "Вы нарушили синтаксис YAML. "
                     + "Проверьте Ваш конфиг с помощью онлайн сервиса https://yaml-online-parser.appspot.com/");
             ex.printStackTrace();
 
         } catch (InvalidConfigException ex) {
             configData = configHelper.getFactory().loadDefaults();
-            System.err.println("Одно из значений в Вашем конфиге введено неверно! "
+            logger.log(Level.WARNING, "Одно из значений в Вашем конфиге введено неверно! "
                     + "Проверьте, пожалуйста, что Вы всё записываете верно.");
             ex.printStackTrace();
         }
