@@ -53,8 +53,6 @@ public class TitlesHandler {
                 .stream()
                 .sorted(Map.Entry.comparingByKey(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
-        this.sortedMap.forEach((key, value) -> System.out.println("Key: "+key+", value: "+value));
     }
 
 }
