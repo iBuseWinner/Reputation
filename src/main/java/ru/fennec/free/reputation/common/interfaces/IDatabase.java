@@ -16,6 +16,12 @@ public interface IDatabase {
 
     void deleteAction(IGamePlayer gamePlayer);
 
+    void saveCommand(IGamePlayer acting, String commandId);
+
+    void deleteCommand(IGamePlayer gamePlayer);
+
+    boolean isUsedCommand(IGamePlayer gamePlayer, String commandId);
+
     IGamePlayer wrapPlayer(Player player);
 
     UUID getTopGamePlayerUUIDByReputation(int place);

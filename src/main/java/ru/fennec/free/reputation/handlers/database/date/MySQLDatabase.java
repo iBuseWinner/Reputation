@@ -9,6 +9,7 @@ import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.date.mappers.GamePlayerMapper;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MySQLDatabase implements IDatabase {
@@ -43,6 +44,9 @@ public class MySQLDatabase implements IDatabase {
                             "`id` BIGINT(50), " +
                             "`favorite` BIGINT(50), " +
                             "`action` VARCHAR(50));");
+            handle.execute("CREATE TABLE IF NOT EXISTS `" + this.databaseSection.commandsTableName() + "` (" +
+                    "`id` BIGINT(50), " + //player id from main table
+                    "`commandId` VARCHAR(50));"); //Таблица с историей команд игроков
         });
     }
 
@@ -98,6 +102,52 @@ public class MySQLDatabase implements IDatabase {
                     gamePlayer.getId(),
                     gamePlayer.getId());
         });
+    }
+
+    /*
+    Добавить новую команду игрока в бд
+     */
+    @Override
+    public void saveCommand(IGamePlayer acting, String commandId) {
+        this.jdbi.useHandle(handle -> {
+            handle.execute("INSERT INTO `" + this.databaseSection.commandsTableName() + "` " +
+                            "(`id`, `commandId`) VALUES (?, ?);",
+                    acting.getId(),
+                    commandId);
+        });
+    }
+
+    /*
+    Удалить всю историю с командами, связанную с определённым игроком
+     */
+    @Override
+    public void deleteCommand(IGamePlayer gamePlayer) {
+        this.jdbi.useHandle(handle -> {
+            handle.execute("DELETE FROM `" + this.databaseSection.commandsTableName() + "` " +
+                            "WHERE `id`=? OR `favorite`=?",
+                    gamePlayer.getId(),
+                    gamePlayer.getId());
+        });
+    }
+
+    /*
+    Узнать была ли использована команда
+     */
+    @Override
+    public boolean isUsedCommand(IGamePlayer gamePlayer, String commandId) {
+        AtomicBoolean atomicBoolean = new AtomicBoolean();
+        try {
+            this.jdbi.useHandle(handle -> {
+                int count = handle.createQuery("SELECT COUNT(1) FROM `"+ this.databaseSection.commandsTableName() +"` " +
+                                "WHERE `id`=? AND `commandId`=?;")
+                        .bind(0, gamePlayer.getId())
+                        .bind(1, commandId)
+                        .mapTo(Integer.class)
+                        .first();
+                atomicBoolean.set(count == 1);
+            });
+        } catch (IllegalStateException ignored) {  }
+        return atomicBoolean.get();
     }
 
     /*

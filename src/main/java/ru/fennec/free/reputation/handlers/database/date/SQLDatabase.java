@@ -12,6 +12,7 @@ import ru.fennec.free.reputation.handlers.database.date.mappers.GamePlayerMapper
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SQLDatabase implements IDatabase {
@@ -48,9 +49,12 @@ public class SQLDatabase implements IDatabase {
                     "`acceptReputation` BOOLEAN, " +
                     "PRIMARY KEY (`id` AUTOINCREMENT));"); //Таблица с репутацией игроков
             handle.execute("CREATE TABLE IF NOT EXISTS \"" + this.databaseSection.favoritesTableName() + "\" (" +
-                    "`id` BIGINT(50), " +
-                    "`favorite` BIGINT(50), " +
+                    "`id` BIGINT(50), " + //player id from main table
+                    "`favorite` BIGINT(50), " + //target player id from main table
                     "`action` VARCHAR(50));"); //Таблица с историей фаворитов игроков
+            handle.execute("CREATE TABLE IF NOT EXISTS \"" + this.databaseSection.commandsTableName() + "\" (" +
+                    "`id` BIGINT(50), " + //player id from main table
+                    "`commandId` BIGINT(50));"); //Таблица с историей команд игроков
         });
     }
 
@@ -106,6 +110,49 @@ public class SQLDatabase implements IDatabase {
                     gamePlayer.getId(),
                     gamePlayer.getId());
         });
+    }
+
+    /*
+    Добавить новую команду игрока в бд
+     */
+    @Override
+    public void saveCommand(IGamePlayer acting, String commandId) {
+        this.jdbi.useHandle(handle -> {
+            handle.execute("INSERT INTO \"" + this.databaseSection.commandsTableName() + "\" " +
+                            "(`id`, `commandId`) VALUES (?, ?);",
+                    acting.getId(),
+                    commandId);
+        });
+    }
+
+    /*
+    Удалить всю историю с командами, связанную с определённым игроком
+     */
+    @Override
+    public void deleteCommand(IGamePlayer gamePlayer) {
+        this.jdbi.useHandle(handle -> {
+            handle.execute("DELETE FROM \"" + this.databaseSection.commandsTableName() + "\" WHERE `id`=? OR `favorite`=?",
+                    gamePlayer.getId(),
+                    gamePlayer.getId());
+        });
+    }
+
+    /*
+    Узнать была ли использована команда
+     */
+    @Override
+    public boolean isUsedCommand(IGamePlayer gamePlayer, String commandId) {
+        AtomicBoolean atomicBoolean = new AtomicBoolean();
+        try {
+            this.jdbi.useHandle(handle -> {
+                int count = handle.createQuery("SELECT COUNT(1) FROM `"+ this.databaseSection.commandsTableName() +"` WHERE `id`=?")
+                        .bind(0, gamePlayer.getId())
+                        .mapTo(Integer.class)
+                        .first();
+                atomicBoolean.set(count == 1);
+            });
+        } catch (IllegalStateException ignored) {  }
+        return atomicBoolean.get();
     }
 
     /*
