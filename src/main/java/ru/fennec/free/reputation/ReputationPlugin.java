@@ -12,6 +12,7 @@ import ru.fennec.free.reputation.handlers.database.date.MySQLDatabase;
 import ru.fennec.free.reputation.handlers.database.date.SQLDatabase;
 import ru.fennec.free.reputation.handlers.listeners.PlayerConnectionListener;
 import ru.fennec.free.reputation.handlers.listeners.ReputationCommand;
+import ru.fennec.free.reputation.handlers.listeners.ReputationUpdatedListener;
 import ru.fennec.free.reputation.handlers.messages.MessageManager;
 import ru.fennec.free.reputation.handlers.messages.PlaceholderHook;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
@@ -27,7 +28,9 @@ public final class ReputationPlugin extends JavaPlugin {
     private PlayersContainer playersContainer;
     private MessageManager messageManager;
     private PlayerConnectionListener playerConnectionListener;
+    private ReputationUpdatedListener reputationUpdatedListener;
     private TitlesHandler titlesHandler;
+    private PlaceholderHook placeholderHook;
 
     @Override
     public void onEnable() {
@@ -40,9 +43,9 @@ public final class ReputationPlugin extends JavaPlugin {
 
     private void loadConfigs() {
         this.mainConfigManager = ConfigManager.create(this.getDataFolder().toPath(), "config.yml", MainConfig.class);
-        this.mainConfigManager.reloadConfig();
+        this.mainConfigManager.reloadConfig(getLogger());
         this.messagesConfigManager = ConfigManager.create(this.getDataFolder().toPath(), "lang.yml", MessagesConfig.class);
-        this.messagesConfigManager.reloadConfig();
+        this.messagesConfigManager.reloadConfig(getLogger());
     }
 
     private void initializeDatabase() {
@@ -60,7 +63,8 @@ public final class ReputationPlugin extends JavaPlugin {
         this.titlesHandler = new TitlesHandler(mainConfigManager);
         this.messageManager = new MessageManager(messagesConfigManager, titlesHandler);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new PlaceholderHook(getDescription().getVersion(), playersContainer, database, titlesHandler).register();
+            this.placeholderHook = new PlaceholderHook(getDescription().getVersion(), playersContainer, database, titlesHandler, this.mainConfigManager);
+            this.placeholderHook.register();
         } else {
             getLogger().log(Level.WARNING, "Плагин PlaceholderAPI не обнаружен на данном сервере!");
             getLogger().log(Level.WARNING, "Плагин Reputation может нестабильно работать!");
@@ -68,14 +72,18 @@ public final class ReputationPlugin extends JavaPlugin {
     }
 
     private void registerListeners() {
+        PluginManager pluginManager = Bukkit.getPluginManager();
         this.playerConnectionListener = new PlayerConnectionListener(this, mainConfigManager, messagesConfigManager, database,
                 playersContainer, messageManager);
-        PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(playerConnectionListener, this);
+        if (mainConfigManager.getConfigData().commands().enable()) {
+            this.reputationUpdatedListener = new ReputationUpdatedListener(mainConfigManager, database, messageManager);
+            pluginManager.registerEvents(reputationUpdatedListener, this);
+        }
     }
 
     private void registerCommand() {
-        new ReputationCommand(this, messagesConfigManager, mainConfigManager, database, playersContainer, messageManager, titlesHandler);
+        new ReputationCommand(this, messagesConfigManager, mainConfigManager, database, playersContainer, messageManager);
     }
 
     @Override
@@ -85,9 +93,19 @@ public final class ReputationPlugin extends JavaPlugin {
         }
     }
 
-    public void updateConfigData(ConfigManager<MainConfig> mainConfigManager, ConfigManager<MessagesConfig> messagesConfigManager) {
-        this.playerConnectionListener.updateConfigData(mainConfigManager, messagesConfigManager);
-        this.messageManager.updateConfigData(messagesConfigManager);
-        this.titlesHandler.updateConfigData(mainConfigManager);
+    public void updateConfigData() {
+        this.playerConnectionListener.updateConfigData(this.mainConfigManager, this.messagesConfigManager);
+        if (mainConfigManager.getConfigData().commands().enable()) {
+            if (this.reputationUpdatedListener == null) {
+                this.reputationUpdatedListener = new ReputationUpdatedListener(mainConfigManager, database, messageManager);
+                Bukkit.getPluginManager().registerEvents(reputationUpdatedListener, this);
+            }
+            this.reputationUpdatedListener.updateConfigData(this.mainConfigManager);
+        }
+        this.messageManager.updateConfigData(this.messagesConfigManager);
+        this.titlesHandler.updateConfigData(this.mainConfigManager);
+        if (this.placeholderHook != null) {
+            this.placeholderHook.updateConfigData(this.mainConfigManager);
+        }
     }
 }
