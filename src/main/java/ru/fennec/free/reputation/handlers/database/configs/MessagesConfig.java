@@ -33,7 +33,7 @@ public interface MessagesConfig {
         String noPermission();
 
         @AnnotationBasedSorter.Order(3)
-        @ConfDefault.DefaultString("${prefix} &fИнформация об игроке &a%player_name%&f успешно сброшена!")
+        @ConfDefault.DefaultString("${prefix} &fИнформация об игроке &a${player_name}&f успешно сброшена!")
         @ConfComments("Сообщение, когда сбрасывается информация об игроке")
         String playerReset();
 
@@ -111,7 +111,7 @@ public interface MessagesConfig {
         String cantSelf();
 
         @AnnotationBasedSorter.Order(9)
-        @ConfDefault.DefaultString("${prefix} &fВы успешно выдали очко репутации игроку &a{player_name}&f!")
+        @ConfDefault.DefaultString("${prefix} &fВы успешно выдали очко репутации игроку &a${player_name}&f!")
         @ConfComments("Сообщение, когда игроку выдали очко репутации")
         String gaveReputation();
 
@@ -120,7 +120,7 @@ public interface MessagesConfig {
         String selfInfo();
 
         @AnnotationBasedSorter.Order(11)
-        @ConfDefault.DefaultString("${prefix} &fУ игрока &a%player_name%&f сейчас &a${player_reputation}&f очков репутации, его звание: &a${player_title}&f!")
+        @ConfDefault.DefaultString("${prefix} &fУ игрока &a${player_name}&f сейчас &a${player_reputation}&f очков репутации, его звание: &a${player_title}&f!")
         String playerInfo();
 
         @AnnotationBasedSorter.Order(12)
@@ -141,7 +141,7 @@ public interface MessagesConfig {
         String alreadyTookReputation();
 
         @AnnotationBasedSorter.Order(15)
-        @ConfDefault.DefaultString("${prefix} &fВы успешно отняли очко репутации у игрока &a{player_name}&f!")
+        @ConfDefault.DefaultString("${prefix} &fВы успешно отняли очко репутации у игрока &a${player_name}&f!")
         @ConfComments("Сообщение, когда у игрока отняли очко репутации")
         String tookReputation();
 
@@ -156,17 +156,17 @@ public interface MessagesConfig {
         String youDeclinedReputation();
 
         @AnnotationBasedSorter.Order(18)
-        @ConfDefault.DefaultString("${prefix} &cИгрок&e {player_name}&c отказался от репутации!")
+        @ConfDefault.DefaultString("${prefix} &cИгрок&e ${player_name}&c отказался от репутации!")
         @ConfComments("Сообщение, если указанный игрок отказался от репутации")
         String playerDeclinedReputation();
 
         @AnnotationBasedSorter.Order(19)
-        @ConfDefault.DefaultString("${prefix} &fИгрок &a{player_name}&f поделился с Вами положительной репутацией!")
+        @ConfDefault.DefaultString("${prefix} &fИгрок &a${player_name}&f поделился с Вами положительной репутацией!")
         @ConfComments("Сообщение, когда игроку добавляют репутацию")
         String youGotReputation();
 
         @AnnotationBasedSorter.Order(20)
-        @ConfDefault.DefaultString("${prefix} &fИгрок &a{player_name}&f поделился с Вами отрицательной репутацией!")
+        @ConfDefault.DefaultString("${prefix} &fИгрок &a${player_name}&f поделился с Вами отрицательной репутацией!")
         @ConfComments("Сообщение, когда у игрока отнимают репутацию")
         String youGotNegativeReputation();
 
