@@ -19,6 +19,7 @@ import ru.fennec.free.reputation.handlers.messages.MessageManager;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -51,20 +52,29 @@ public class ReputationCommand extends AbstractCommand {
         switch (args.length) {
             case 1:
                 switch (args[0].toLowerCase()) {
-                    case "help", "give", "take", "player" -> sendHelp(commandSender); // /rep help
-                    case "info", "me", "self" -> sendSelfInfo(commandSender); // /rep me
-                    case "reload" -> reloadPlugin(commandSender); // /rep reload
-                    case "top" -> sendTop(commandSender); // /rep top
-                    case "reject" -> rejectReputation(commandSender); // /rep reject
-                    case "about" -> aboutPlugin(commandSender);
-                    default -> sendPlayerInfo(commandSender, args[0]); // /rep <Target name>
+                    case "help":
+                    case "give":
+                    case "take":
+                    case "player": {
+                        sendHelp(commandSender); // /rep help
+                    }
+                    case "info":
+                    case "me":
+                    case "self": {
+                        sendSelfInfo(commandSender); // /rep me
+                    }
+                    case "reload": reloadPlugin(commandSender); // /rep reload
+                    case "top": sendTop(commandSender); // /rep top
+                    case "reject": rejectReputation(commandSender); // /rep reject
+                    case "about": aboutPlugin(commandSender);
+                    default: sendPlayerInfo(commandSender, args[0]); // /rep <Target name>
                 }
                 break;
             case 2:
                 switch (args[0].toLowerCase()) {
-                    case "give" -> giveReputation(commandSender, args[1]); // /rep give <Target name>
-                    case "take" -> takeReputation(commandSender, args[1]); // /rep take <Target name>
-                    case "top" -> sendTopOnline(commandSender); // /rep top online /rep top lalalal
+                    case "give": giveReputation(commandSender, args[1]); // /rep give <Target name>
+                    case "take": takeReputation(commandSender, args[1]); // /rep take <Target name>
+                    case "top": sendTopOnline(commandSender); // /rep top online /rep top lalalal
                 }
                 break;
             case 3:
@@ -522,7 +532,7 @@ public class ReputationCommand extends AbstractCommand {
         List<String> tab = new ArrayList<>();
         switch (args.length) {
             case 1:
-                tab.addAll(List.of("help", "me", "top", "give", "about"));
+                tab.addAll(Arrays.asList("help", "me", "top", "give", "about"));
                 if (mainConfig.takeReputation()) tab.add("take");
                 if (mainConfig.rejectReputation()) tab.add("reject");
                 if (commandSender.hasPermission("reputation.admin.reload")) tab.add("reload");

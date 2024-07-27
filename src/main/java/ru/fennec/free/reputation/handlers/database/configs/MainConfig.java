@@ -6,6 +6,7 @@ import space.arim.dazzleconf.annote.SubSection;
 import space.arim.dazzleconf.sorter.AnnotationBasedSorter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -138,9 +139,9 @@ public interface MainConfig {
         static List<ReputationNeeded> defaultNeeds() {
             List<ReputationNeeded> needs = new ArrayList<>();
             needs.add(ReputationNeeded.of("5", false, 5,
-                    List.of("say У меня 5 очков репутации, ыы", "console!say у ${player_name} 5 очков репутации, ыы")));
-            needs.add(ReputationNeeded.of("10", true, 10, List.of("say я впервые достиг 10 очков репутации, поздравьте меня, пжшка!")));
-            needs.add(ReputationNeeded.of("500", false, 500, List.of("msg BlackBaroness пошли покушаем за счёт заведения")));
+                    Arrays.asList("say У меня 5 очков репутации, ыы", "console!say у ${player_name} 5 очков репутации, ыы")));
+            needs.add(ReputationNeeded.of("10", true, 10, Arrays.asList("say я впервые достиг 10 очков репутации, поздравьте меня, пжшка!")));
+            needs.add(ReputationNeeded.of("500", false, 500, Arrays.asList("msg BlackBaroness пошли покушаем за счёт заведения")));
             return needs;
         }
 

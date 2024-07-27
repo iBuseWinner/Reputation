@@ -50,8 +50,12 @@ public final class ReputationPlugin extends JavaPlugin {
 
     private void initializeDatabase() {
         switch (mainConfigManager.getConfigData().database().type()) {
-            case MYSQL -> this.database = new MySQLDatabase(this.mainConfigManager);
-            case SQL -> this.database = new SQLDatabase(this.mainConfigManager);
+            case MYSQL: {
+                this.database = new MySQLDatabase(this.mainConfigManager);
+            }
+            case SQL: {
+                this.database = new SQLDatabase(this.mainConfigManager);
+            }
         }
         if (this.database != null) {
             this.database.initializeTables();

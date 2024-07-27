@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'ru.fennec.free'
-version = '3.0.12-БЕТА'
+version = '3.0.13-БЕТА'
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
@@ -34,7 +34,7 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 }
 
-def targetJavaVersion = 16
+def targetJavaVersion = 8
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
