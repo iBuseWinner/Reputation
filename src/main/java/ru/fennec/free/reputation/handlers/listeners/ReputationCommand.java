@@ -57,24 +57,50 @@ public class ReputationCommand extends AbstractCommand {
                     case "take":
                     case "player": {
                         sendHelp(commandSender); // /rep help
+                        break;
                     }
                     case "info":
                     case "me":
                     case "self": {
                         sendSelfInfo(commandSender); // /rep me
+                        break;
                     }
-                    case "reload": reloadPlugin(commandSender); // /rep reload
-                    case "top": sendTop(commandSender); // /rep top
-                    case "reject": rejectReputation(commandSender); // /rep reject
-                    case "about": aboutPlugin(commandSender);
-                    default: sendPlayerInfo(commandSender, args[0]); // /rep <Target name>
+                    case "reload": {
+                        reloadPlugin(commandSender); // /rep reload
+                        break;
+                    }
+                    case "top": {
+                        sendTop(commandSender); // /rep top
+                        break;
+                    }
+                    case "reject": {
+                        rejectReputation(commandSender); // /rep reject
+                        break;
+                    }
+                    case "about": {
+                        aboutPlugin(commandSender);
+                        break;
+                    }
+                    default: {
+                        sendPlayerInfo(commandSender, args[0]); // /rep <Target name>
+                        break;
+                    }
                 }
                 break;
             case 2:
                 switch (args[0].toLowerCase()) {
-                    case "give": giveReputation(commandSender, args[1]); // /rep give <Target name>
-                    case "take": takeReputation(commandSender, args[1]); // /rep take <Target name>
-                    case "top": sendTopOnline(commandSender); // /rep top online /rep top lalalal
+                    case "give": {
+                        giveReputation(commandSender, args[1]); // /rep give <Target name>
+                        break;
+                    }
+                    case "take": {
+                        takeReputation(commandSender, args[1]); // /rep take <Target name>
+                        break;
+                    }
+                    case "top": {
+                        sendTopOnline(commandSender); // /rep top online /rep top lalalal
+                        break;
+                    }
                 }
                 break;
             case 3:
@@ -90,6 +116,8 @@ public class ReputationCommand extends AbstractCommand {
                         setPlayerReputation(commandSender, args[1], args[3]); // /rep player <Target name> set <Amount>
                     } else if (args[2].equalsIgnoreCase("add")) {
                         addPlayerReputation(commandSender, args[1], args[3]); // /rep player <Target name> add <Amount>
+                    } else if (args[2].equalsIgnoreCase("remove")) {
+                        removePlayerReputation(commandSender, args[1], args[3]); // /rep player <Target name> remove <Amount>
                     } else {
                         sendHelp(commandSender);
                     }
@@ -341,7 +369,7 @@ public class ReputationCommand extends AbstractCommand {
             ReputationPreUpdateEvent reputationPreUpdateEvent = new ReputationPreUpdateEvent(targetGamePlayer, UpdateAction.RESET);
             Bukkit.getPluginManager().callEvent(reputationPreUpdateEvent);
             if (!reputationPreUpdateEvent.isCancelled()) {
-                targetGamePlayer.setPlayerReputation(0);
+                targetGamePlayer.setPlayerReputation(mainConfig.defaultReputation());
                 targetGamePlayer.setIDsWhomGaveReputation(new ArrayList<>());
                 playersContainer.getAllCachedPlayers().forEach(cachedPlayer -> cachedPlayer.getIDsWhomGaveReputation().remove(targetGamePlayer.getId()));
                 database.deleteAction(targetGamePlayer);
@@ -422,6 +450,47 @@ public class ReputationCommand extends AbstractCommand {
                         targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + Long.parseLong(reputation));
                         commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
                         ReputationUpdatedEvent reputationUpdatedEvent = new ReputationUpdatedEvent(targetGamePlayer, UpdateAction.ADD);
+                        Bukkit.getPluginManager().callEvent(reputationUpdatedEvent);
+                    }
+                } catch (NumberFormatException e) {
+                    commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().numberIsTooLong()));
+                }
+                return;
+            }
+
+            commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().mustBeNumber()));
+            return;
+        }
+
+        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.adminSection().noPermission()));
+    }
+
+    /*
+    Убрать у игрока очки репутации
+     */
+    private void removePlayerReputation(CommandSender commandSender, String targetName, String reputation) {
+        if (commandSender.hasPermission("reputation.admin.remove")) {
+            Player targetPlayer = Bukkit.getPlayer(targetName);
+            if (targetPlayer == null) {
+                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerIsOffline()));
+                return;
+            }
+
+            IGamePlayer targetGamePlayer = playersContainer.getCachedPlayerByUUID(targetPlayer.getUniqueId());
+            if (targetGamePlayer == null) {
+                commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().playerNotInCache()));
+                return;
+            }
+            boolean isNumber = reputation.matches("[+-]?[0-9]+");
+
+            if (isNumber) {
+                try {
+                    ReputationPreUpdateEvent reputationPreUpdateEvent = new ReputationPreUpdateEvent(targetGamePlayer, UpdateAction.REMOVE);
+                    Bukkit.getPluginManager().callEvent(reputationPreUpdateEvent);
+                    if (!reputationPreUpdateEvent.isCancelled()) {
+                        targetGamePlayer.setPlayerReputation(targetGamePlayer.getPlayerReputation() + Long.parseLong(reputation));
+                        commandSender.sendMessage(messageManager.parsePlaceholders(targetGamePlayer, messagesConfig.adminSection().playerSet()));
+                        ReputationUpdatedEvent reputationUpdatedEvent = new ReputationUpdatedEvent(targetGamePlayer, UpdateAction.REMOVE);
                         Bukkit.getPluginManager().callEvent(reputationUpdatedEvent);
                     }
                 } catch (NumberFormatException e) {
@@ -540,6 +609,7 @@ public class ReputationCommand extends AbstractCommand {
                         commandSender.hasPermission("reputation.admin.reset") ||
                         commandSender.hasPermission("reputation.admin.add")) tab.add("player");
                 Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
+                break;
             case 2:
                 if (args[0].equalsIgnoreCase("top")) tab.add("online");
                 if (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("take"))
@@ -549,12 +619,14 @@ public class ReputationCommand extends AbstractCommand {
                                 commandSender.hasPermission("reputation.admin.reset") ||
                                 commandSender.hasPermission("reputation.admin.add")))
                     Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
+                break;
             case 3:
                 if (args[0].equalsIgnoreCase("player") && args.length > 1 && args[1].length() > 0) {
                     if (commandSender.hasPermission("reputation.admin.set")) tab.add("set");
                     if (commandSender.hasPermission("reputation.admin.reset")) tab.add("reset");
                     if (commandSender.hasPermission("reputation.admin.add")) tab.add("add");
                 }
+                break;
         }
         return tab;
     }

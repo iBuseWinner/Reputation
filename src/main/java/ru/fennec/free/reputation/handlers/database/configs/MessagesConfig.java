@@ -57,7 +57,8 @@ public interface MessagesConfig {
                 "  &a/reputation reload -&f перезагрузить конфиги плагина (не трогает БД)",
                 "  &a/reputation player <Игрок> reset -&f сбросить репутацию игроку",
                 "  &a/reputation player <Игрок> set <Очки> -&f установить репутацию игроку",
-                "  &a/reputation player <Игрок> add <Очки> -&f добавить репутацию игроку"})
+                "  &a/reputation player <Игрок> add <Очки> -&f добавить репутацию игроку",
+                "  &a/reputation player <Игрок> remove <Очки> -&f убрать репутацию игроку"})
         @ConfComments("Ответ Администратору, когда он запрашивает список команд")
         List<String> helpStrings();
     }
