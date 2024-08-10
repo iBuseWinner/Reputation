@@ -35,15 +35,15 @@ public class MySQLDatabase implements IDatabase {
     public void initializeTables() {
         this.jdbi.useHandle(handle -> {
             handle.execute("CREATE TABLE IF NOT EXISTS `" + this.databaseSection.tableName() + "` (" +
-                            "`id` BIGINT(50) auto_increment, " +
-                            "`uuid` VARCHAR(50), " +
-                            "`reputation` BIGINT(50), " +
-                            "`acceptReputation` BOOLEAN, " +
-                            "PRIMARY KEY (`id`) USING BTREE);");
+                    "`id` BIGINT(50) auto_increment, " +
+                    "`uuid` VARCHAR(50), " +
+                    "`reputation` BIGINT(50), " +
+                    "`acceptReputation` BOOLEAN, " +
+                    "PRIMARY KEY (`id`) USING BTREE);");
             handle.execute("CREATE TABLE IF NOT EXISTS `" + this.databaseSection.favoritesTableName() + "` (" +
-                            "`id` BIGINT(50), " +
-                            "`favorite` BIGINT(50), " +
-                            "`action` VARCHAR(50));");
+                    "`id` BIGINT(50), " +
+                    "`favorite` BIGINT(50), " +
+                    "`action` VARCHAR(50));");
             handle.execute("CREATE TABLE IF NOT EXISTS `" + this.databaseSection.commandsTableName() + "` (" +
                     "`id` BIGINT(50), " + //player id from main table
                     "`commandId` VARCHAR(50));"); //Таблица с историей команд игроков
@@ -138,7 +138,7 @@ public class MySQLDatabase implements IDatabase {
         AtomicBoolean atomicBoolean = new AtomicBoolean();
         try {
             this.jdbi.useHandle(handle -> {
-                int count = handle.createQuery("SELECT COUNT(1) FROM `"+ this.databaseSection.commandsTableName() +"` " +
+                int count = handle.createQuery("SELECT COUNT(1) FROM `" + this.databaseSection.commandsTableName() + "` " +
                                 "WHERE `id`=? AND `commandId`=?;")
                         .bind(0, gamePlayer.getId())
                         .bind(1, commandId)
@@ -146,7 +146,8 @@ public class MySQLDatabase implements IDatabase {
                         .first();
                 atomicBoolean.set(count == 1);
             });
-        } catch (IllegalStateException ignored) {  }
+        } catch (IllegalStateException ignored) {
+        }
         return atomicBoolean.get();
     }
 
@@ -177,7 +178,9 @@ public class MySQLDatabase implements IDatabase {
 
                 atomicGamePlayer.set(gamePlayer);
             });
-        } catch (IllegalStateException ignored) { atomicGamePlayer.set(null); }
+        } catch (IllegalStateException ignored) {
+            atomicGamePlayer.set(null);
+        }
         return atomicGamePlayer.get();
     }
 
@@ -188,12 +191,10 @@ public class MySQLDatabase implements IDatabase {
     public UUID getTopGamePlayerUUIDByReputation(int place) {
         AtomicReference<UUID> atomicUUID = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicUUID.set(UUID.fromString(handle.createQuery("SELECT `uuid` FROM (" +
-                            "SELECT uuid, RANK() OVER (ORDER BY `reputation` DESC) rnk " +
+            atomicUUID.set(UUID.fromString(handle.createQuery("WITH ranked_players AS (" +
+                            "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
                             "FROM `" + this.databaseSection.tableName() + "` " +
-                            "ORDER BY rnk" +
-                            ") ranked_players " +
-                            "WHERE rnk=" + place)
+                            ") SELECT uuid FROM ranked_players WHERE rank=" + place)
                     .mapTo(String.class)
                     .first()));
         });
@@ -207,12 +208,10 @@ public class MySQLDatabase implements IDatabase {
     public Long getTopGamePlayerReputationByReputation(int place) {
         AtomicReference<Long> atomicLong = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicLong.set(handle.createQuery("SELECT `reputation` FROM (" +
-                            "SELECT reputation, RANK() OVER (ORDER BY `reputation` DESC) rnk " +
+            atomicLong.set(handle.createQuery("WITH ranked_players AS (" +
+                            "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
                             "FROM `" + this.databaseSection.tableName() + "` " +
-                            "ORDER BY rnk" +
-                            ") ranked_players " +
-                            "WHERE rnk=" + place)
+                            ") SELECT reputation FROM ranked_players WHERE rank=" + place)
                     .mapTo(Long.class)
                     .first());
         });

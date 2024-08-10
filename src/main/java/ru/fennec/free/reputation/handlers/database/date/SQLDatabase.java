@@ -193,12 +193,10 @@ public class SQLDatabase implements IDatabase {
     public UUID getTopGamePlayerUUIDByReputation(int place) {
         AtomicReference<UUID> atomicUUID = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicUUID.set(UUID.fromString(handle.createQuery("SELECT `uuid` FROM (" +
-                            "SELECT uuid, RANK() OVER (ORDER BY `reputation` DESC) rnk " +
-                            "FROM `" + this.databaseSection.tableName() + "` " +
-                            "ORDER BY rnk" +
-                            ") ranked_players " +
-                            "WHERE rnk=" + place)
+            atomicUUID.set(UUID.fromString(handle.createQuery("WITH ranked_players AS (" +
+                            "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
+                            "FROM \"" + this.databaseSection.tableName() + "\" " +
+                            ") SELECT uuid FROM ranked_players WHERE rank=" + place)
                     .mapTo(String.class)
                     .first()));
         });
@@ -212,12 +210,10 @@ public class SQLDatabase implements IDatabase {
     public Long getTopGamePlayerReputationByReputation(int place) {
         AtomicReference<Long> atomicLong = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicLong.set(handle.createQuery("SELECT `reputation` FROM (" +
-                            "SELECT reputation, RANK() OVER (ORDER BY `reputation` DESC) rnk " +
-                            "FROM `" + this.databaseSection.tableName() + "` " +
-                            "ORDER BY rnk" +
-                            ") ranked_players " +
-                            "WHERE rnk=" + place)
+            atomicLong.set(handle.createQuery("WITH ranked_players AS (" +
+                            "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
+                            "FROM \"" + this.databaseSection.tableName() + "\" " +
+                            ") SELECT reputation FROM ranked_players WHERE rank=" + place)
                     .mapTo(Long.class)
                     .first());
         });
