@@ -136,7 +136,7 @@ public class ReputationCommand extends AbstractCommand {
      */
     private void aboutPlugin(CommandSender commandSender) {
         commandSender.sendMessage(messageManager.parsePluginPlaceholders("${prefix} &aПлагин Reputation от BuseSo (iBuseWinner). " +
-                "Установлена версия "+plugin.getDescription().getVersion()));
+                "Установлена версия " + plugin.getDescription().getVersion()));
         commandSender.sendMessage(messageManager.parsePluginPlaceholders("${prefix} &aСтраница плагина: https://spigotmc.ru/resources/124/"));
     }
 
@@ -564,7 +564,7 @@ public class ReputationCommand extends AbstractCommand {
                         .set("player_reputation", playerReputation)
                         .apply(message);
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(message));
-            } catch (ArrayIndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException e) {
                 break;
             } //Если онлайн игроков меньше, чем показывает топ
         }
