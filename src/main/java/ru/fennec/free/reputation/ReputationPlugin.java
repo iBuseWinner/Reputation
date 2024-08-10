@@ -59,6 +59,9 @@ public final class ReputationPlugin extends JavaPlugin {
         }
         if (this.database != null) {
             this.database.initializeTables();
+        } else {
+            getLogger().log(Level.SEVERE, "Не удалось подключиться к базе данных! Плагин не может продолжать работу.");
+            getServer().getPluginManager().disablePlugin(this);
         }
     }
 
