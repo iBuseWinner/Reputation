@@ -21,6 +21,7 @@ import ru.fennec.free.reputation.handlers.players.PlayersContainer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ReputationCommand extends AbstractCommand {
@@ -95,10 +96,6 @@ public class ReputationCommand extends AbstractCommand {
                     }
                     case "take": {
                         takeReputation(commandSender, args[1]); // /rep take <Target name>
-                        break;
-                    }
-                    case "top": {
-                        sendTopOnline(commandSender); // /rep top online /rep top lalalal
                         break;
                     }
                 }
@@ -528,45 +525,18 @@ public class ReputationCommand extends AbstractCommand {
      */
     private void sendTop(CommandSender commandSender) {
         commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().topMessage()));
-        for (int place = 0; place < mainConfig.topAmount(); place++) {
-            try {
-                String playerName = Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place + 1)).getName();
-                long playerReputation = database.getTopGamePlayerReputationByReputation(place + 1);
-
-                String message = messagesConfig.playerSection().topFormat();
-                message = StaticReplacer.replacer()
-                        .set("place", place + 1)
+        int place = 0;
+        Map<String, Long> topPlayers = playersContainer.getCachedTopGamePlayers();
+        for (String playerName : topPlayers.keySet()) {
+            place++;
+            long reputation = topPlayers.get(playerName);
+            String message = messagesConfig.playerSection().topFormat();
+            message = StaticReplacer.replacer()
+                        .set("place", place)
                         .set("player_name", playerName)
-                        .set("player_reputation", playerReputation)
+                        .set("player_reputation", reputation)
                         .apply(message);
                 commandSender.sendMessage(messageManager.parsePluginPlaceholders(message));
-            } catch (IllegalStateException | ArrayIndexOutOfBoundsException e) {
-                break;
-            } //Если в бд игроков меньше, чем показывает топ
-        }
-    }
-
-    /*
-    Отправить топ онлайн игроков по репутации
-     */
-    private void sendTopOnline(CommandSender commandSender) {
-        commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().topMessage()));
-        for (int place = 0; place < mainConfig.topAmount(); place++) {
-            try {
-                IGamePlayer gamePlayer = playersContainer.getTopGamePlayerByReputation(place);
-                String playerName = gamePlayer.getBukkitPlayer().getName();
-                long playerReputation = gamePlayer.getPlayerReputation();
-
-                String message = messagesConfig.playerSection().topFormat();
-                message = StaticReplacer.replacer()
-                        .set("place", place + 1)
-                        .set("player_name", playerName)
-                        .set("player_reputation", playerReputation)
-                        .apply(message);
-                commandSender.sendMessage(messageManager.parsePluginPlaceholders(message));
-            } catch (IndexOutOfBoundsException e) {
-                break;
-            } //Если онлайн игроков меньше, чем показывает топ
         }
     }
 
