@@ -101,6 +101,11 @@ public interface MainConfig {
     boolean rejectReputation();
 
     @AnnotationBasedSorter.Order(9)
+    @ConfDefault.DefaultLong(20)
+    @ConfComments("Частота обновления топа в тиках. 20 тиков - 1 секунда. Значение можно изменить только после полной перезагрузки сервера")
+    long topUpdateFrequency();
+
+    @AnnotationBasedSorter.Order(900)
     @SubSection
     ReputationColor color();
 
@@ -126,7 +131,7 @@ public interface MainConfig {
         String positiveReputation();
     }
 
-    @AnnotationBasedSorter.Order(10)
+    @AnnotationBasedSorter.Order(1000)
     @SubSection
     ReputationCommands commands();
 
