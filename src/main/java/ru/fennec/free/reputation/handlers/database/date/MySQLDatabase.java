@@ -191,12 +191,16 @@ public class MySQLDatabase implements IDatabase {
     public UUID getTopGamePlayerUUIDByReputation(int place) {
         AtomicReference<UUID> atomicUUID = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicUUID.set(UUID.fromString(handle.createQuery("WITH ranked_players AS (" +
-                            "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
-                            "FROM `" + this.databaseSection.tableName() + "` " +
-                            ") SELECT uuid FROM ranked_players WHERE rank=" + place)
-                    .mapTo(String.class)
-                    .first()));
+            try {
+                atomicUUID.set(UUID.fromString(handle.createQuery("WITH ranked_players AS (" +
+                                "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
+                                "FROM `" + this.databaseSection.tableName() + "` " +
+                                ") SELECT uuid FROM ranked_players WHERE rank=" + place)
+                        .mapTo(String.class)
+                        .first()));
+            } catch (IllegalStateException ex) {
+                atomicUUID.set(null);
+            }
         });
         return atomicUUID.get();
     }
@@ -208,12 +212,16 @@ public class MySQLDatabase implements IDatabase {
     public Long getTopGamePlayerReputationByReputation(int place) {
         AtomicReference<Long> atomicLong = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
-            atomicLong.set(handle.createQuery("WITH ranked_players AS (" +
-                            "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
-                            "FROM `" + this.databaseSection.tableName() + "` " +
-                            ") SELECT reputation FROM ranked_players WHERE rank=" + place)
-                    .mapTo(Long.class)
-                    .first());
+            try {
+                atomicLong.set(handle.createQuery("WITH ranked_players AS (" +
+                                "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
+                                "FROM `" + this.databaseSection.tableName() + "` " +
+                                ") SELECT reputation FROM ranked_players WHERE rank=" + place)
+                        .mapTo(Long.class)
+                        .first());
+            } catch (IllegalStateException ex) {
+                atomicLong.set(mainConfig.defaultReputation());
+            }
         });
         return atomicLong.get();
     }

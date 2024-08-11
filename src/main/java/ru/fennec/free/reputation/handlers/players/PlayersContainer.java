@@ -114,10 +114,13 @@ public class PlayersContainer {
             }
 
             for (int i = 0; i < mainConfig.topAmount(); i++) {
-                String playerName = Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(i+1)).getName();
-                long playerReputation = database.getTopGamePlayerReputationByReputation(i+1);
-                if (!mergedTopPlayers.containsKey(playerName)) {
-                    mergedTopPlayers.put(playerName, playerReputation);
+                UUID topUUIDByReputation = database.getTopGamePlayerUUIDByReputation(i+1);
+                if (topUUIDByReputation != null) {
+                    String playerName = Bukkit.getOfflinePlayer(topUUIDByReputation).getName();
+                    long playerReputation = database.getTopGamePlayerReputationByReputation(i+1);
+                    if (!mergedTopPlayers.containsKey(playerName)) {
+                        mergedTopPlayers.put(playerName, playerReputation);
+                    }
                 }
             }
 
