@@ -66,7 +66,7 @@ public final class ReputationPlugin extends JavaPlugin {
     }
 
     private void initializeHandlers() {
-        this.playersContainer = new PlayersContainer();
+        this.playersContainer = new PlayersContainer(this, database, mainConfigManager);
         this.titlesHandler = new TitlesHandler(mainConfigManager);
         this.messageManager = new MessageManager(messagesConfigManager, titlesHandler);
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -114,5 +114,6 @@ public final class ReputationPlugin extends JavaPlugin {
         if (this.placeholderHook != null) {
             this.placeholderHook.updateConfigData(this.mainConfigManager);
         }
+        this.playersContainer.updateConfigData(this.mainConfigManager);
     }
 }
