@@ -12,6 +12,7 @@ import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.common.replacers.StaticReplacer;
 import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.configs.MessagesConfig;
+import ru.fennec.free.reputation.handlers.enums.OrderBy;
 import ru.fennec.free.reputation.handlers.enums.UpdateAction;
 import ru.fennec.free.reputation.handlers.events.ReputationPreUpdateEvent;
 import ru.fennec.free.reputation.handlers.events.ReputationUpdatedEvent;
@@ -70,7 +71,11 @@ public class ReputationCommand extends AbstractCommand {
                         break;
                     }
                     case "top": {
-                        sendTop(commandSender); // /rep top
+                        sendTop(commandSender, OrderBy.DESC); // /rep top
+                        break;
+                    }
+                    case "badtop": {
+                        sendTop(commandSender, OrderBy.ASC); // /rep badtop
                         break;
                     }
                     case "reject": {
@@ -98,7 +103,11 @@ public class ReputationCommand extends AbstractCommand {
                         break;
                     }
                     case "top": {
-                        sendTopOnline(commandSender); // /rep top online /rep top lalalal
+                        sendTopOnline(commandSender, OrderBy.DESC); // /rep top online /rep top lalalal
+                        break;
+                    }
+                    case "badtop": {
+                        sendTopOnline(commandSender, OrderBy.ASC); // /rep badtop online /rep top lalalal
                         break;
                     }
                 }
@@ -526,12 +535,12 @@ public class ReputationCommand extends AbstractCommand {
     /*
     Отправить топ игроков по репутации
      */
-    private void sendTop(CommandSender commandSender) {
+    private void sendTop(CommandSender commandSender, OrderBy orderBy) {
         commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().topMessage()));
         for (int place = 0; place < mainConfig.topAmount(); place++) {
             try {
-                String playerName = Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place + 1)).getName();
-                long playerReputation = database.getTopGamePlayerReputationByReputation(place + 1);
+                String playerName = Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place + 1, orderBy)).getName();
+                long playerReputation = database.getTopGamePlayerReputationByReputation(place + 1, orderBy);
 
                 String message = messagesConfig.playerSection().topFormat();
                 message = StaticReplacer.replacer()
@@ -549,11 +558,11 @@ public class ReputationCommand extends AbstractCommand {
     /*
     Отправить топ онлайн игроков по репутации
      */
-    private void sendTopOnline(CommandSender commandSender) {
+    private void sendTopOnline(CommandSender commandSender, OrderBy orderBy) {
         commandSender.sendMessage(messageManager.parsePluginPlaceholders(messagesConfig.playerSection().topMessage()));
         for (int place = 0; place < mainConfig.topAmount(); place++) {
             try {
-                IGamePlayer gamePlayer = playersContainer.getTopGamePlayerByReputation(place);
+                IGamePlayer gamePlayer = playersContainer.getTopGamePlayerByReputation(place, orderBy);
                 String playerName = gamePlayer.getBukkitPlayer().getName();
                 long playerReputation = gamePlayer.getPlayerReputation();
 
@@ -601,7 +610,7 @@ public class ReputationCommand extends AbstractCommand {
         List<String> tab = new ArrayList<>();
         switch (args.length) {
             case 1:
-                tab.addAll(Arrays.asList("help", "me", "top", "give", "about"));
+                tab.addAll(Arrays.asList("help", "me", "top", "badtop", "give", "about"));
                 if (mainConfig.takeReputation()) tab.add("take");
                 if (mainConfig.rejectReputation()) tab.add("reject");
                 if (commandSender.hasPermission("reputation.admin.reload")) tab.add("reload");
@@ -612,6 +621,7 @@ public class ReputationCommand extends AbstractCommand {
                 break;
             case 2:
                 if (args[0].equalsIgnoreCase("top")) tab.add("online");
+                if (args[0].equalsIgnoreCase("badtop")) tab.add("online");
                 if (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("take"))
                     Bukkit.getOnlinePlayers().forEach(player -> tab.add(player.getName()));
                 if (args[0].equalsIgnoreCase("player") &&

@@ -7,6 +7,7 @@ import ru.fennec.free.reputation.common.configs.ConfigManager;
 import ru.fennec.free.reputation.common.interfaces.IDatabase;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
+import ru.fennec.free.reputation.handlers.enums.OrderBy;
 import ru.fennec.free.reputation.handlers.players.PlayersContainer;
 import ru.fennec.free.reputation.handlers.players.TitlesHandler;
 
@@ -81,27 +82,55 @@ public class PlaceholderHook extends PlaceholderExpansion {
                                         .replace("top_online_", "")
                                         .replace("_name", ""));
                                 //Возвращает НИК игрока из ОНЛАЙН топа на N месте
-                                return playersContainer.getTopGamePlayerByReputation(place - 1).getBukkitPlayer().getName();
+                                return playersContainer.getTopGamePlayerByReputation(place - 1, OrderBy.DESC).getBukkitPlayer().getName();
                             } else if (params.toLowerCase().endsWith("_reputation")) {
                                 int place = Integer.parseInt(params.toLowerCase()
                                         .replace("top_online_", "")
                                         .replace("_reputation", ""));
                                 //Возвращает РЕПУТАЦИЮ игрока из ОНЛАЙН топа на N месте
-                                return String.valueOf(playersContainer.getTopGamePlayerByReputation(place - 1).getPlayerReputation());
+                                return String.valueOf(playersContainer.getTopGamePlayerByReputation(place - 1, OrderBy.DESC).getPlayerReputation());
                             }
                         } else if (params.toLowerCase().startsWith("top_")) {
                             if (params.toLowerCase().endsWith("_name")) {
                                 int place = Integer.parseInt(params.toLowerCase()
                                         .replace("top_", "")
                                         .replace("_name", ""));
-                                //Возвращает НИК игрока из топа на N месте
-                                return Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place)).getName();
+                                //Возвращает НИК игрока из топа на N месте (Репутация по убыванию)
+                                return Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place, OrderBy.DESC)).getName();
                             } else if (params.toLowerCase().endsWith("_reputation")) {
                                 int place = Integer.parseInt(params.toLowerCase()
                                         .replace("top_", "")
                                         .replace("_reputation", ""));
-                                //Возвращает РЕПУТАЦИЮ игрока из ОНЛАЙН топа на N месте
-                                return String.valueOf(database.getTopGamePlayerReputationByReputation(place));
+                                //Возвращает РЕПУТАЦИЮ игрока из ОНЛАЙН топа на N месте (Репутация по убыванию)
+                                return String.valueOf(database.getTopGamePlayerReputationByReputation(place, OrderBy.DESC));
+                            }
+                        } else if (params.toLowerCase().startsWith("badtop_online_")) {
+                            if (params.toLowerCase().endsWith("_name")) {
+                                int place = Integer.parseInt(params.toLowerCase()
+                                        .replace("badtop_online_", "")
+                                        .replace("_name", ""));
+                                //Возвращает НИК игрока из ОНЛАЙН топа ПЛОХИХ ИГРОКОВ на N месте (Репутация по возрастанию)
+                                return playersContainer.getTopGamePlayerByReputation(place - 1, OrderBy.ASC).getBukkitPlayer().getName();
+                            } else if (params.toLowerCase().endsWith("_reputation")) {
+                                int place = Integer.parseInt(params.toLowerCase()
+                                        .replace("badtop_online_", "")
+                                        .replace("_reputation", ""));
+                                //Возвращает РЕПУТАЦИЮ игрока из ОНЛАЙН топа ПЛОХИХ ИГРОКОВ на N месте (Репутация по возрастанию)
+                                return String.valueOf(playersContainer.getTopGamePlayerByReputation(place - 1, OrderBy.ASC).getPlayerReputation());
+                            }
+                        } else if (params.toLowerCase().startsWith("badtop_")) {
+                            if (params.toLowerCase().endsWith("_name")) {
+                                int place = Integer.parseInt(params.toLowerCase()
+                                        .replace("badtop_", "")
+                                        .replace("_name", ""));
+                                //Возвращает НИК игрока из топа ПЛОХИХ ИГРОКОВ на N месте (Репутация по возрастанию)
+                                return Bukkit.getOfflinePlayer(database.getTopGamePlayerUUIDByReputation(place, OrderBy.ASC)).getName();
+                            } else if (params.toLowerCase().endsWith("_reputation")) {
+                                int place = Integer.parseInt(params.toLowerCase()
+                                        .replace("badtop_", "")
+                                        .replace("_reputation", ""));
+                                //Возвращает РЕПУТАЦИЮ игрока из ОНЛАЙН топа ПЛОХИХ ИГРОКОВ на N месте (Репутация по возрастанию)
+                                return String.valueOf(database.getTopGamePlayerReputationByReputation(place, OrderBy.ASC));
                             }
                         }
                     } catch (NumberFormatException ignored) {

@@ -1,6 +1,7 @@
 package ru.fennec.free.reputation.handlers.players;
 
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
+import ru.fennec.free.reputation.handlers.enums.OrderBy;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -66,14 +67,23 @@ public class PlayersContainer {
      * @param place N - место игрока в топе (начинается с нуля)
      * @return IGamePlayer - игрока на N месте. Ошибка стоп ноль ноль ноль ноль если нет такого
      */
-    public IGamePlayer getTopGamePlayerByReputation(int place) {
+    public IGamePlayer getTopGamePlayerByReputation(int place, OrderBy orderBy) {
 //        return cachedPlayers //Тут ошибка в методе ору, возвращается всегда топ с первого места :/
 //                .stream().max(Comparator.comparingLong(IGamePlayer::getPlayerReputation)).get();
-        return cachedPlayers
-                .stream()
+        if (orderBy == OrderBy.DESC) {
+            return cachedPlayers //Возвращаем топ хороших игроков (Сортировка по убыванию)
+                    .stream()
 //                .sorted((f1, f2) -> Long.compare(f2.getPlayerReputation(), f1.getPlayerReputation()))
-                .sorted(Comparator.comparingLong(IGamePlayer::getPlayerReputation).reversed())
-                .collect(Collectors.toList())
-                .get(place);
+                    .sorted(Comparator.comparingLong(IGamePlayer::getPlayerReputation).reversed())
+                    .collect(Collectors.toList())
+                    .get(place);
+        } else {
+            return cachedPlayers //Возвращаем топ плохих игроков  (Сортировка по возрастанию)
+                    .stream()
+//                .sorted((f1, f2) -> Long.compare(f2.getPlayerReputation(), f1.getPlayerReputation()))
+                    .sorted(Comparator.comparingLong(IGamePlayer::getPlayerReputation))
+                    .collect(Collectors.toList())
+                    .get(place);
+        }
     }
 }

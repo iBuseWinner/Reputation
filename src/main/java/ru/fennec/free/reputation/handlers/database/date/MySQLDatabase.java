@@ -7,6 +7,7 @@ import ru.fennec.free.reputation.common.interfaces.IDatabase;
 import ru.fennec.free.reputation.common.interfaces.IGamePlayer;
 import ru.fennec.free.reputation.handlers.database.configs.MainConfig;
 import ru.fennec.free.reputation.handlers.database.date.mappers.GamePlayerMapper;
+import ru.fennec.free.reputation.handlers.enums.OrderBy;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -188,11 +189,12 @@ public class MySQLDatabase implements IDatabase {
     Получить UUID игрока с N места в топе игроков по репутации
      */
     @Override
-    public UUID getTopGamePlayerUUIDByReputation(int place) {
+    public UUID getTopGamePlayerUUIDByReputation(int place, OrderBy orderBy) {
         AtomicReference<UUID> atomicUUID = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
             atomicUUID.set(UUID.fromString(handle.createQuery("WITH ranked_players AS (" +
-                            "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
+                            "SELECT uuid, reputation, ROW_NUMBER() OVER " +
+                            "(ORDER BY reputation " + orderBy.getValue() + ") AS rank " +
                             "FROM `" + this.databaseSection.tableName() + "` " +
                             ") SELECT uuid FROM ranked_players WHERE rank=" + place)
                     .mapTo(String.class)
@@ -205,11 +207,12 @@ public class MySQLDatabase implements IDatabase {
     Получить репутацию игрока с N места в топе игроков по репутации
      */
     @Override
-    public Long getTopGamePlayerReputationByReputation(int place) {
+    public Long getTopGamePlayerReputationByReputation(int place, OrderBy orderBy) {
         AtomicReference<Long> atomicLong = new AtomicReference<>();
         this.jdbi.useHandle(handle -> {
             atomicLong.set(handle.createQuery("WITH ranked_players AS (" +
-                            "SELECT uuid, reputation, ROW_NUMBER() OVER (ORDER BY reputation DESC) AS rank " +
+                            "SELECT uuid, reputation, ROW_NUMBER() OVER " +
+                            "(ORDER BY reputation " + orderBy.getValue() + ") AS rank " +
                             "FROM `" + this.databaseSection.tableName() + "` " +
                             ") SELECT reputation FROM ranked_players WHERE rank=" + place)
                     .mapTo(Long.class)

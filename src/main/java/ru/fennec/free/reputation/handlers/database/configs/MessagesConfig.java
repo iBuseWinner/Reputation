@@ -82,6 +82,8 @@ public interface MessagesConfig {
                 "  &a/reputation give <Игрок> -&f прибавить очко репутации игроку",
                 "  &a/reputation top -&f показать топ игроков по репутации",
                 "  &a/reputation top online -&f показать топ онлайн игроков по репутации",
+                "  &a/reputation badtop -&f показать топ плохих игроков по репутации",
+                "  &a/reputation badtop online -&f показать топ плохих онлайн игроков по репутации",
                 "  &a/reputation reject -&f отказаться от репутации"})
         @ConfComments("Ответ Администратору, когда он запрашивает список команд")
         List<String> helpStrings();

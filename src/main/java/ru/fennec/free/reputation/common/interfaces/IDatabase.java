@@ -1,6 +1,7 @@
 package ru.fennec.free.reputation.common.interfaces;
 
 import org.bukkit.entity.Player;
+import ru.fennec.free.reputation.handlers.enums.OrderBy;
 
 import java.util.UUID;
 
@@ -24,8 +25,8 @@ public interface IDatabase {
 
     IGamePlayer wrapPlayer(Player player);
 
-    UUID getTopGamePlayerUUIDByReputation(int place);
+    UUID getTopGamePlayerUUIDByReputation(int place, OrderBy orderBy);
 
-    Long getTopGamePlayerReputationByReputation(int place);
+    Long getTopGamePlayerReputationByReputation(int place, OrderBy orderBy);
 
 }
