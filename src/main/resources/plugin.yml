@@ -1,5 +1,5 @@
 name: Reputation
-version: '3.0.16-БЕТА'
+version: '3.0.17-БЕТА'
 main: ru.fennec.free.reputation.ReputationPlugin
 softdepend: [ PlaceholderAPI ]
 authors: [ BuseSo ]

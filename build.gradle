@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'ru.fennec.free'
-version = '3.0.16-БЕТА'
+version = '3.0.17-БЕТА'
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
