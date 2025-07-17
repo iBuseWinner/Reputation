@@ -132,9 +132,9 @@ public class ReputationCommand extends AbstractCommand {
     Сообщение о версии плагина и его разработчике
      */
     private void aboutPlugin(CommandSender commandSender) {
-        commandSender.sendMessage(messageManager.parsePluginPlaceholders("${prefix} &aПлагин Reputation от BuseSo (iBuseWinner). " +
+        commandSender.sendMessage(messageManager.parsePluginPlaceholders("${prefix} <green>Плагин Reputation от <yellow>BuseSo</yellow> (<yellow>iBuseWinner</yellow>, <yellow>FenNeCovid</yellow>). " +
                 "Установлена версия " + plugin.getDescription().getVersion()));
-        commandSender.sendMessage(messageManager.parsePluginPlaceholders("${prefix} &aСтраница плагина: https://spigotmc.ru/resources/124/"));
+        commandSender.sendMessage(messageManager.parsePluginPlaceholders("${prefix} <green>Страница плагина: https://spigotmc.ru/resources/124/"));
     }
 
     /*
