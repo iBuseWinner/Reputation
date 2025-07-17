@@ -116,17 +116,17 @@ public interface MainConfig {
         boolean enable();
 
         @AnnotationBasedSorter.Order(2)
-        @ConfDefault.DefaultString("&c")
+        @ConfDefault.DefaultString("<red>")
         @ConfComments("Если репутация ниже нуля")
         String negativeReputation();
 
         @AnnotationBasedSorter.Order(3)
-        @ConfDefault.DefaultString("&7")
+        @ConfDefault.DefaultString("<gray>")
         @ConfComments("Если репутация равна нулю")
         String neutralReputation();
 
         @AnnotationBasedSorter.Order(4)
-        @ConfDefault.DefaultString("&a")
+        @ConfDefault.DefaultString("<green>")
         @ConfComments("Если репутация выше нуля")
         String positiveReputation();
     }
