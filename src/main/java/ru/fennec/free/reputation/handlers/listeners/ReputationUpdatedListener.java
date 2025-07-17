@@ -1,5 +1,6 @@
 package ru.fennec.free.reputation.handlers.listeners;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -47,7 +48,7 @@ public class ReputationUpdatedListener implements Listener {
                         commandSender = Bukkit.getConsoleSender();
                         cmd = cmd.substring("console!".length());
                     }
-                    Bukkit.dispatchCommand(commandSender, messageManager.parsePlaceholders(gamePlayer, cmd));
+                    Bukkit.dispatchCommand(commandSender, PlainTextComponentSerializer.plainText().serialize(messageManager.parsePlaceholders(gamePlayer, cmd)));
                 });
                 if (selectedReputation.oneTime()) {
                     database.saveCommand(gamePlayer, selectedReputation.id());
